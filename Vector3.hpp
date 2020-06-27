@@ -28,16 +28,39 @@ class Vector3 {
   double operator[](int i) const { return comps[i]; }
   double& operator[](int i) { return comps[i]; }
 
+  Vector3& operator+=(const Vector3& rhs) {
+    comps[0] += rhs.comps[0];
+    comps[1] += rhs.comps[1];
+    comps[2] += rhs.comps[2];
+    return *this;
+  }
+  Vector3& operator-=(const Vector3& rhs) {
+    comps[0] -= rhs.comps[0];
+    comps[1] -= rhs.comps[1];
+    comps[2] -= rhs.comps[2];
+    return *this;
+  }
+  Vector3& operator*=(const double value) {
+    comps[0] *= value;
+    comps[1] *= value;
+    comps[2] *= value;
+    return *this;
+  }
+  Vector3& operator/=(const double value) { return *this *= 1 / value; }
+
   inline Vector3 operator+(const Vector3& rhs) const {
-    return Vector3(comps[0] + rhs.comps[0], comps[1] + rhs.comps[1],
+    return Vector3(comps[0] + rhs.comps[0],
+                   comps[1] + rhs.comps[1],
                    comps[2] + rhs.comps[2]);
   }
   inline Vector3 operator-(const Vector3& rhs) const {
-    return Vector3(comps[0] - rhs.comps[0], comps[1] - rhs.comps[1],
+    return Vector3(comps[0] - rhs.comps[0],
+                   comps[1] - rhs.comps[1],
                    comps[2] - rhs.comps[2]);
   }
   inline Vector3 operator*(const Vector3& rhs) const {
-    return Vector3(comps[0] * rhs.comps[0], comps[1] * rhs.comps[1],
+    return Vector3(comps[0] * rhs.comps[0],
+                   comps[1] * rhs.comps[1],
                    comps[2] * rhs.comps[2]);
   }
   inline Vector3 operator*(double scalar) const {
