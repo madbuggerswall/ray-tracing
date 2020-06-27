@@ -1,3 +1,6 @@
+#ifndef VECTOR3_HPP
+#define VECTOR3_HPP
+
 #include <cmath>
 #include <iostream>
 
@@ -57,3 +60,8 @@ class Vector3 {
                    lhs.comps[0] * rhs.comps[1] - lhs.comps[1] * rhs.comps[0]);
   }
 };
+
+using Point3 = Vector3;
+using Color = Vector3;
+
+#endif

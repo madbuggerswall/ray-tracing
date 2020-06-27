@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include "Color.hpp"
+#include "Vector3.hpp"
+
 int main(int argc, char const* argv[]) {
   const int imageWidth = 256;
   const int imageHeight = 256;
@@ -11,19 +14,12 @@ int main(int argc, char const* argv[]) {
   for (int i = imageHeight - 1; i >= 0; --i) {
     std::cerr << "\rScanlines remaining: " << i << "	" << std::flush;
     for (int j = 0; j < imageWidth; ++j) {
-      auto r = double(j) / (imageWidth - 1);
-      auto g = double(i) / (imageHeight - 1);
-      auto b = 0.5;
-
-      int ir = static_cast<int>(255.999 * r);
-      int ig = static_cast<int>(255.999 * g);
-      int ib = static_cast<int>(255.999 * b);
-
-      std::cout << ir << "	" << ig << "	" << ib << std::endl;
+      Color pixelColor(double(j) / (imageWidth - 1),
+                       double(i) / (imageHeight - 1), 0.25);
+      writeColor(std::cout, pixelColor);
     }
   }
   std::cerr << std::endl << "Done." << std::endl;
 
   return 0;
 }
- 
