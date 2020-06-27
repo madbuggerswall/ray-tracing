@@ -8,11 +8,12 @@ int main(int argc, char const* argv[]) {
   std::cout << imageWidth << "	" << imageHeight << std::endl;
   std::cout << "255" << std::endl;
 
-  for (int i = imageHeight-1; i >= 0; --i) {
+  for (int i = imageHeight - 1; i >= 0; --i) {
+    std::cerr << "\rScanlines remaining: " << i << "	" << std::flush;
     for (int j = 0; j < imageWidth; ++j) {
       auto r = double(j) / (imageWidth - 1);
       auto g = double(i) / (imageHeight - 1);
-      auto b = 0.25;
+      auto b = 0.5;
 
       int ir = static_cast<int>(255.999 * r);
       int ig = static_cast<int>(255.999 * g);
@@ -21,6 +22,8 @@ int main(int argc, char const* argv[]) {
       std::cout << ir << "	" << ig << "	" << ib << std::endl;
     }
   }
+  std::cerr << std::endl << "Done." << std::endl;
 
   return 0;
 }
+ 
