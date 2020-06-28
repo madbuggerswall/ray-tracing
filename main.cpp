@@ -4,19 +4,26 @@
 #include "Ray.hpp"
 #include "Vector3.hpp"
 
-bool hitSphere(const Point3& center, double radius, const Ray& ray) {
+double hitSphere(const Point3& center, double radius, const Ray& ray) {
   Vector3 oc = ray.getOrigin() - center;
-  auto a = dot(ray.getDirection(), ray.getDirection());
-  auto b = 2.0 * dot(oc, ray.getDirection());
-  auto c = dot(oc, oc) - radius * radius;
-  auto discriminant = b * b - 4 * a * c;
-  return (discriminant > 0);
+  auto a = ray.getDirection().magnitudeSquared();
+  auto halfB = dot(oc, ray.getDirection());
+  auto c = oc.magnitudeSquared() - radius * radius;
+  auto discriminant = halfB * halfB - a * c;
+  if (discriminant < 0)
+    return -1;
+  else
+    return (-halfB - sqrt(discriminant)) / a;
 }
 
 Color rayColor(const Ray& ray) {
-  if (hitSphere(Point3(0, 0, -1), 0.5, ray)) return Color(1, 0, 0);
+  auto t = hitSphere(Point3(0, 0, -1), 0.5, ray);
+  if (t > 0.0) {
+    Vector3 normal = (ray.at(t) - Vector3(0, 0, -1)).normalized();
+    return 0.5 * Color(normal.getX() + 1, normal.getY() + 1, normal.getZ() + 1);
+  }
   Vector3 unitDirection = ray.getDirection().normalized();
-  auto t = 0.5 * (unitDirection.getY() + 1.0);
+  t = 0.5 * (unitDirection.getY() + 1.0);
   return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
 }
 
