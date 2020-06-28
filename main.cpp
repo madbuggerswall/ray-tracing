@@ -4,7 +4,17 @@
 #include "Ray.hpp"
 #include "Vector3.hpp"
 
+bool hitSphere(const Point3& center, double radius, const Ray& ray) {
+  Vector3 oc = ray.getOrigin() - center;
+  auto a = dot(ray.getDirection(), ray.getDirection());
+  auto b = 2.0 * dot(oc, ray.getDirection());
+  auto c = dot(oc, oc) - radius * radius;
+  auto discriminant = b * b - 4 * a * c;
+  return (discriminant > 0);
+}
+
 Color rayColor(const Ray& ray) {
+  if (hitSphere(Point3(0, 0, -1), 0.5, ray)) return Color(1, 0, 0);
   Vector3 unitDirection = ray.getDirection().normalized();
   auto t = 0.5 * (unitDirection.getY() + 1.0);
   return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
