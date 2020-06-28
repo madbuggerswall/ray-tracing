@@ -3,18 +3,16 @@
 
 #include "GeometricalObject.hpp"
 
-class Sphere : GeometricalObject {
+class Sphere : public GeometricalObject {
  private:
   Point3 center;
   double radius;
 
  public:
   Sphere() {}
-  Sphere(Point3& center, double radius) : center(center), radius(radius) {}
+  Sphere(Point3 center, double radius) : center(center), radius(radius) {}
 
-  virtual bool hit(const Ray& ray,
-                   double tMin,
-                   double tMax,
+  virtual bool hit(const Ray& ray, double tMin, double tMax,
                    HitRecord& hitRecord) const override {
     Vector3 oc = ray.getOrigin() - center;
     auto a = ray.getDirection().magnitudeSquared();

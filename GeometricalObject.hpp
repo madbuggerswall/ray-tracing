@@ -18,9 +18,7 @@ struct HitRecord {
 class GeometricalObject {
  private:
  public:
-  virtual bool hit(const Ray& ray,
-                   double tMin,
-                   double tMax,
+  virtual bool hit(const Ray& ray, double tMin, double tMax,
                    HitRecord& hitRecord) const = 0;
 };
 

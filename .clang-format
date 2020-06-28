@@ -6,7 +6,7 @@ FixNamespaceComments: false
 AlignAfterOpenBracket: Align
 AlignOperands: true
 BinPackArguments: false
-BinPackParameters: false
+BinPackParameters: true
 BreakBeforeBinaryOperators: None
 BreakConstructorInitializers: AfterColon
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
