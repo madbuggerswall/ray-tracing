@@ -6,10 +6,13 @@
 #include "Sphere.hpp"
 #include "Utilities.hpp"
 
-Color rayColor(const Ray& ray, const Scene& scene) {
-  HitRecord hitRecord;
-  if (scene.hit(ray, 0, Util::infinity, hitRecord)) {
-    return 0.5 * (hitRecord.normal + Color(1, 1, 1));
+Color rayColor(const Ray& ray, const Scene& scene, int bounceLimit) {
+  HitRecord record;
+  if (bounceLimit <= 0) return Color(0, 0, 0);
+  if (scene.hit(ray, 0.001, Math::infinity, record)) {
+    Point3 target = record.point + record.normal + Random::vectorInUnitSphere();
+    Ray bouncingRay(record.point, target - record.point);
+    return 0.5 * rayColor(bouncingRay, scene, bounceLimit - 1);
   }
 
   Vector3 unitDirection = ray.getDirection().normalized();
@@ -22,6 +25,7 @@ int main(int argc, char const* argv[]) {
   const int imageWidth = 400;
   const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
   const int samplesPerPixel = 100;
+	const int bounceLimit = 50;
 
   std::cout << "P3" << std::endl;
   std::cout << imageWidth << "	" << imageHeight << std::endl;
@@ -33,15 +37,15 @@ int main(int argc, char const* argv[]) {
 
   Camera camera;
 
-  for (int i = imageHeight - 1; i >= 0; --i) {
-    std::cerr << "\rScanlines remaining: " << i << "	" << std::flush;
-    for (int j = 0; j < imageWidth; ++j) {
+  for (int j = imageHeight - 1; j >= 0; --j) {
+    std::cerr << "\rScanlines remaining: " << j << "	" << std::flush;
+    for (int i = 0; i < imageWidth; ++i) {
       Color pixelColor(0, 0, 0);
       for (int s = 0; s < samplesPerPixel; ++s) {
-        auto u = double(j + Util::randomDouble()) / (imageWidth - 1);
-        auto v = double(i + Util::randomDouble()) / (imageHeight - 1);
+        auto u = double(i + Random::fraction()) / (imageWidth - 1);
+        auto v = double(j + Random::fraction()) / (imageHeight - 1);
         Ray ray = camera.getRay(u, v);
-        pixelColor += rayColor(ray, scene);
+        pixelColor += rayColor(ray, scene, bounceLimit);
       }
       writeColor(std::cout, pixelColor, samplesPerPixel);
     }
