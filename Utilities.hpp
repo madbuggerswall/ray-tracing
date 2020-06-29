@@ -21,14 +21,18 @@ namespace Math {
 }
 
 namespace Random {
+  std::random_device randomDevice;
+  std::mt19937 generator(randomDevice());
+
   inline double range(double min, double max) {
-    static std::uniform_real_distribution<double> distribution(min, max);
-    static std::mt19937 generator;
+    std::uniform_real_distribution<double> distribution(min, max);
     return distribution(generator);
+    // return min + (max - min) * fraction();
   }
 
   inline double fraction() {
     return range(0.0, 1.0);
+    // return rand() / (RAND_MAX + 1.0);
   }
 
   inline Vector3 vectorRange(double min, double max) {

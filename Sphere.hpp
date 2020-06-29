@@ -7,10 +7,14 @@ class Sphere : public GeometricalObject {
  private:
   Point3 center;
   double radius;
+  std::shared_ptr<Material> materialPtr;
 
  public:
   Sphere() {}
-  Sphere(Point3 center, double radius) : center(center), radius(radius) {}
+  Sphere(Point3 center, double radius, std::shared_ptr<Material> materialPtr) :
+      center(center),
+      radius(radius),
+      materialPtr(materialPtr) {}
 
   virtual bool hit(const Ray& ray, double tMin, double tMax,
                    HitRecord& hitRecord) const override {
@@ -27,6 +31,7 @@ class Sphere : public GeometricalObject {
       hitRecord.point = ray.at(hitRecord.t);
       Vector3 outwardNormal = (hitRecord.point - center) / radius;
       hitRecord.setFaceNormal(ray, outwardNormal);
+      hitRecord.materialPtr = materialPtr;
       return true;
     }
     t = (-halfB + root) / a;
@@ -35,6 +40,7 @@ class Sphere : public GeometricalObject {
       hitRecord.point = ray.at(hitRecord.t);
       Vector3 outwardNormal = (hitRecord.point - center) / radius;
       hitRecord.setFaceNormal(ray, outwardNormal);
+      hitRecord.materialPtr = materialPtr;
       return true;
     }
     return false;

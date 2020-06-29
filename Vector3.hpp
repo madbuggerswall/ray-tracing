@@ -89,22 +89,32 @@ class Vector3 {
   inline Vector3 operator/(double scalar) const {
     return *this * (1 / scalar);
   }
-  friend inline Vector3 operator*(double scalar, const Vector3& rhs) {
-    return rhs * scalar;
-  }
-  friend inline std::ostream& operator<<(std::ostream& out, const Vector3& v) {
-    return out << v.comps[0] << ' ' << v.comps[1] << ' ' << v.comps[2];
-  }
-  friend inline double dot(const Vector3& lhs, const Vector3& rhs) {
-    return lhs.comps[0] * rhs.comps[0] + lhs.comps[1] * rhs.comps[1] +
-           lhs.comps[2] * rhs.comps[2];
-  }
-  friend inline Vector3 cross(const Vector3& lhs, const Vector3& rhs) {
-    return Vector3(lhs.comps[1] * rhs.comps[2] - lhs.comps[2] * rhs.comps[1],
-                   lhs.comps[2] * rhs.comps[0] - lhs.comps[0] * rhs.comps[2],
-                   lhs.comps[0] * rhs.comps[1] - lhs.comps[1] * rhs.comps[0]);
-  }
+  friend inline Vector3 operator*(double scalar, const Vector3& rhs);
+  friend inline std::ostream& operator<<(std::ostream& out, const Vector3& v);
+  friend inline double dot(const Vector3& lhs, const Vector3& rhs);
+  friend inline Vector3 cross(const Vector3& lhs, const Vector3& rhs);
+  friend inline Vector3 reflect(const Vector3& vector, const Vector3& normal);
 };
+
+// Definitions of friend functions.
+inline Vector3 operator*(double scalar, const Vector3& rhs) {
+  return rhs * scalar;
+}
+inline std::ostream& operator<<(std::ostream& out, const Vector3& v) {
+  return out << v.comps[0] << ' ' << v.comps[1] << ' ' << v.comps[2];
+}
+inline double dot(const Vector3& lhs, const Vector3& rhs) {
+  return lhs.comps[0] * rhs.comps[0] + lhs.comps[1] * rhs.comps[1] +
+         lhs.comps[2] * rhs.comps[2];
+}
+inline Vector3 cross(const Vector3& lhs, const Vector3& rhs) {
+  return Vector3(lhs.comps[1] * rhs.comps[2] - lhs.comps[2] * rhs.comps[1],
+                 lhs.comps[2] * rhs.comps[0] - lhs.comps[0] * rhs.comps[2],
+                 lhs.comps[0] * rhs.comps[1] - lhs.comps[1] * rhs.comps[0]);
+}
+inline Vector3 reflect(const Vector3& vector, const Vector3& normal) {
+  return vector - 2 * dot(vector, normal) * normal;
+}
 
 using Point3 = Vector3;
 using Color = Vector3;
