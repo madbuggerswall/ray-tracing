@@ -3,7 +3,7 @@ ColumnLimit: 80
 AccessModifierOffset: -1
 NamespaceIndentation: All
 FixNamespaceComments: false
-AlignAfterOpenBracket: AlwaysBreak
+AlignAfterOpenBracket: Align
 AlignOperands: true
 BinPackArguments: false
 BinPackParameters: true

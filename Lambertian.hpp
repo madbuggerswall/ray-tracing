@@ -2,9 +2,7 @@
 #define LAMBERTIAN_HPP
 
 #include "Material.hpp"
-#include "Ray.hpp"
 #include "Utilities.hpp"
-#include "Vector3.hpp"
 
 class Lambertian : public Material {
  private:
@@ -13,10 +11,10 @@ class Lambertian : public Material {
  public:
   Lambertian(const Color& albedo) : albedo(albedo) {}
 
-  virtual bool scatter(const Ray& incoming, const HitRecord& HitRecord,
+  virtual bool scatter(const Ray& incoming, const HitRecord& hitRecord,
                        Color& attenuation, Ray& scattered) const override {
-    Vector3 scatterDirection = HitRecord.normal + Random::unitVector();
-    scattered = Ray(HitRecord.point, scatterDirection);
+    Vector3 scatterDirection = hitRecord.normal + Random::unitVector();
+    scattered = Ray(hitRecord.point, scatterDirection);
     attenuation = albedo;
     return true;
   }

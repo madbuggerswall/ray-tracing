@@ -3,6 +3,7 @@
 #include "Camera.hpp"
 #include "Color.hpp"
 #include "Lambertian.hpp"
+#include "Dielectric.hpp"
 #include "Metal.hpp"
 #include "Scene.hpp"
 #include "Sphere.hpp"
@@ -36,22 +37,31 @@ int main(int argc, char const* argv[]) {
   std::cout << "255" << std::endl;
 
   Scene scene;
-  scene.add(std::make_shared<Sphere>(
-      Point3(0, 0, -1),
-      0.5,
-      std::make_shared<Lambertian>(Color(0.7, 0.3, 0.3))));
-  scene.add(std::make_shared<Sphere>(
-      Point3(0, -100.5, -1),
-      100,
-      std::make_shared<Lambertian>(Color(0.8, 0.8, 0))));
-  scene.add(std::make_shared<Sphere>(
-      Point3(1, 0, -1),
-      0.5,
-      std::make_shared<Metal>(Color(0.8, 0.6, 0.2))));
-  scene.add(std::make_shared<Sphere>(
-      Point3(-1, 0, -1),
-      0.5,
-      std::make_shared<Metal>(Color(0.8, 0.8, 0.8))));
+
+  Lambertian centerMat(Color(0.7, 0.3, 0.3));
+  Sphere center(Point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(centerMat));
+  scene.add(std::make_shared<Sphere>(center));
+
+  Lambertian gMat(Color(0.8, 0.8, 0.0));
+  Sphere ground(Point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(gMat));
+  scene.add(std::make_shared<Sphere>(ground));
+
+  Metal metalLeft(Color(0.8, 0.6, 0.2), 1.0);
+  Sphere left(Point3(1, 0, -1), 0.5, std::make_shared<Metal>(metalLeft));
+  scene.add(std::make_shared<Sphere>(left));
+
+
+  Dielectric glass(1.7);
+  Sphere right(Point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(glass));
+  scene.add(std::make_shared<Sphere>(right));
+
+  // Dielectric glassI(1.7);
+  // Sphere rightI(Point3(-1, 0, -1), -0.3, std::make_shared<Dielectric>(glassI));
+  // scene.add(std::make_shared<Sphere>(rightI));
+  
+	// Metal metalRight(Color(0.8, 0.8, 0.8), 0.3);
+  // Sphere right(Point3(-1, 0, -1), 0.5, std::make_shared<Metal>(metalRight));
+  // scene.add(std::make_shared<Sphere>(right));
 
   Camera camera;
 
