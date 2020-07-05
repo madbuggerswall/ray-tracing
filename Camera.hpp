@@ -9,24 +9,41 @@ class Camera {
   Point3 lowerLeftCorner;
   Vector3 horizontal;
   Vector3 vertical;
-  const double aspectRatio = 16.0 / 9.0;
+  Vector3 u, v, w;
+  double lensRadius;
 
  public:
-  Camera() {
-    auto viewportHeight = 2.0;
+  Camera(
+      Point3 lookFrom,
+      Point3 lookAt,
+      Vector3 viewUp,
+      double vertFov,
+      double aspectRatio,
+      double aperture,
+      double focusDist) {
+    auto viewportHeight = 2.0 * std::tan(Math::degreesToRadians(vertFov) / 2.0);
     auto viewportWidth = viewportHeight * aspectRatio;
     auto focalLength = 1.0;
 
-    origin = Point3(0, 0, 0);
-    horizontal = Vector3(viewportWidth, 0, 0);
-    vertical = Vector3(0, viewportHeight, 0);
-    lowerLeftCorner = origin - horizontal / 2 - vertical / 2;
-    lowerLeftCorner -= Vector3(0, 0, focalLength);
+    w = (lookFrom - lookAt).normalized();
+    u = cross(viewUp, w).normalized();
+    v = cross(w, u);
+
+    origin = lookFrom;
+    horizontal = focusDist * viewportWidth * u;
+    vertical = focusDist * viewportHeight * v;
+    lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - focusDist * w;
+
+    lensRadius = aperture / 2;
   }
 
-  Ray getRay(double u, double v) const {
-    return Ray(origin,
-               lowerLeftCorner + u * horizontal + v * vertical - origin);
+  Ray getRay(double s, double t) const {
+    Vector3 random = lensRadius * Random::vectorInUnitDisk();
+    Vector3 offset = u * random.getX() + v * random.getY();
+
+    return Ray(
+        origin + offset,
+        lowerLeftCorner + s * horizontal + t * vertical - origin - offset);
   }
 };
 

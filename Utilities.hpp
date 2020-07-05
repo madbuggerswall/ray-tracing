@@ -18,6 +18,10 @@ namespace Math {
     if (value > max) return max;
     return value;
   }
+
+  inline double degreesToRadians(double degrees) {
+    return degrees * pi / 180;
+  }
 }
 
 namespace Random {
@@ -35,6 +39,10 @@ namespace Random {
     // return rand() / (RAND_MAX + 1.0);
   }
 
+  inline Vector3 vector3() {
+    return Vector3(fraction(), fraction(), fraction);
+  }
+
   inline Vector3 vectorRange(double min, double max) {
     return Vector3(range(min, max), range(min, max), range(min, max));
   }
@@ -48,9 +56,17 @@ namespace Random {
 
   Vector3 vectorInUnitSphere() {
     while (true) {
-      auto p = Random::vectorRange(-1, 1);
-      if (p.magnitudeSquared() >= 1) continue;
-      return p;
+      auto vector = Random::vectorRange(-1, 1);
+      if (vector.magnitudeSquared() >= 1) continue;
+      return vector;
+    }
+  }
+
+  Vector3 vectorInUnitDisk() {
+    while (true) {
+      auto vector = Vector3(range(-1, 1), range(-1, 1), 0);
+      if (vector.magnitudeSquared() >= 1) continue;
+      return vector;
     }
   }
 

@@ -17,7 +17,6 @@ class Ray {
   Point3 at(double t) const {
     return origin + t * direction;
   }
-
   Point3 getOrigin() const {
     return origin;
   }
