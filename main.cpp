@@ -25,7 +25,7 @@ Scene randomScene() {
         std::shared_ptr<Material> sphereMat;
 
         if (chooseMat < 0.8) {
-          auto albedo = Random::vector3() * Random::vector3();
+          auto albedo = Random::vector() * Random::vector();
           sphereMat = std::make_shared<Lambertian>(albedo);
           auto sphere = std::make_shared<Sphere>(position, 0.2, sphereMat);
           scene.add(sphere);
@@ -83,37 +83,13 @@ int main(int argc, char const* argv[]) {
   std::cout << imageWidth << "	" << imageHeight << std::endl;
   std::cout << "255" << std::endl;
 
-  Scene scene;
+  Scene scene = randomScene();
 
-  Lambertian centerMat(Color(0.7, 0.3, 0.3));
-  Sphere center(Point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(centerMat));
-  scene.add(std::make_shared<Sphere>(center));
-
-  Lambertian gMat(Color(0.8, 0.8, 0.0));
-  Sphere ground(Point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(gMat));
-  scene.add(std::make_shared<Sphere>(ground));
-
-  Metal metalLeft(Color(0.8, 0.6, 0.2), 1.0);
-  Sphere left(Point3(1, 0, -1), 0.5, std::make_shared<Metal>(metalLeft));
-  scene.add(std::make_shared<Sphere>(left));
-
-  Dielectric glass(1.7);
-  Sphere right(Point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(glass));
-  scene.add(std::make_shared<Sphere>(right));
-
-  Dielectric glassI(1.7);
-  Sphere rightI(Point3(-1, 0, -1), -0.3, std::make_shared<Dielectric>(glassI));
-  scene.add(std::make_shared<Sphere>(rightI));
-
-  // Metal metalRight(Color(0.8, 0.8, 0.8), 0.3);
-  // Sphere right(Point3(-1, 0, -1), 0.5, std::make_shared<Metal>(metalRight));
-  // scene.add(std::make_shared<Sphere>(right));
-
-  auto lookFrom = Point3(3, 3, 2);
-  auto lookAt = Point3(0, 0, -1);
+  auto lookFrom = Point3(13, 2, 3);
+  auto lookAt = Point3(0, 0, 0);
   auto viewUp = Point3(0, 1, 0);
-  auto focusDist = (lookFrom - lookAt).magnitude();
-  auto aperture = 2.0;
+  auto focusDist = 10.0;
+  auto aperture = 0.1;
   Camera camera(lookFrom, lookAt, viewUp, 20, aspectRatio, aperture, focusDist);
 
   for (int j = imageHeight - 1; j >= 0; --j) {

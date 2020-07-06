@@ -39,8 +39,8 @@ namespace Random {
     // return rand() / (RAND_MAX + 1.0);
   }
 
-  inline Vector3 vector3() {
-    return Vector3(fraction(), fraction(), fraction);
+  inline Vector3 vector() {
+    return Vector3(fraction(), fraction(), fraction());
   }
 
   inline Vector3 vectorRange(double min, double max) {
