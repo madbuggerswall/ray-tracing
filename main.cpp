@@ -5,6 +5,7 @@
 #include "Dielectric.hpp"
 #include "Lambertian.hpp"
 #include "Metal.hpp"
+#include "MovingSphere.hpp"
 #include "Scene.hpp"
 #include "Sphere.hpp"
 #include "Utilities.hpp"
@@ -27,7 +28,8 @@ Scene randomScene() {
         if (chooseMat < 0.8) {
           auto albedo = Random::vector() * Random::vector();
           sphereMat = std::make_shared<Lambertian>(albedo);
-          auto sphere = std::make_shared<Sphere>(position, 0.2, sphereMat);
+          auto center2 = position + Vector3(0, Random::range(0, .5), 0);
+          auto sphere = std::make_shared<MovingSphere>(position, center2, 0.0, 1.0, 0.2, sphereMat);
           scene.add(sphere);
         } else if (chooseMat < 0.95) {
           auto albedo = Random::vectorRange(0.5, 1.0);
@@ -79,10 +81,6 @@ int main(int argc, char const* argv[]) {
   const int samplesPerPixel = 100;
   const int bounceLimit = 50;
 
-  std::cout << "P3" << std::endl;
-  std::cout << imageWidth << "	" << imageHeight << std::endl;
-  std::cout << "255" << std::endl;
-
   Scene scene = randomScene();
 
   auto lookFrom = Point3(13, 2, 3);
@@ -90,7 +88,11 @@ int main(int argc, char const* argv[]) {
   auto viewUp = Point3(0, 1, 0);
   auto focusDist = 10.0;
   auto aperture = 0.1;
-  Camera camera(lookFrom, lookAt, viewUp, 20, aspectRatio, aperture, focusDist);
+  Camera camera(lookFrom, lookAt, viewUp, 20, aspectRatio, aperture, focusDist, 0.0, 1.0);
+
+  std::cout << "P3" << std::endl;
+  std::cout << imageWidth << "	" << imageHeight << std::endl;
+  std::cout << "255" << std::endl;
 
   for (int j = imageHeight - 1; j >= 0; --j) {
     std::cerr << "\rScanlines remaining: " << j << "	" << std::flush;

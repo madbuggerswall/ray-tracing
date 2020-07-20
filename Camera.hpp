@@ -11,6 +11,8 @@ class Camera {
   Vector3 vertical;
   Vector3 u, v, w;
   double lensRadius;
+  double time0;
+  double time1;
 
  public:
   Camera(
@@ -20,7 +22,9 @@ class Camera {
       double vertFov,
       double aspectRatio,
       double aperture,
-      double focusDist) {
+      double focusDist,
+      double time0,
+      double time1) {
     auto viewportHeight = 2.0 * std::tan(Math::degreesToRadians(vertFov) / 2.0);
     auto viewportWidth = viewportHeight * aspectRatio;
     auto focalLength = 1.0;
@@ -35,6 +39,8 @@ class Camera {
     lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - focusDist * w;
 
     lensRadius = aperture / 2;
+    this->time0 = time0;
+    this->time1 = time1;
   }
 
   Ray getRay(double s, double t) const {
@@ -43,7 +49,8 @@ class Camera {
 
     return Ray(
         origin + offset,
-        lowerLeftCorner + s * horizontal + t * vertical - origin - offset);
+        lowerLeftCorner + s * horizontal + t * vertical - origin - offset,
+        Random::range(time0, time1));
   }
 };
 

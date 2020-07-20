@@ -14,7 +14,7 @@ class Lambertian : public Material {
   virtual bool scatter(const Ray& incoming, const HitRecord& hitRecord,
                        Color& attenuation, Ray& scattered) const override {
     Vector3 scatterDirection = hitRecord.normal + Random::unitVector();
-    scattered = Ray(hitRecord.point, scatterDirection);
+    scattered = Ray(hitRecord.point, scatterDirection, incoming.getTime());
     attenuation = albedo;
     return true;
   }

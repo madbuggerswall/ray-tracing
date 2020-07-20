@@ -7,12 +7,14 @@ class Ray {
  private:
   Point3 origin;
   Vector3 direction;
+  double time;
 
  public:
   Ray() {}
-  Ray(const Point3& origin, const Vector3& direction) :
+  Ray(const Point3& origin, const Vector3& direction, double time = 0.0) :
       origin(origin),
-      direction(direction) {}
+      direction(direction),
+      time(time) {}
 
   Point3 at(double t) const {
     return origin + t * direction;
@@ -22,6 +24,10 @@ class Ray {
   }
   Vector3 getDirection() const {
     return direction;
+  }
+
+  double getTime() const {
+    return time;
   }
 };
 
