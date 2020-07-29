@@ -1,14 +1,14 @@
 BasedOnStyle: Google
 
 AccessModifierOffset: -1
-AlignAfterOpenBracket: AlwaysBreak
+AlignAfterOpenBracket: Align
 AlignOperands: true
 AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortIfStatementsOnASingleLine: true
 AllowShortBlocksOnASingleLine: true
-AllowShortFunctionsOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: true
 BinPackArguments: true
 BinPackParameters: false
 BreakBeforeBinaryOperators: None
