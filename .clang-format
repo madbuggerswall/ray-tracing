@@ -10,7 +10,7 @@ AllowShortIfStatementsOnASingleLine: true
 AllowShortBlocksOnASingleLine: true
 AllowShortFunctionsOnASingleLine: true
 BinPackArguments: true
-BinPackParameters: false
+BinPackParameters: true
 BreakBeforeBinaryOperators: None
 BreakConstructorInitializers: AfterColon
 ColumnLimit: 120

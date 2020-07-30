@@ -16,11 +16,7 @@ class Sphere : public GeometricalObject {
       radius(radius),
       materialPtr(materialPtr) {}
 
-  virtual bool hit(
-      const Ray& ray,
-      double tMin,
-      double tMax,
-      HitRecord& hitRecord) const override {
+  virtual bool hit(const Ray& ray, double tMin, double tMax, HitRecord& hitRecord) const override {
     Vector3 oc = ray.getOrigin() - center;
     auto a = ray.getDirection().magnitudeSquared();
     auto halfB = dot(oc, ray.getDirection());
@@ -47,6 +43,11 @@ class Sphere : public GeometricalObject {
       return true;
     }
     return false;
+  }
+
+  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
+    outputBox = AABB(center - Vector3(radius, radius, radius), center + Vector3(radius, radius, radius));
+    return true;
   }
 };
 

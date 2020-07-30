@@ -6,9 +6,9 @@
 
 class Vector3 {
  private:
-  double comps[3];  // Scalar components of the vector.
 
  public:
+  double comps[3];  // Scalar components of the vector.
   Vector3() : comps{0, 0, 0} {}
   Vector3(double x, double y, double z) : comps{x, y, z} {}
 

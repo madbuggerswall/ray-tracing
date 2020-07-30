@@ -34,6 +34,12 @@ namespace Random {
     // return min + (max - min) * fraction();
   }
 
+  inline double rangeInt(int min, int max) {
+    std::uniform_real_distribution<int> distribution(min, max);
+    return distribution(generator);
+    // return min + (max - min) * fraction();
+  }
+
   inline double fraction() {
     return range(0.0, 1.0);
     // return rand() / (RAND_MAX + 1.0);

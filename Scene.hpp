@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 
+#include "AxisAlignedBoundingBox.hpp"
 #include "GeometricalObject.hpp"
 
 class Scene : public GeometricalObject {
@@ -14,14 +15,10 @@ class Scene : public GeometricalObject {
   Scene() {}
   Scene(std::shared_ptr<GeoObject> object) {}
 
-  void add(std::shared_ptr<GeoObject> object) {
-    objects.push_back(object);
-  }
-  void clear() {
-    objects.clear();
-  }
-  virtual bool hit(const Ray& ray, double tMin, double tMax,
-                   HitRecord& hitRecord) const override {
+  void add(std::shared_ptr<GeoObject> object) { objects.push_back(object); }
+  void clear() { objects.clear(); }
+
+  virtual bool hit(const Ray& ray, double tMin, double tMax, HitRecord& hitRecord) const override {
     HitRecord record;
     bool hitAnything = false;
     auto closestSoFar = tMax;
@@ -33,6 +30,20 @@ class Scene : public GeometricalObject {
       }
     }
     return hitAnything;
+  }
+
+  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
+    if (objects.empty()) return false;
+
+    bool firstBox = true;
+    AABB tempBox;
+
+    for (const auto& object : objects) {
+      if (!object->computeBoundingBox(t0, t1, tempBox)) return false;
+      outputBox = firstBox ? tempBox : AABB::surroundingBox(outputBox, tempBox);
+      firstBox = false;
+    }
+    return true;
   }
 };
 

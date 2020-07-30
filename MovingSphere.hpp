@@ -1,6 +1,7 @@
 #ifndef MOVING_SPHERE_HPP
 #define MOVING_SPHERE_HPP
 
+#include "AxisAlignedBoundingBox.hpp"
 #include "GeometricalObject.hpp"
 #include "Utilities.hpp"
 
@@ -15,13 +16,12 @@ class MovingSphere : public GeometricalObject {
 
  public:
   MovingSphere() {}
-  MovingSphere(
-      Point3 center0,
-      Point3 center1,
-      double time0,
-      double time1,
-      double radius,
-      std::shared_ptr<Material> material) :
+  MovingSphere(Point3 center0,
+               Point3 center1,
+               double time0,
+               double time1,
+               double radius,
+               std::shared_ptr<Material> material) :
       center0(center0),
       center1(center1),
       time0(time0),
@@ -29,12 +29,8 @@ class MovingSphere : public GeometricalObject {
       radius(radius),
       material(material) {}
 
-  virtual bool hit(
-      const Ray& ray,
-      double tMin,
-      double tMax,
-      HitRecord& hitRecord) const override {
-    Vector3 oc = ray.getOrigin() - center(ray.getTime());
+  virtual bool hit(const Ray& ray, double tMin, double tMax, HitRecord& hitRecord) const override {
+    Vector3 oc = ray.getOrigin() - centerAt(ray.getTime());
     auto a = ray.getDirection().magnitudeSquared();
     auto halfB = dot(oc, ray.getDirection());
     auto c = oc.magnitudeSquared() - radius * radius;
@@ -48,7 +44,7 @@ class MovingSphere : public GeometricalObject {
       if (t < tMax && t > tMin) {
         hitRecord.t = t;
         hitRecord.point = ray.at(hitRecord.t);
-        auto outwardNormal = (hitRecord.point - center(ray.getTime())) / radius;
+        auto outwardNormal = (hitRecord.point - centerAt(ray.getTime())) / radius;
         hitRecord.setFaceNormal(ray, outwardNormal);
         hitRecord.materialPtr = material;
         return true;
@@ -58,7 +54,7 @@ class MovingSphere : public GeometricalObject {
       if (t < tMax && t > tMin) {
         hitRecord.t = t;
         hitRecord.point = ray.at(hitRecord.t);
-        auto outwardNormal = (hitRecord.point - center(ray.getTime())) / radius;
+        auto outwardNormal = (hitRecord.point - centerAt(ray.getTime())) / radius;
         hitRecord.setFaceNormal(ray, outwardNormal);
         hitRecord.materialPtr = material;
         return true;
@@ -67,9 +63,14 @@ class MovingSphere : public GeometricalObject {
     return false;
   }
 
-  Point3 center(double time) const {
-    return center0 + ((time - time0) / (time1 - time0)) * (center1 - center0);
+  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
+    auto initBox = AABB(centerAt(t0) - Vector3(radius, radius, radius), centerAt(t0) + Vector3(radius, radius, radius));
+    auto finBox = AABB(centerAt(t0) - Vector3(radius, radius, radius), centerAt(t0) + Vector3(radius, radius, radius));
+    outputBox = AABB::surroundingBox(initBox, finBox);
+    return true;
   }
+
+  Point3 centerAt(double time) const { return center0 + ((time - time0) / (time1 - time0)) * (center1 - center0); }
 };
 
 #endif

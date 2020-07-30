@@ -16,6 +16,7 @@ class Ray {
       direction(direction),
       time(time) {}
 
+	// P(t) = A + t * b
   Point3 at(double t) const {
     return origin + t * direction;
   }
