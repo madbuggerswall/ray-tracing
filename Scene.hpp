@@ -5,12 +5,12 @@
 #include <vector>
 
 #include "AxisAlignedBoundingBox.hpp"
+#include "Dielectric.hpp"
 #include "GeometricalObject.hpp"
 #include "Lambertian.hpp"
 #include "Metal.hpp"
-#include "Dielectric.hpp"
-#include "Sphere.hpp"
 #include "MovingSphere.hpp"
+#include "Sphere.hpp"
 #include "Texture.hpp"
 
 class Scene : public GeometricalObject {
@@ -19,7 +19,7 @@ class Scene : public GeometricalObject {
 
  public:
   Scene() {}
-  Scene(std::shared_ptr<GeoObject> object) {}
+  Scene(std::shared_ptr<GeoObject> object) { add(object); }
 
   void add(std::shared_ptr<GeoObject> object) { objects.push_back(object); }
   void clear() { objects.clear(); }
@@ -121,6 +121,14 @@ class Scene : public GeometricalObject {
     objects.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlineTexture)));
 
     return objects;
+  }
+
+  static Scene earth() {
+    Scene objects;
+    auto earthTexture = std::make_shared<ImageTexture>("earthmap.jpg");
+    auto earthMat = std::make_shared<Lambertian>(earthTexture);
+    auto globe = std::make_shared<Sphere>(Point3(0, 0, 0), 2, earthMat);
+    return Scene(globe);
   }
 };
 

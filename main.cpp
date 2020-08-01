@@ -34,7 +34,7 @@ int main(int argc, char const* argv[]) {
   auto verticalFOV = 40.0;
   auto aperture = 0.0;
 
-  switch (3) {
+  switch (4) {
     case 1:
       scene = Scene::randomScene();
       lookFrom = Point3(13, 2, 3);
@@ -52,6 +52,13 @@ int main(int argc, char const* argv[]) {
 
     case 3:
       scene = Scene::twoPerlinSpheres();
+      lookFrom = Point3(13, 2, 3);
+      lookAt = Point3(0, 0, 0);
+      verticalFOV = 20.0;
+      break;
+
+    case 4:
+      scene = Scene::earth();
       lookFrom = Point3(13, 2, 3);
       lookAt = Point3(0, 0, 0);
       verticalFOV = 20.0;

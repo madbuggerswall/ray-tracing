@@ -81,7 +81,7 @@ class PerlinNoise {
     auto factorPoint = point;
     auto weight = 1.0;
     for (size_t i = 0; i < depth; ++i) {
-      accum += weight + noise(factorPoint);
+      accum += weight * noise(factorPoint);
       weight *= 0.5;
       factorPoint *= 2;
     }
