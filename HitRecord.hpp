@@ -1,13 +1,13 @@
 #ifndef HITRECORD_HPP
 #define HITRECORD_HPP
 
-#include "Ray.hpp"
-#include "Vector3.hpp"
+#include "Utilities.hpp"
 
 class Material;
 struct HitRecord {
   Point3 point;
   Vector3 normal;
+  UV uv;
   double t;
   bool frontFace;
   std::shared_ptr<Material> materialPtr;

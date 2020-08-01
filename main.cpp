@@ -10,54 +10,6 @@
 #include "Sphere.hpp"
 #include "Utilities.hpp"
 
-Scene randomScene() {
-  using Random::fraction;
-  Scene scene;
-
-  auto groundMat = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
-  auto ground = std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, groundMat);
-  scene.add(ground);
-
-  for (int i = -11; i < 11; ++i) {
-    for (int j = -11; j < 11; ++j) {
-      Point3 position(i + 0.9 * fraction(), 0.2, j + 0.9 * fraction());
-      auto chooseMat = fraction();
-      if ((position - Point3(4, 0.2, 0)).magnitude() > 0.9) {
-        std::shared_ptr<Material> sphereMat;
-
-        if (chooseMat < 0.8) {
-          auto albedo = Random::vector() * Random::vector();
-          sphereMat = std::make_shared<Lambertian>(albedo);
-          auto center2 = position + Vector3(0, Random::range(0, .5), 0);
-          auto sphere = std::make_shared<MovingSphere>(position, center2, 0.0, 1.0, 0.2, sphereMat);
-          scene.add(sphere);
-        } else if (chooseMat < 0.95) {
-          auto albedo = Random::vectorRange(0.5, 1.0);
-          auto fuzz = Random::range(0.0, 0.5);
-          sphereMat = std::make_shared<Metal>(albedo, fuzz);
-          auto sphere = std::make_shared<Sphere>(position, 0.2, sphereMat);
-          scene.add(sphere);
-        } else {
-          sphereMat = std::make_shared<Dielectric>(1.5);
-          auto sphere = std::make_shared<Sphere>(position, 0.2, sphereMat);
-          scene.add(sphere);
-        }
-      }
-    }
-  }
-
-  auto mat1 = std::make_shared<Dielectric>(1.5);
-  scene.add(std::make_shared<Sphere>(Point3(0, 1, 0), 1.0, mat1));
-
-  auto mat2 = std::make_shared<Lambertian>(Color(0.4, 0.2, 0.1));
-  scene.add(std::make_shared<Sphere>(Point3(-4, 1, 0), 1.0, mat2));
-
-  auto mat3 = std::make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
-  scene.add(std::make_shared<Sphere>(Point3(4, 1, 0), 1.0, mat3));
-
-  return scene;
-}
-
 Color rayColor(const Ray& ray, const Scene& scene, int bounceLimit) {
   HitRecord record;
   if (bounceLimit <= 0) return Color(0, 0, 0);
@@ -75,21 +27,56 @@ Color rayColor(const Ray& ray, const Scene& scene, int bounceLimit) {
 }
 
 int main(int argc, char const* argv[]) {
+  // World
+  Scene scene;
+  Point3 lookFrom;
+  Point3 lookAt;
+  auto verticalFOV = 40.0;
+  auto aperture = 0.0;
+
+  switch (3) {
+    case 1:
+      scene = Scene::randomScene();
+      lookFrom = Point3(13, 2, 3);
+      lookAt = Point3(0, 0, 0);
+      verticalFOV = 20.0;
+      aperture = 0.1;
+      break;
+
+    case 2:
+      scene = Scene::twoSpheres();
+      lookFrom = Point3(13, 2, 3);
+      lookAt = Point3(0, 0, 0);
+      verticalFOV = 20.0;
+      break;
+
+    case 3:
+      scene = Scene::twoPerlinSpheres();
+      lookFrom = Point3(13, 2, 3);
+      lookAt = Point3(0, 0, 0);
+      verticalFOV = 20.0;
+      break;
+
+    default:
+      scene = Scene::randomScene();
+      lookFrom = Point3(13, 2, 3);
+      lookAt = Point3(0, 0, 0);
+      verticalFOV = 20.0;
+      aperture = 0.1;
+      break;
+  }
+
+  // Camera
   const double aspectRatio = 16.0 / 9.0;
   const int imageWidth = 400;
   const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
   const int samplesPerPixel = 100;
   const int bounceLimit = 50;
-
-  Scene scene = randomScene();
-
-  auto lookFrom = Point3(13, 2, 3);
-  auto lookAt = Point3(0, 0, 0);
-  auto viewUp = Point3(0, 1, 0);
   auto focusDist = 10.0;
-  auto aperture = 0.1;
+  Vector3 viewUp(0, 1, 0);
   Camera camera(lookFrom, lookAt, viewUp, 20, aspectRatio, aperture, focusDist, 0.0, 1.0);
 
+  // Render
   std::cout << "P3" << std::endl;
   std::cout << imageWidth << "	" << imageHeight << std::endl;
   std::cout << "255" << std::endl;

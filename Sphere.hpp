@@ -31,6 +31,7 @@ class Sphere : public GeometricalObject {
       Vector3 outwardNormal = (hitRecord.point - center) / radius;
       hitRecord.setFaceNormal(ray, outwardNormal);
       hitRecord.materialPtr = materialPtr;
+      hitRecord.uv = getUV(outwardNormal);
       return true;
     }
     t = (-halfB + root) / a;
@@ -39,6 +40,7 @@ class Sphere : public GeometricalObject {
       hitRecord.point = ray.at(hitRecord.t);
       Vector3 outwardNormal = (hitRecord.point - center) / radius;
       hitRecord.setFaceNormal(ray, outwardNormal);
+      hitRecord.uv = getUV(outwardNormal);
       hitRecord.materialPtr = materialPtr;
       return true;
     }
@@ -48,6 +50,14 @@ class Sphere : public GeometricalObject {
   virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
     outputBox = AABB(center - Vector3(radius, radius, radius), center + Vector3(radius, radius, radius));
     return true;
+  }
+
+  UV getUV(const Point3& point) const {
+    auto phi = std::atan2(point.getZ(), point.getX());
+    auto theta = std::asin(point.getY());
+    double u = 1 - (phi + Math::pi) / (2 * Math::pi);
+    double v = (theta + Math::pi / 2) / Math::pi;
+    return UV(u, v);
   }
 };
 
