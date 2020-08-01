@@ -125,7 +125,7 @@ class Scene : public GeometricalObject {
 
   static Scene earth() {
     Scene objects;
-    auto earthTexture = std::make_shared<ImageTexture>("earthmap.jpg");
+    auto earthTexture = std::make_shared<ImageTexture>("../Textures/earthmap.jpg");
     auto earthMat = std::make_shared<Lambertian>(earthTexture);
     auto globe = std::make_shared<Sphere>(Point3(0, 0, 0), 2, earthMat);
     return Scene(globe);
