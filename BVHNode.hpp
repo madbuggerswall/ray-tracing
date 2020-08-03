@@ -7,6 +7,18 @@
 #include "Scene.hpp"
 #include "Utilities.hpp"
 
+inline bool boxCompare(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b, int axis) {
+  AABB boxA;
+  AABB boxB;
+  if (!a->computeBoundingBox(0, 0, boxA) || !b->computeBoundingBox(0, 0, boxB))
+    std::cerr << "No bounding box in bvh_node constructor.\n";
+
+  return boxA.getMin().comps[axis] < boxB.getMin().comps[axis];
+}
+bool boxCompareX(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b) { return boxCompare(a, b, 0); }
+bool boxCompareY(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b) { return boxCompare(a, b, 1); }
+bool boxCompareZ(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b) { return boxCompare(a, b, 2); }
+
 // Bounding Volume Hierarch Node
 class BVHNode : public GeometricalObject {
  private:
@@ -14,13 +26,8 @@ class BVHNode : public GeometricalObject {
   std::shared_ptr<GeometricalObject> right;
   AABB box;
 
-  inline bool boxCompare(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b, int axis);
-  bool boxCompareX(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b);
-  bool boxCompareY(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b);
-  bool boxCompareZ(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b);
-
  public:
-  BVHNode();
+  BVHNode() {}
   BVHNode(Scene& scene, double time0, double time1) {}
   BVHNode(std::vector<std::shared_ptr<GeoObject>>& objects, size_t start, size_t end, double time0, double time1) {
     int axis = Random::rangeInt(0, 2);
@@ -58,24 +65,11 @@ class BVHNode : public GeometricalObject {
     bool hitRight = right->hit(ray, tMin, hitLeft ? hitRecord.t : tMax, hitRecord);
     return hitLeft || hitRight;
   }
+
+  bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
+    outputBox = box;
+    return true;
+  }
 };
-
-inline bool BVHNode::boxCompare(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b, int axis) {
-  AABB boxA;
-  AABB boxB;
-  if (!a->computeBoundingBox(0, 0, boxA) || !b->computeBoundingBox(0, 0, boxB))
-    std::cerr << "No bounding box in bvh_node constructor.\n";
-
-  return boxA.getMin().comps[axis] < boxB.getMin().comps[axis];
-}
-bool BVHNode::boxCompareX(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b) {
-  return boxCompare(a, b, 0);
-}
-bool BVHNode::boxCompareY(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b) {
-  return boxCompare(a, b, 1);
-}
-bool BVHNode::boxCompareZ(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b) {
-  return boxCompare(a, b, 2);
-}
 
 #endif

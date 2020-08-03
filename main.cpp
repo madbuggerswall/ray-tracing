@@ -6,7 +6,7 @@
 #include "Lambertian.hpp"
 #include "Metal.hpp"
 #include "MovingSphere.hpp"
-#include "Scene.hpp"
+#include "Scenes.hpp"
 #include "Sphere.hpp"
 #include "Utilities.hpp"
 
@@ -26,8 +26,7 @@ Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int 
 }
 
 int main(int argc, char const* argv[]) {
-  
-	// World
+  // World
   Scene scene;
   Point3 lookFrom;
   Point3 lookAt;
@@ -45,9 +44,9 @@ int main(int argc, char const* argv[]) {
   Vector3 viewUp(0, 1, 0);
 
   // Scene Selection
-  switch (6) {
+  switch (8) {
     case 1:
-      scene = Scene::randomScene();
+      scene = Scenes::randomScene();
       background = Color(0.70, 0.80, 1.00);
       lookFrom = Point3(13, 2, 3);
       lookAt = Point3(0, 0, 0);
@@ -56,7 +55,7 @@ int main(int argc, char const* argv[]) {
       break;
 
     case 2:
-      scene = Scene::twoSpheres();
+      scene = Scenes::twoSpheres();
       background = Color(0.70, 0.80, 1.00);
       lookFrom = Point3(13, 2, 3);
       lookAt = Point3(0, 0, 0);
@@ -64,7 +63,7 @@ int main(int argc, char const* argv[]) {
       break;
 
     case 3:
-      scene = Scene::twoPerlinSpheres();
+      scene = Scenes::twoPerlinSpheres();
       background = Color(0.70, 0.80, 1.00);
       lookFrom = Point3(13, 2, 3);
       lookAt = Point3(0, 0, 0);
@@ -72,7 +71,7 @@ int main(int argc, char const* argv[]) {
       break;
 
     case 4:
-      scene = Scene::earth();
+      scene = Scenes::earth();
       background = Color(0.70, 0.80, 1.00);
       lookFrom = Point3(13, 2, 3);
       lookAt = Point3(0, 0, 0);
@@ -80,7 +79,7 @@ int main(int argc, char const* argv[]) {
       break;
 
     case 5:
-      scene = Scene::simpleLight();
+      scene = Scenes::simpleLight();
       samplesPerPixel = 400;
       background = Color(0, 0, 0);
       lookFrom = Point3(26, 3, 6);
@@ -89,7 +88,7 @@ int main(int argc, char const* argv[]) {
       break;
 
     case 6:
-      scene = Scene::cornellBox();
+      scene = Scenes::cornellBox();
       aspectRatio = 1.0;
       imageWidth = 600;
       imageHeight = static_cast<int>(imageWidth / aspectRatio);
@@ -100,8 +99,30 @@ int main(int argc, char const* argv[]) {
       verticalFOV = 40.0;
       break;
 
+    case 7:
+      scene = Scenes::cornellSmoke();
+      aspectRatio = 1.0;
+      imageWidth = 600;
+      imageHeight = static_cast<int>(imageWidth / aspectRatio);
+      samplesPerPixel = 200;
+      lookFrom = Point3(278, 278, -800);
+      lookAt = Point3(278, 278, 0);
+      verticalFOV = 40.0;
+
+    case 8:
+      scene = Scenes::finalScene();
+      aspectRatio = 1.0;
+      imageWidth = 800;
+      imageHeight = static_cast<int>(imageWidth / aspectRatio);
+      samplesPerPixel = 200;
+      background = Color(0, 0, 0);
+      lookFrom = Point3(478, 278, -600);
+      lookAt = Point3(278, 278, 0);
+      verticalFOV = 40.0;
+      break;
+
     default:
-      scene = Scene::randomScene();
+      scene = Scenes::randomScene();
       lookFrom = Point3(13, 2, 3);
       lookAt = Point3(0, 0, 0);
       verticalFOV = 20.0;

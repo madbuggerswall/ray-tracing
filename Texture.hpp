@@ -5,7 +5,7 @@
 
 #include "PerlinNoise.hpp"
 #include "Utilities.hpp"
-#include "stb_image_wrapper.hpp"
+#include "External/stb_image_wrapper.hpp"
 
 class Texture {
  private:
