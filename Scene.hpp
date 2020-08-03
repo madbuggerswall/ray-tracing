@@ -5,7 +5,9 @@
 #include <vector>
 
 #include "AxisAlignedBoundingBox.hpp"
+#include "AxisAlignedRectangle.hpp"
 #include "Dielectric.hpp"
+#include "DiffuseLight.hpp"
 #include "GeometricalObject.hpp"
 #include "Lambertian.hpp"
 #include "Metal.hpp"
@@ -129,6 +131,19 @@ class Scene : public GeometricalObject {
     auto earthMat = std::make_shared<Lambertian>(earthTexture);
     auto globe = std::make_shared<Sphere>(Point3(0, 0, 0), 2, earthMat);
     return Scene(globe);
+  }
+
+  static Scene simpleLight() {
+    Scene objects;
+
+    auto perlinTexture = std::make_shared<PerlinTexture>(4);
+    objects.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlinTexture)));
+    objects.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlinTexture)));
+
+    auto diffuseLight = std::make_shared<DiffuseLight>(Color(4, 4, 4));
+    objects.add(std::make_shared<RectangleXY>(3, 5, 1, 3, -2, diffuseLight));
+
+    return objects;
   }
 };
 
