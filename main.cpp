@@ -26,7 +26,8 @@ Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int 
 }
 
 int main(int argc, char const* argv[]) {
-  // World
+  
+	// World
   Scene scene;
   Point3 lookFrom;
   Point3 lookAt;
@@ -35,7 +36,16 @@ int main(int argc, char const* argv[]) {
   Color background(0, 0, 0);
   int samplesPerPixel = 100;
 
-  switch (5) {
+  // Camera Config.
+  double aspectRatio = 16.0 / 9.0;
+  int imageWidth = 400;
+  int imageHeight = static_cast<int>(imageWidth / aspectRatio);
+  int bounceLimit = 50;
+  auto focusDist = 10.0;
+  Vector3 viewUp(0, 1, 0);
+
+  // Scene Selection
+  switch (6) {
     case 1:
       scene = Scene::randomScene();
       background = Color(0.70, 0.80, 1.00);
@@ -78,6 +88,18 @@ int main(int argc, char const* argv[]) {
       verticalFOV = 20.0;
       break;
 
+    case 6:
+      scene = Scene::cornellBox();
+      aspectRatio = 1.0;
+      imageWidth = 600;
+      imageHeight = static_cast<int>(imageWidth / aspectRatio);
+      samplesPerPixel = 200;
+      background = Color(0, 0, 0);
+      lookFrom = Point3(278, 278, -800);
+      lookAt = Point3(278, 278, 0);
+      verticalFOV = 40.0;
+      break;
+
     default:
       scene = Scene::randomScene();
       lookFrom = Point3(13, 2, 3);
@@ -87,13 +109,6 @@ int main(int argc, char const* argv[]) {
       break;
   }
 
-  // Camera
-  const double aspectRatio = 16.0 / 9.0;
-  const int imageWidth = 400;
-  const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
-  const int bounceLimit = 50;
-  auto focusDist = 10.0;
-  Vector3 viewUp(0, 1, 0);
   Camera camera(lookFrom, lookAt, viewUp, verticalFOV, aspectRatio, aperture, focusDist, 0.0, 1.0);
 
   // Render

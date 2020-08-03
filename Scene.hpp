@@ -106,44 +106,72 @@ class Scene : public GeometricalObject {
   }
 
   static Scene twoSpheres() {
-    Scene objects;
+    Scene scene;
 
     auto checker = std::make_shared<CheckerTexture>(Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
+    scene.add(std::make_shared<Sphere>(Point3(0, -10, 0), 10, std::make_shared<Lambertian>(checker)));
+    scene.add(std::make_shared<Sphere>(Point3(0, 10, 0), 10, std::make_shared<Lambertian>(checker)));
 
-    objects.add(std::make_shared<Sphere>(Point3(0, -10, 0), 10, std::make_shared<Lambertian>(checker)));
-    objects.add(std::make_shared<Sphere>(Point3(0, 10, 0), 10, std::make_shared<Lambertian>(checker)));
-
-    return objects;
+    return scene;
   }
 
   static Scene twoPerlinSpheres() {
-    Scene objects;
-    auto perlineTexture = std::make_shared<PerlinTexture>(4);
-    objects.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlineTexture)));
-    objects.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlineTexture)));
+    Scene scene;
 
-    return objects;
+    auto perlineTexture = std::make_shared<PerlinTexture>(4);
+    scene.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlineTexture)));
+    scene.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlineTexture)));
+
+    return scene;
   }
 
   static Scene earth() {
-    Scene objects;
+    Scene scene;
+
     auto earthTexture = std::make_shared<ImageTexture>("../Textures/earthmap.jpg");
     auto earthMat = std::make_shared<Lambertian>(earthTexture);
     auto globe = std::make_shared<Sphere>(Point3(0, 0, 0), 2, earthMat);
+
     return Scene(globe);
   }
 
   static Scene simpleLight() {
-    Scene objects;
+    Scene scene;
 
     auto perlinTexture = std::make_shared<PerlinTexture>(4);
-    objects.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlinTexture)));
-    objects.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlinTexture)));
+    scene.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlinTexture)));
+    scene.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlinTexture)));
 
     auto diffuseLight = std::make_shared<DiffuseLight>(Color(4, 4, 4));
-    objects.add(std::make_shared<RectangleXY>(3, 5, 1, 3, -2, diffuseLight));
+    RectangleXY rectangleXY({3, 5, 1, 3}, -2, diffuseLight);
+    scene.add(std::make_shared<RectangleXY>(rectangleXY));
 
-    return objects;
+    return scene;
+  }
+
+  static Scene cornellBox() {
+    Scene scene;
+
+    auto red = std::make_shared<Lambertian>(Color(.65, .05, .05));
+    auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
+    auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
+    auto light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
+
+    RectangleYZ rectangleA({0, 555, 0, 555}, 555, green);
+    RectangleYZ rectangleB({0, 555, 0, 555}, 0, red);
+    RectangleXZ rectangleC({213, 343, 227, 332}, 554, light);
+    RectangleXZ rectangleD({0, 555, 0, 555}, 0, white);
+    RectangleXZ rectangleE({0, 555, 0, 555}, 555, white);
+    RectangleXY rectangleF({0, 555, 0, 555}, 555, white);
+
+    scene.add(std::make_shared<RectangleYZ>(rectangleA));
+    scene.add(std::make_shared<RectangleYZ>(rectangleB));
+    scene.add(std::make_shared<RectangleXZ>(rectangleC));
+    scene.add(std::make_shared<RectangleXZ>(rectangleD));
+    scene.add(std::make_shared<RectangleXZ>(rectangleE));
+    scene.add(std::make_shared<RectangleXY>(rectangleF));
+
+    return scene;
   }
 };
 
