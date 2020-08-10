@@ -114,7 +114,7 @@ int main(int argc, char const* argv[]) {
       aspectRatio = 1.0;
       imageWidth = 800;
       imageHeight = static_cast<int>(imageWidth / aspectRatio);
-      samplesPerPixel = 200;
+      samplesPerPixel = 50;
       background = Color(0, 0, 0);
       lookFrom = Point3(478, 278, -600);
       lookAt = Point3(278, 278, 0);

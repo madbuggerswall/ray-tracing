@@ -14,6 +14,8 @@ class Scene : public GeometricalObject {
   Scene() {}
   Scene(std::shared_ptr<GeoObject> object) { add(object); }
 
+  std::vector<std::shared_ptr<GeoObject>>& getObjects() { return objects; }
+
   void add(std::shared_ptr<GeoObject> object) { objects.push_back(object); }
   void clear() { objects.clear(); }
 

@@ -28,7 +28,8 @@ class BVHNode : public GeometricalObject {
 
  public:
   BVHNode() {}
-  BVHNode(Scene& scene, double time0, double time1) {}
+  BVHNode(Scene& scene, double time0, double time1) :
+      BVHNode(scene.getObjects(), 0, scene.getObjects().size(), time0, time1) {}
   BVHNode(std::vector<std::shared_ptr<GeoObject>>& objects, size_t start, size_t end, double time0, double time1) {
     int axis = Random::rangeInt(0, 2);
     auto comparator = (axis == 0) ? boxCompareX : (axis == 1) ? boxCompareY : boxCompareZ;
