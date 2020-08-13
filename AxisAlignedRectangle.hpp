@@ -66,6 +66,22 @@ class RectangleXZ : public Rectangle {
     setHitRecord(ray, hitRecord, Vector3(0, 1, 0), x, z, t);
     return true;
   }
+
+  virtual double pdfValue(const Point3& origin, const Vector3& direction) const override {
+    HitRecord hitRecord;
+    if (!this->hit(Ray(origin, direction), 0.001, Math::infinity, hitRecord)) return 0;
+
+    auto area = (corners[1] - corners[0]) * (corners[3] - corners[2]);
+    auto distanceSquared = hitRecord.t * hitRecord.t * direction.magnitudeSquared();
+    auto cosine = std::fabs(dot(direction, hitRecord.normal) / direction.magnitude());
+
+    return distanceSquared / (cosine * area);
+  }
+
+  virtual Vector3 random(const Point3& origin) const override {
+    auto randomPoint = Point3(Random::range(corners[0], corners[1]), k, Random::range(corners[2], corners[3]));
+    return randomPoint - origin;
+  }
 };
 
 class RectangleYZ : public Rectangle {

@@ -6,6 +6,7 @@
 #include "Materials/Lambertian.hpp"
 #include "Materials/Metal.hpp"
 #include "MovingSphere.hpp"
+#include "ProbabilityDensityFunction.hpp"
 #include "Scenes.hpp"
 #include "Sphere.hpp"
 #include "Utilities.hpp"
@@ -25,20 +26,11 @@ Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int 
 
   if (!record.materialPtr->scatter(ray, record, albedo, scattered, pdf)) return emission;
 
-  // Light hack
-  auto onLight = Point3(Random::range(213, 343), 554, Random::range(227, 332));
-  auto toLight = onLight - record.point;
-  auto distanceSquared = toLight.magnitudeSquared();
-  toLight = toLight.normalized();
-
-  if (dot(toLight, record.normal) < 0) return emission;
-
-  double lightArea = (343 - 213) * (332 - 227);
-  auto lightCosine = std::fabs(toLight.getY());
-  if (lightCosine < 0.000001) return emission;
-
-  pdf = distanceSquared / (lightCosine * lightArea);
-  scattered = Ray(record.point, toLight, ray.getTime());
+  RectangleXZ lightRect({213, 343, 227, 332}, 554, std::shared_ptr<Material>());
+  std::shared_ptr<GeoObject> lightShape = std::make_shared<RectangleXZ>(lightRect);
+  GeoObjectPDF geoObjectPDF(lightShape, record.point);
+  scattered = Ray(record.point, geoObjectPDF.generate(), ray.getTime());
+  pdf = geoObjectPDF.value(scattered.getDirection());
 
   Color result = emission + albedo * record.materialPtr->scatterPDF(ray, record, scattered);
   result *= rayColor(scattered, background, scene, bounceLimit - 1) / pdf;
