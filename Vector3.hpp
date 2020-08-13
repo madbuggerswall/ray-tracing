@@ -19,7 +19,7 @@ class Vector3 {
   double magnitudeSquared() const { return comps[0] * comps[0] + comps[1] * comps[1] + comps[2] * comps[2]; }
 
   void normalize() { *this / magnitude(); }
-  Vector3 normalized() { return Vector3(*this / magnitude()); }
+  Vector3 normalized() const { return Vector3(*this / magnitude()); }
 
   Vector3 reflect(const Vector3& normal) { return *this - 2 * dot(*this, normal) * normal; }
   Vector3 refract(const Vector3& normal, double refractiveRatio) {
@@ -49,6 +49,12 @@ class Vector3 {
     comps[0] *= value;
     comps[1] *= value;
     comps[2] *= value;
+    return *this;
+  }
+  inline Vector3& operator*=(const Vector3& rhs) {
+    comps[0] *= rhs.comps[0];
+    comps[1] *= rhs.comps[1];
+    comps[2] *= rhs.comps[2];
     return *this;
   }
   inline Vector3& operator/=(const double value) { return *this *= 1 / value; }

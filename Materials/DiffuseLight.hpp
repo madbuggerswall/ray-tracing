@@ -1,10 +1,10 @@
 #ifndef DIFFUSE_LIGHT_HPP
 #define DIFFUSE_LIGHT_HPP
 
-#include "HitRecord.hpp"
+#include "../HitRecord.hpp"
+#include "../Texture.hpp"
+#include "../Utilities.hpp"
 #include "Material.hpp"
-#include "Texture.hpp"
-#include "Utilities.hpp"
 
 class DiffuseLight : public Material {
  private:
@@ -14,7 +14,8 @@ class DiffuseLight : public Material {
   DiffuseLight(std::shared_ptr<Texture> emission) : emission(emission) {}
   DiffuseLight(Color color) : emission(std::make_shared<SolidColor>(color)) {}
 
-  virtual bool scatter(const Ray& in, const HitRecord& hitRecord, Color& attenuation, Ray& scattered) const override {
+  virtual bool scatter(const Ray& in, const HitRecord& hitRecord, Color& attenuation, Ray& scattered,
+                       double& pdf) const override {
     return false;
   }
 

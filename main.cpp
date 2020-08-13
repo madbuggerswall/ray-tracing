@@ -2,9 +2,9 @@
 
 #include "Camera.hpp"
 #include "Color.hpp"
-#include "Dielectric.hpp"
-#include "Lambertian.hpp"
-#include "Metal.hpp"
+#include "Materials/Dielectric.hpp"
+#include "Materials/Lambertian.hpp"
+#include "Materials/Metal.hpp"
 #include "MovingSphere.hpp"
 #include "Scenes.hpp"
 #include "Sphere.hpp"
@@ -20,117 +20,46 @@ Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int 
   Color attenuation;
   Color emission = record.materialPtr->emit(record.uv, record.point);
 
-  if (!record.materialPtr->scatter(ray, record, attenuation, scattered)) return emission;
+  double pdf;
+  Color albedo;
 
-  return emission + attenuation * rayColor(scattered, background, scene, bounceLimit - 1);
+  if (!record.materialPtr->scatter(ray, record, albedo, scattered, pdf)) return emission;
+
+  Color result = emission + albedo * record.materialPtr->scatterPDF(ray, record, scattered);
+  result *= rayColor(scattered, background, scene, bounceLimit - 1) / pdf;
+  return result;
 }
 
 int main(int argc, char const* argv[]) {
+  const auto aspectRatio = 1.0 / 1.0;
+  const int imageWidth = 600;
+  const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
+  const int samplesPerPixel = 100;
+  const int bounceLimit = 50;
+
   // World
-  Scene scene;
-  Point3 lookFrom;
-  Point3 lookAt;
-  auto verticalFOV = 40.0;
-  auto aperture = 0.0;
   Color background(0, 0, 0);
-  int samplesPerPixel = 100;
 
-  // Camera Config.
-  double aspectRatio = 16.0 / 9.0;
-  int imageWidth = 400;
-  int imageHeight = static_cast<int>(imageWidth / aspectRatio);
-  int bounceLimit = 50;
-  auto focusDist = 10.0;
+  auto lights = std::make_shared<Scene>();
+  RectangleXZ rectLight({213, 343, 227, 332}, 554, std::shared_ptr<Material>());
+  Sphere sphereLight(Point3(190, 90, 190), 90, std::shared_ptr<Material>());
+  lights->add(std::make_shared<RectangleXZ>(rectLight));
+  lights->add(std::make_shared<Sphere>(sphereLight));
+
+  auto scene = Scenes::cornellBox();
+
+  // Camera
+
+  Point3 lookFrom(278, 278, -800);
+  Point3 lookAt(278, 278, 0);
   Vector3 viewUp(0, 1, 0);
+  auto focusDist = 10.0;
+  auto aperture = 0.0;
+  auto verticalFOV = 40.0;
+  auto t0 = 0.0;
+  auto t1 = 1.0;
 
-  // Scene Selection
-  switch (8) {
-    case 1:
-      scene = Scenes::randomScene();
-      background = Color(0.70, 0.80, 1.00);
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
-      verticalFOV = 20.0;
-      aperture = 0.1;
-      break;
-
-    case 2:
-      scene = Scenes::twoSpheres();
-      background = Color(0.70, 0.80, 1.00);
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
-      verticalFOV = 20.0;
-      break;
-
-    case 3:
-      scene = Scenes::twoPerlinSpheres();
-      background = Color(0.70, 0.80, 1.00);
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
-      verticalFOV = 20.0;
-      break;
-
-    case 4:
-      scene = Scenes::earth();
-      background = Color(0.70, 0.80, 1.00);
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
-      verticalFOV = 20.0;
-      break;
-
-    case 5:
-      scene = Scenes::simpleLight();
-      samplesPerPixel = 400;
-      background = Color(0, 0, 0);
-      lookFrom = Point3(26, 3, 6);
-      lookAt = Point3(0, 2, 0);
-      verticalFOV = 20.0;
-      break;
-
-    case 6:
-      scene = Scenes::cornellBox();
-      aspectRatio = 1.0;
-      imageWidth = 600;
-      imageHeight = static_cast<int>(imageWidth / aspectRatio);
-      samplesPerPixel = 200;
-      background = Color(0, 0, 0);
-      lookFrom = Point3(278, 278, -800);
-      lookAt = Point3(278, 278, 0);
-      verticalFOV = 40.0;
-      break;
-
-    case 7:
-      scene = Scenes::cornellSmoke();
-      aspectRatio = 1.0;
-      imageWidth = 600;
-      imageHeight = static_cast<int>(imageWidth / aspectRatio);
-      samplesPerPixel = 200;
-      lookFrom = Point3(278, 278, -800);
-      lookAt = Point3(278, 278, 0);
-      verticalFOV = 40.0;
-
-    case 8:
-      scene = Scenes::finalScene();
-      aspectRatio = 1.0;
-      imageWidth = 800;
-      imageHeight = static_cast<int>(imageWidth / aspectRatio);
-      samplesPerPixel = 50;
-      background = Color(0, 0, 0);
-      lookFrom = Point3(478, 278, -600);
-      lookAt = Point3(278, 278, 0);
-      verticalFOV = 40.0;
-      break;
-
-    default:
-      scene = Scenes::randomScene();
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
-      verticalFOV = 20.0;
-      aperture = 0.1;
-      break;
-  }
-
-  Camera camera(lookFrom, lookAt, viewUp, verticalFOV, aspectRatio, aperture, focusDist, 0.0, 1.0);
+  Camera camera(lookFrom, lookAt, viewUp, verticalFOV, aspectRatio, aperture, focusDist, t0, t1);
 
   // Render
   std::cout << "P3" << std::endl;

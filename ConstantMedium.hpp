@@ -2,8 +2,8 @@
 #define CONSTANT_MEDIUM_HPP
 
 #include "GeometricalObject.hpp"
-#include "Isotropic.hpp"
-#include "Material.hpp"
+#include "Materials/Isotropic.hpp"
+#include "Materials/Material.hpp"
 #include "Texture.hpp"
 #include "Utilities.hpp"
 

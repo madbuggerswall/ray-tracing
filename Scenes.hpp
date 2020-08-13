@@ -3,10 +3,10 @@
 #include "BVHNode.hpp"
 #include "Box.hpp"
 #include "ConstantMedium.hpp"
-#include "Dielectric.hpp"
-#include "DiffuseLight.hpp"
-#include "Lambertian.hpp"
-#include "Metal.hpp"
+#include "Materials/Dielectric.hpp"
+#include "Materials/DiffuseLight.hpp"
+#include "Materials/Lambertian.hpp"
+#include "Materials/Metal.hpp"
 #include "MovingSphere.hpp"
 #include "Rotate.hpp"
 #include "Scene.hpp"
@@ -214,8 +214,8 @@ namespace Scenes {
     // Moving sphere
     auto center1 = Point3(400, 400, 200);
     auto center2 = center1 + Vector3(30, 0, 0);
-    auto moving_Sphere_material = std::make_shared<Lambertian>(Color(0.7, 0.3, 0.1));
-    scene.add(std::make_shared<MovingSphere>(center1, center2, 0, 1, 50, moving_Sphere_material));
+    auto movingSphereMat = std::make_shared<Lambertian>(Color(0.7, 0.3, 0.1));
+    scene.add(std::make_shared<MovingSphere>(center1, center2, 0, 1, 50, movingSphereMat));
 
     scene.add(std::make_shared<Sphere>(Point3(260, 150, 45), 50, std::make_shared<Dielectric>(1.5)));
     scene.add(std::make_shared<Sphere>(Point3(0, 150, 145), 50, std::make_shared<Metal>(Color(0.8, 0.8, 0.9), 10.0)));
@@ -245,4 +245,92 @@ namespace Scenes {
 
     return scene;
   }
+
+  // void selectScene(int selection) {
+  //   switch (8) {
+  //     case 1:
+  //       scene = Scenes::randomScene();
+  //       background = Color(0.70, 0.80, 1.00);
+  //       lookFrom = Point3(13, 2, 3);
+  //       lookAt = Point3(0, 0, 0);
+  //       verticalFOV = 20.0;
+  //       aperture = 0.1;
+  //       break;
+
+  //     case 2:
+  //       scene = Scenes::twoSpheres();
+  //       background = Color(0.70, 0.80, 1.00);
+  //       lookFrom = Point3(13, 2, 3);
+  //       lookAt = Point3(0, 0, 0);
+  //       verticalFOV = 20.0;
+  //       break;
+
+  //     case 3:
+  //       scene = Scenes::twoPerlinSpheres();
+  //       background = Color(0.70, 0.80, 1.00);
+  //       lookFrom = Point3(13, 2, 3);
+  //       lookAt = Point3(0, 0, 0);
+  //       verticalFOV = 20.0;
+  //       break;
+
+  //     case 4:
+  //       scene = Scenes::earth();
+  //       background = Color(0.70, 0.80, 1.00);
+  //       lookFrom = Point3(13, 2, 3);
+  //       lookAt = Point3(0, 0, 0);
+  //       verticalFOV = 20.0;
+  //       break;
+
+  //     case 5:
+  //       scene = Scenes::simpleLight();
+  //       samplesPerPixel = 400;
+  //       background = Color(0, 0, 0);
+  //       lookFrom = Point3(26, 3, 6);
+  //       lookAt = Point3(0, 2, 0);
+  //       verticalFOV = 20.0;
+  //       break;
+
+  //     case 6:
+  //       scene = Scenes::cornellBox();
+  //       aspectRatio = 1.0;
+  //       imageWidth = 600;
+  //       imageHeight = static_cast<int>(imageWidth / aspectRatio);
+  //       samplesPerPixel = 100;
+  //       background = Color(0, 0, 0);
+  //       lookFrom = Point3(278, 278, -800);
+  //       lookAt = Point3(278, 278, 0);
+  //       verticalFOV = 40.0;
+  //       break;
+
+  //     case 7:
+  //       scene = Scenes::cornellSmoke();
+  //       aspectRatio = 1.0;
+  //       imageWidth = 600;
+  //       imageHeight = static_cast<int>(imageWidth / aspectRatio);
+  //       samplesPerPixel = 200;
+  //       lookFrom = Point3(278, 278, -800);
+  //       lookAt = Point3(278, 278, 0);
+  //       verticalFOV = 40.0;
+
+  //     case 8:
+  //       scene = Scenes::finalScene();
+  //       aspectRatio = 1.0;
+  //       imageWidth = 800;
+  //       imageHeight = static_cast<int>(imageWidth / aspectRatio);
+  //       samplesPerPixel = 400;
+  //       background = Color(0, 0, 0);
+  //       lookFrom = Point3(478, 278, -600);
+  //       lookAt = Point3(278, 278, 0);
+  //       verticalFOV = 40.0;
+  //       break;
+
+  //     default:
+  //       scene = Scenes::randomScene();
+  //       lookFrom = Point3(13, 2, 3);
+  //       lookAt = Point3(0, 0, 0);
+  //       verticalFOV = 20.0;
+  //       aperture = 0.1;
+  //       break;
+  //   }
+  // }
 }
