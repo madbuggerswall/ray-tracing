@@ -18,12 +18,27 @@ Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int 
 
   Ray scattered;
   Color attenuation;
-  Color emission = record.materialPtr->emit(record.uv, record.point);
+  Color emission = record.materialPtr->emit(ray, record, record.uv, record.point);
 
   double pdf;
   Color albedo;
 
   if (!record.materialPtr->scatter(ray, record, albedo, scattered, pdf)) return emission;
+
+  // Light hack
+  auto onLight = Point3(Random::range(213, 343), 554, Random::range(227, 332));
+  auto toLight = onLight - record.point;
+  auto distanceSquared = toLight.magnitudeSquared();
+  toLight = toLight.normalized();
+
+  if (dot(toLight, record.normal) < 0) return emission;
+
+  double lightArea = (343 - 213) * (332 - 227);
+  auto lightCosine = std::fabs(toLight.getY());
+  if (lightCosine < 0.000001) return emission;
+
+  pdf = distanceSquared / (lightCosine * lightArea);
+  scattered = Ray(record.point, toLight, ray.getTime());
 
   Color result = emission + albedo * record.materialPtr->scatterPDF(ray, record, scattered);
   result *= rayColor(scattered, background, scene, bounceLimit - 1) / pdf;
@@ -34,7 +49,7 @@ int main(int argc, char const* argv[]) {
   const auto aspectRatio = 1.0 / 1.0;
   const int imageWidth = 600;
   const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
-  const int samplesPerPixel = 100;
+  const int samplesPerPixel = 50;
   const int bounceLimit = 50;
 
   // World

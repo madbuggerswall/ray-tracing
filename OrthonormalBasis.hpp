@@ -11,7 +11,8 @@ class OrthonormalBasis {
   OrthonormalBasis() {}
   OrthonormalBasis(const Vector3& normal) { buildFromW(normal); }
 
-  inline Vector3 operator[](int index) const { return axes[index]; }
+  // Member functions are implicitly inline.
+  Vector3 operator[](int index) const { return axes[index]; }
   Vector3 getU() const { return axes[0]; }
   Vector3 getV() const { return axes[1]; }
   Vector3 getW() const { return axes[2]; }

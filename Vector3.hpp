@@ -29,49 +29,48 @@ class Vector3 {
     return outParallel + outPerp;
   }
 
-  inline Vector3 operator-() const { return Vector3(-comps[0], -comps[1], -comps[2]); }
-  inline double operator[](int i) const { return comps[i]; }
-  inline double& operator[](int i) { return comps[i]; }
+  // Member functions are implicitly inline.
+  Vector3 operator-() const { return Vector3(-comps[0], -comps[1], -comps[2]); }
+  double operator[](int i) const { return comps[i]; }
+  double& operator[](int i) { return comps[i]; }
 
-  inline Vector3& operator+=(const Vector3& rhs) {
+  Vector3& operator+=(const Vector3& rhs) {
     comps[0] += rhs.comps[0];
     comps[1] += rhs.comps[1];
     comps[2] += rhs.comps[2];
     return *this;
   }
-  inline Vector3& operator-=(const Vector3& rhs) {
+  Vector3& operator-=(const Vector3& rhs) {
     comps[0] -= rhs.comps[0];
     comps[1] -= rhs.comps[1];
     comps[2] -= rhs.comps[2];
     return *this;
   }
-  inline Vector3& operator*=(const double value) {
+  Vector3& operator*=(const double value) {
     comps[0] *= value;
     comps[1] *= value;
     comps[2] *= value;
     return *this;
   }
-  inline Vector3& operator*=(const Vector3& rhs) {
+  Vector3& operator*=(const Vector3& rhs) {
     comps[0] *= rhs.comps[0];
     comps[1] *= rhs.comps[1];
     comps[2] *= rhs.comps[2];
     return *this;
   }
-  inline Vector3& operator/=(const double value) { return *this *= 1 / value; }
+  Vector3& operator/=(const double value) { return *this *= 1 / value; }
 
-  inline Vector3 operator+(const Vector3& rhs) const {
+  Vector3 operator+(const Vector3& rhs) const {
     return Vector3(comps[0] + rhs.comps[0], comps[1] + rhs.comps[1], comps[2] + rhs.comps[2]);
   }
-  inline Vector3 operator-(const Vector3& rhs) const {
+  Vector3 operator-(const Vector3& rhs) const {
     return Vector3(comps[0] - rhs.comps[0], comps[1] - rhs.comps[1], comps[2] - rhs.comps[2]);
   }
-  inline Vector3 operator*(const Vector3& rhs) const {
+  Vector3 operator*(const Vector3& rhs) const {
     return Vector3(comps[0] * rhs.comps[0], comps[1] * rhs.comps[1], comps[2] * rhs.comps[2]);
   }
-  inline Vector3 operator*(double scalar) const {
-    return Vector3(comps[0] * scalar, comps[1] * scalar, comps[2] * scalar);
-  }
-  inline Vector3 operator/(double scalar) const { return *this * (1 / scalar); }
+  Vector3 operator*(double scalar) const { return Vector3(comps[0] * scalar, comps[1] * scalar, comps[2] * scalar); }
+  Vector3 operator/(double scalar) const { return *this * (1 / scalar); }
 
   // Friend functions are implicitly inline.
   friend Vector3 operator*(double scalar, const Vector3& rhs);

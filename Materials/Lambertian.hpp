@@ -1,9 +1,10 @@
 #ifndef LAMBERTIAN_HPP
 #define LAMBERTIAN_HPP
 
-#include "Material.hpp"
+#include "../OrthonormalBasis.hpp"
 #include "../Texture.hpp"
 #include "../Utilities.hpp"
+#include "Material.hpp"
 
 class Lambertian : public Material {
  private:
@@ -15,11 +16,11 @@ class Lambertian : public Material {
 
   virtual bool scatter(const Ray& in, const HitRecord& hitRecord, Color& albedo, Ray& scattered,
                        double& pdf) const override {
-    // Vector3 scatterDirection = (hitRecord.normal + Random::unitVector()).normalized();
-    Vector3 scatterDirection = Random::vectorInHemiSphere(hitRecord.normal);
+    OrthonormalBasis uvw(hitRecord.normal);
+    auto scatterDirection = uvw.local(Random::cosineDirection());
     scattered = Ray(hitRecord.point, scatterDirection, in.getTime());
     albedo = this->albedo->lookup(hitRecord.uv, hitRecord.point);
-    pdf = 0.5 / Math::pi;
+    pdf = dot(uvw.getW(), scattered.getDirection()) / Math::pi;
     return true;
   }
 

@@ -19,6 +19,11 @@ class DiffuseLight : public Material {
     return false;
   }
 
-  virtual Color emit(const UV& uv, const Point3& point) const override { return emission->lookup(uv, point); }
+  virtual Color emit(const Ray& in, const HitRecord& hitRecord, const UV& uv, const Point3& point) const override {
+		if (hitRecord.frontFace)
+    return emission->lookup(uv, point);
+    else
+        return Color(0,0,0);
+  }
 };
 #endif

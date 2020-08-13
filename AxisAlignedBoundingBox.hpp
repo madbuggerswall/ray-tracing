@@ -3,9 +3,11 @@
 
 #include "Utilities.hpp"
 
-class AxisAlignedBoundingBox {
-  using AABB = AxisAlignedBoundingBox;
+// Aliasing both inside and outside the class;
+class AxisAlignedBoundingBox;
+using AABB = AxisAlignedBoundingBox;
 
+class AxisAlignedBoundingBox {
  private:
   Point3 min;
   Point3 max;
@@ -45,5 +47,4 @@ class AxisAlignedBoundingBox {
   }
 };
 
-using AABB = AxisAlignedBoundingBox;
 #endif

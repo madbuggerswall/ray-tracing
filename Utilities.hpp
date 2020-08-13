@@ -19,9 +19,7 @@ namespace Math {
     return value;
   }
 
-  inline double degreesToRadians(double degrees) {
-    return degrees * pi / 180;
-  }
+  inline double degreesToRadians(double degrees) { return degrees * pi / 180; }
 }
 
 namespace Random {
@@ -45,9 +43,7 @@ namespace Random {
     // return rand() / (RAND_MAX + 1.0);
   }
 
-  inline Vector3 vector() {
-    return Vector3(fraction(), fraction(), fraction());
-  }
+  inline Vector3 vector() { return Vector3(fraction(), fraction(), fraction()); }
 
   inline Vector3 vectorRange(double min, double max) {
     return Vector3(range(min, max), range(min, max), range(min, max));
@@ -83,6 +79,19 @@ namespace Random {
     else
       return -inUnitSphere;
   }
+
+  inline Vector3 cosineDirection() {
+    auto r1 = fraction();
+    auto r2 = fraction();
+    auto phi = 2 * Math::pi * r1;
+		
+    auto x = std::cos(phi) * std::sqrt(r2);
+    auto y = std::sin(phi) * std::sqrt(r2);
+    auto z = std::sqrt(1 - r2);
+
+    return Vector3(x, y, z);
+  }
+
 }
 
 #endif

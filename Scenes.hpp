@@ -3,6 +3,7 @@
 #include "BVHNode.hpp"
 #include "Box.hpp"
 #include "ConstantMedium.hpp"
+#include "FlipFace.hpp"
 #include "Materials/Dielectric.hpp"
 #include "Materials/DiffuseLight.hpp"
 #include "Materials/Lambertian.hpp"
@@ -129,7 +130,7 @@ namespace Scenes {
     // Walls
     scene.add(std::make_shared<RectangleYZ>(rectangleA));
     scene.add(std::make_shared<RectangleYZ>(rectangleB));
-    scene.add(std::make_shared<RectangleXZ>(rectangleC));
+    scene.add(std::make_shared<FlipFace>(std::make_shared<RectangleXZ>(rectangleC)));
     scene.add(std::make_shared<RectangleXZ>(rectangleD));
     scene.add(std::make_shared<RectangleXZ>(rectangleE));
     scene.add(std::make_shared<RectangleXY>(rectangleF));
