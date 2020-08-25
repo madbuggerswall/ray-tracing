@@ -11,30 +11,29 @@
 #include "Sphere.hpp"
 #include "Utilities.hpp"
 
-Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int bounceLimit) {
-  HitRecord record;
+using GeoObjectPtr = std::shared_ptr<GeoObject>;
+Color rayColor(const Ray& ray, const Color& background, const Scene& scene, GeoObjectPtr lights, int bounceLimit) {
+  HitRecord hitRecord;
   if (bounceLimit <= 0) return Color(0, 0, 0);
 
-  if (!scene.hit(ray, 0.001, Math::infinity, record)) return background;
+  if (!scene.hit(ray, 0.001, Math::infinity, hitRecord)) return background;
 
-  Ray scattered;
-  Color attenuation;
-  Color emission = record.materialPtr->emit(ray, record, record.uv, record.point);
+  ScatterRecord scatterRecord;
+  Color emitted = hitRecord.materialPtr->emit(ray, hitRecord, hitRecord.uv, hitRecord.point);
+  if (!hitRecord.materialPtr->scatter(ray, hitRecord, scatterRecord)) return emitted;
 
-  double pdf;
-  Color albedo;
+  if (scatterRecord.isSpecular) {
+    return scatterRecord.attenuation * rayColor(scatterRecord.specularRay, background, scene, lights, bounceLimit - 1);
+  }
 
-  if (!record.materialPtr->scatter(ray, record, albedo, scattered, pdf)) return emission;
+  auto lightPtr = std::make_shared<GeoObjectPDF>(lights, hitRecord.point);
+  MixturePDF mixturePDF(lightPtr, scatterRecord.pdf);
 
-  RectangleXZ lightRect({213, 343, 227, 332}, 554, std::shared_ptr<Material>());
-  std::shared_ptr<GeoObject> lightShape = std::make_shared<RectangleXZ>(lightRect);
-  GeoObjectPDF geoObjectPDF(lightShape, record.point);
-  scattered = Ray(record.point, geoObjectPDF.generate(), ray.getTime());
-  pdf = geoObjectPDF.value(scattered.getDirection());
+  Ray scattered = Ray(hitRecord.point, mixturePDF.generate(), ray.getTime());
+  auto pdfValue = mixturePDF.value(scattered.getDirection());
 
-  Color result = emission + albedo * record.materialPtr->scatterPDF(ray, record, scattered);
-  result *= rayColor(scattered, background, scene, bounceLimit - 1) / pdf;
-  return result;
+  return emitted + scatterRecord.attenuation * hitRecord.materialPtr->scatterPDF(ray, hitRecord, scattered) *
+                       rayColor(scattered, background, scene, lights, bounceLimit - 1) / pdfValue;
 }
 
 int main(int argc, char const* argv[]) {
@@ -81,7 +80,7 @@ int main(int argc, char const* argv[]) {
         auto u = double(i + Random::fraction()) / (imageWidth - 1);
         auto v = double(j + Random::fraction()) / (imageHeight - 1);
         Ray ray = camera.getRay(u, v);
-        pixelColor += rayColor(ray, background, scene, bounceLimit);
+        pixelColor += rayColor(ray, background, scene, lights, bounceLimit);
       }
       writeColor(std::cout, pixelColor, samplesPerPixel);
     }

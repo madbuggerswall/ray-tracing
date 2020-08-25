@@ -135,7 +135,9 @@ namespace Scenes {
     scene.add(std::make_shared<RectangleXZ>(rectangleE));
     scene.add(std::make_shared<RectangleXY>(rectangleF));
 
-    std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
+    std::shared_ptr<Material> aluminum = std::make_shared<Metal>(Color(0.8, 0.85, 0.88), 0.0);
+    std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), aluminum);
+    // std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
     boxA = std::make_shared<RotateY>(boxA, 15);
     boxA = std::make_shared<Translate>(boxA, Vector3(265, 0, 295));
     scene.add(boxA);

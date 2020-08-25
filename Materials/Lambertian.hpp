@@ -14,13 +14,10 @@ class Lambertian : public Material {
   Lambertian(const Color& albedo) : albedo(std::make_shared<SolidColor>(albedo)) {}
   Lambertian(std::shared_ptr<Texture> albedo) : albedo(albedo) {}
 
-  virtual bool scatter(const Ray& in, const HitRecord& hitRecord, Color& albedo, Ray& scattered,
-                       double& pdf) const override {
-    OrthonormalBasis uvw(hitRecord.normal);
-    auto scatterDirection = uvw.local(Random::cosineDirection());
-    scattered = Ray(hitRecord.point, scatterDirection, in.getTime());
-    albedo = this->albedo->lookup(hitRecord.uv, hitRecord.point);
-    pdf = dot(uvw.getW(), scattered.getDirection()) / Math::pi;
+  virtual bool scatter(const Ray& in, const HitRecord& hitRecord, ScatterRecord& scatterRecord) const override {
+    scatterRecord.isSpecular = false;
+    scatterRecord.attenuation = albedo->lookup(hitRecord.uv, hitRecord.point);
+    scatterRecord.pdf = std::make_shared<CosinePDF>(hitRecord.normal);
     return true;
   }
 

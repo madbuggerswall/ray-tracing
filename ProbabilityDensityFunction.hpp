@@ -44,9 +44,22 @@ class GeoObjectPDF : public ProbabilityDensityFunction {
 
 class MixturePDF : public ProbabilityDensityFunction {
  private:
- 
+  std::shared_ptr<PDF> pdfs[2];
+
  public:
-  MixturePDF(){}
+  MixturePDF(std::shared_ptr<PDF> pdfA, std::shared_ptr<PDF> pdfB) {
+    pdfs[0] = pdfA;
+    pdfs[1] = pdfB;
+  }
+  virtual double value(const Vector3& direction) const override {
+    return 0.5 * pdfs[0]->value(direction) + 0.5 * pdfs[1]->value(direction);
+  }
+  virtual Vector3 generate() const override {
+    if (Random::fraction() < 0.5)
+      return pdfs[0]->generate();
+    else
+      return pdfs[1]->generate();
+  }
 };
 
 #endif
