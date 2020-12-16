@@ -8,29 +8,32 @@
 #include "MovingSphere.hpp"
 #include "Scenes.hpp"
 #include "Sphere.hpp"
+#include "Stopwatch.hpp"
 #include "Utilities.hpp"
 
 // Branch test.
 Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int bounceLimit) {
   HitRecord record;
-	// If a ray exceeds the bounce limit, return black.
+  // If a ray exceeds the bounce limit, return black.
   if (bounceLimit <= 0) return Color(0, 0, 0);
 
-// If a ray does not hit anything in the scene, return background color
+  // If a ray does not hit anything in the scene, return background color
   if (!scene.hit(ray, 0.001, Math::infinity, record)) return background;
 
   Ray scattered;
   Color attenuation;
   Color emission = record.materialPtr->emit(record.uv, record.point);
 
-	// If a ray hits a light, return the light's emission color.
+  // If a ray hits a light, return the light's emission color.
   if (!record.materialPtr->scatter(ray, record, attenuation, scattered)) return emission;
 
-	// If a ray hits any other material, scatter by spawning a new ray in a recursive way.
+  // If a ray hits any other material, scatter by spawning a new ray in a recursive way.
   return emission + attenuation * rayColor(scattered, background, scene, bounceLimit - 1);
 }
 
 int main(int argc, char const* argv[]) {
+  Stopwatch stopwatch;
+  stopwatch.start();
   // World
   Scene scene;
   Point3 lookFrom;
@@ -156,6 +159,7 @@ int main(int argc, char const* argv[]) {
     }
   }
   std::cerr << std::endl << "Done." << std::endl;
-
+  stopwatch.stop();
+  stopwatch.printTime();
   return 0;
 }
