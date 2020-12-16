@@ -1,4 +1,6 @@
 build
+build-debug
+build
 output
 output-archive
 
