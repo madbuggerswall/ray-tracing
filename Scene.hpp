@@ -19,7 +19,7 @@ class Scene : public GeometricalObject {
   void add(std::shared_ptr<GeoObject> object) { objects.push_back(object); }
   void clear() { objects.clear(); }
 
-  virtual bool hit(const Ray& ray, double tMin, double tMax, HitRecord& hitRecord) const override {
+  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     HitRecord record;
     bool hitAnything = false;
     auto closestSoFar = tMax;
@@ -33,7 +33,7 @@ class Scene : public GeometricalObject {
     return hitAnything;
   }
 
-  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
+  virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
     if (objects.empty()) return false;
 
     bool firstBox = true;

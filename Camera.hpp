@@ -1,30 +1,26 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "Utilities.hpp"
+#include "Geometry/Point3.hpp"
+#include "Geometry/Vector3.hpp"
+#include "Math.hpp"
+#include "Random.hpp"
+#include "Ray.hpp"
 
 class Camera {
  private:
-  Point3 origin;
-  Point3 lowerLeftCorner;
-  Vector3 horizontal;
-  Vector3 vertical;
-  Vector3 u, v, w;
-  double lensRadius;
-  double time0;
-  double time1;
+  Point3F origin;
+  Point3F lowerLeftCorner;
+  Vector3F horizontal;
+  Vector3F vertical;
+  Vector3F u, v, w;
+  float lensRadius;
+  float time0;
+  float time1;
 
  public:
-  Camera(
-      Point3 lookFrom,
-      Point3 lookAt,
-      Vector3 viewUp,
-      double vertFov,
-      double aspectRatio,
-      double aperture,
-      double focusDist,
-      double time0,
-      double time1) {
+  Camera(Point3F lookFrom, Point3F lookAt, Vector3F viewUp, float vertFov, float aspectRatio, float aperture,
+         float focusDist, float time0, float time1) {
     auto viewportHeight = 2.0 * std::tan(Math::degreesToRadians(vertFov) / 2.0);
     auto viewportWidth = viewportHeight * aspectRatio;
     auto focalLength = 1.0;
@@ -43,14 +39,12 @@ class Camera {
     this->time1 = time1;
   }
 
-  Ray getRay(double s, double t) const {
-    Vector3 random = lensRadius * Random::vectorInUnitDisk();
-    Vector3 offset = u * random.getX() + v * random.getY();
+  Ray getRay(float s, float t) const {
+    Vector3F random = lensRadius * Random::vectorInUnitDisk();
+    Vector3F offset = u * random.x + v * random.y;
 
-    return Ray(
-        origin + offset,
-        lowerLeftCorner + s * horizontal + t * vertical - origin - offset,
-        Random::range(time0, time1));
+    return Ray(origin + offset, lowerLeftCorner + s * horizontal + t * vertical - origin - offset,
+               Random::range(time0, time1));
   }
 };
 

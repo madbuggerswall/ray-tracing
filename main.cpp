@@ -9,7 +9,7 @@
 #include "Scenes.hpp"
 #include "Sphere.hpp"
 #include "Stopwatch.hpp"
-#include "Utilities.hpp"
+
 
 // Branch test.
 Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int bounceLimit) {
@@ -36,28 +36,28 @@ int main(int argc, char const* argv[]) {
   stopwatch.start();
   // World
   Scene scene;
-  Point3 lookFrom;
-  Point3 lookAt;
+  Point3F lookFrom;
+  Point3F lookAt;
   auto verticalFOV = 40.0;
   auto aperture = 0.0;
   Color background(0, 0, 0);
   int samplesPerPixel = 100;
 
   // Camera Config.
-  double aspectRatio = 16.0 / 9.0;
+  float aspectRatio = 16.0 / 9.0;
   int imageWidth = 400;
   int imageHeight = static_cast<int>(imageWidth / aspectRatio);
   int bounceLimit = 50;
   auto focusDist = 10.0;
-  Vector3 viewUp(0, 1, 0);
+  Vector3F viewUp(0, 1, 0);
 
   // Scene Selection
   switch (8) {
     case 1:
       scene = Scenes::randomScene();
       background = Color(0.70, 0.80, 1.00);
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
+      lookFrom = Point3F(13, 2, 3);
+      lookAt = Point3F(0, 0, 0);
       verticalFOV = 20.0;
       aperture = 0.1;
       break;
@@ -65,24 +65,24 @@ int main(int argc, char const* argv[]) {
     case 2:
       scene = Scenes::twoSpheres();
       background = Color(0.70, 0.80, 1.00);
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
+      lookFrom = Point3F(13, 2, 3);
+      lookAt = Point3F(0, 0, 0);
       verticalFOV = 20.0;
       break;
 
     case 3:
       scene = Scenes::twoPerlinSpheres();
       background = Color(0.70, 0.80, 1.00);
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
+      lookFrom = Point3F(13, 2, 3);
+      lookAt = Point3F(0, 0, 0);
       verticalFOV = 20.0;
       break;
 
     case 4:
       scene = Scenes::earth();
       background = Color(0.70, 0.80, 1.00);
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
+      lookFrom = Point3F(13, 2, 3);
+      lookAt = Point3F(0, 0, 0);
       verticalFOV = 20.0;
       break;
 
@@ -90,8 +90,8 @@ int main(int argc, char const* argv[]) {
       scene = Scenes::simpleLight();
       samplesPerPixel = 400;
       background = Color(0, 0, 0);
-      lookFrom = Point3(26, 3, 6);
-      lookAt = Point3(0, 2, 0);
+      lookFrom = Point3F(26, 3, 6);
+      lookAt = Point3F(0, 2, 0);
       verticalFOV = 20.0;
       break;
 
@@ -102,8 +102,8 @@ int main(int argc, char const* argv[]) {
       imageHeight = static_cast<int>(imageWidth / aspectRatio);
       samplesPerPixel = 200;
       background = Color(0, 0, 0);
-      lookFrom = Point3(278, 278, -800);
-      lookAt = Point3(278, 278, 0);
+      lookFrom = Point3F(278, 278, -800);
+      lookAt = Point3F(278, 278, 0);
       verticalFOV = 40.0;
       break;
 
@@ -113,8 +113,8 @@ int main(int argc, char const* argv[]) {
       imageWidth = 600;
       imageHeight = static_cast<int>(imageWidth / aspectRatio);
       samplesPerPixel = 200;
-      lookFrom = Point3(278, 278, -800);
-      lookAt = Point3(278, 278, 0);
+      lookFrom = Point3F(278, 278, -800);
+      lookAt = Point3F(278, 278, 0);
       verticalFOV = 40.0;
 
     case 8:
@@ -124,15 +124,15 @@ int main(int argc, char const* argv[]) {
       imageHeight = static_cast<int>(imageWidth / aspectRatio);
       samplesPerPixel = 50;
       background = Color(0, 0, 0);
-      lookFrom = Point3(478, 278, -600);
-      lookAt = Point3(278, 278, 0);
+      lookFrom = Point3F(478, 278, -600);
+      lookAt = Point3F(278, 278, 0);
       verticalFOV = 40.0;
       break;
 
     default:
       scene = Scenes::randomScene();
-      lookFrom = Point3(13, 2, 3);
-      lookAt = Point3(0, 0, 0);
+      lookFrom = Point3F(13, 2, 3);
+      lookAt = Point3F(0, 0, 0);
       verticalFOV = 20.0;
       aperture = 0.1;
       break;
@@ -150,8 +150,8 @@ int main(int argc, char const* argv[]) {
     for (int i = 0; i < imageWidth; ++i) {
       Color pixelColor(0, 0, 0);
       for (int s = 0; s < samplesPerPixel; ++s) {
-        auto u = double(i + Random::fraction()) / (imageWidth - 1);
-        auto v = double(j + Random::fraction()) / (imageHeight - 1);
+        auto u = float(i + Random::fraction()) / (imageWidth - 1);
+        auto v = float(j + Random::fraction()) / (imageHeight - 1);
         Ray ray = camera.getRay(u, v);
         pixelColor += rayColor(ray, background, scene, bounceLimit);
       }

@@ -3,14 +3,15 @@
 
 #include <string>
 
-#include "PerlinNoise.hpp"
-#include "Utilities.hpp"
 #include "External/stb_image_wrapper.hpp"
+#include "Geometry/Point3.hpp"
+#include "Math.hpp"
+#include "PerlinNoise.hpp"
 
 class Texture {
  private:
  public:
-  virtual Color lookup(const UV& coordinates, const Point3& point) const = 0;
+  virtual Color lookup(const UV& coordinates, const Point3F& point) const = 0;
 };
 
 class SolidColor : public Texture {
@@ -20,9 +21,9 @@ class SolidColor : public Texture {
  public:
   SolidColor() {}
   SolidColor(Color color) : color(color) {}
-  SolidColor(double red, double green, double blue) : SolidColor(Color(red, green, blue)) {}
+  SolidColor(float red, float green, float blue) : SolidColor(Color(red, green, blue)) {}
 
-  virtual Color lookup(const UV& coordinates, const Point3& point) const override { return color; }
+  virtual Color lookup(const UV& coordinates, const Point3F& point) const override { return color; }
 };
 
 class CheckerTexture : public Texture {
@@ -37,11 +38,11 @@ class CheckerTexture : public Texture {
       even(std::make_shared<SolidColor>(colorA)),
       odd(std::make_shared<SolidColor>(colorB)) {}
 
-  virtual Color lookup(const UV& uv, const Point3& point) const override {
+  virtual Color lookup(const UV& uv, const Point3F& point) const override {
     auto checkerSize = 10;
-    auto sines = std::sin(checkerSize * point.getX());
-    sines *= std::sin(checkerSize * point.getY());
-    sines *= std::sin(checkerSize * point.getZ());
+    auto sines = std::sin(checkerSize * point.x);
+    sines *= std::sin(checkerSize * point.y);
+    sines *= std::sin(checkerSize * point.z);
     if (sines < 0)
       return odd->lookup(uv, point);
     else
@@ -52,15 +53,15 @@ class CheckerTexture : public Texture {
 class PerlinTexture : public Texture {
  private:
   PerlinNoise perlinNoise;
-  double scale;
+  float scale;
 
  public:
   PerlinTexture() {}
-  PerlinTexture(double scale) : scale(scale) {}
-  virtual Color lookup(const UV& uv, const Point3& point) const override {
+  PerlinTexture(float scale) : scale(scale) {}
+  virtual Color lookup(const UV& uv, const Point3F& point) const override {
     // return Color(1, 1, 1) * 0.5 * (1.0 + perlinNoise.noise(scale * point));
     // return Color(1, 1, 1)  * perlinNoise.turbulence(scale * point);
-    return Color(1, 1, 1) * 0.5 * (1 + std::sin(scale * point.getZ() + 10 * perlinNoise.turbulence(point)));
+    return Color(1, 1, 1) * 0.5 * (1 + std::sin(scale * point.z + 10 * perlinNoise.turbulence(point)));
   }
 };
 
@@ -90,7 +91,7 @@ class ImageTexture : public Texture {
 
   ~ImageTexture() { delete dataPtr; }
 
-  virtual Color lookup(const UV& uv, const Point3& point) const override {
+  virtual Color lookup(const UV& uv, const Point3F& point) const override {
     // If we have no texture data, then return solid cyan as a debugging aid.
     if (dataPtr == nullptr) {
       return Color(1, 0, 0);
@@ -98,8 +99,8 @@ class ImageTexture : public Texture {
     };
 
     // Clamp input texture coordinates to [0,1] x [1,0]
-    double u = std::clamp(uv.u, 0.0, 1.1);
-    double v = 1.0 - std::clamp(uv.v, 0.0, 1.1);
+    float u = Math::clamp(uv.u, 0.0, 1.0);
+    float v = 1.0 - Math::clamp(uv.v, 0.0, 1.0);
 
     auto i = static_cast<int>(u * width);
     auto j = static_cast<int>(v * height);

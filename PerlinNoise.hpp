@@ -3,12 +3,14 @@
 
 #include <vector>
 
-#include "Utilities.hpp"
+#include "Geometry/Vector3.hpp"
+#include "Geometry/Point3.hpp"
+#include "Random.hpp"
 
 class PerlinNoise {
  private:
   static const int pointCount = 256;
-  std::vector<Vector3> randomVectors;
+  std::vector<Vector3F> randomVectors;
   std::vector<int> permX;
   std::vector<int> permY;
   std::vector<int> permZ;
@@ -31,7 +33,7 @@ class PerlinNoise {
   }
 
   // c[2][2][2]: Corners of a cube.
-  inline double trilinearInterpolation(Vector3 c[2][2][2], double u, double v, double w) const {
+  inline float trilinearInterpolation(Vector3F c[2][2][2], float u, float v, float w) const {
     auto uu = u * u * (3 - 2 * u);
     auto vv = v * v * (3 - 2 * v);
     auto ww = w * w * (3 - 2 * w);
@@ -40,7 +42,7 @@ class PerlinNoise {
     for (int i = 0; i < 2; ++i)
       for (int j = 0; j < 2; ++j)
         for (int k = 0; k < 2; ++k) {
-          Vector3 weightVector(u - i, v - j, w - k);
+          Vector3F weightVector(u - i, v - j, w - k);
           accum += (i * uu + (1 - i) * (1 - uu)) * (j * vv + (1 - j) * (1 - vv)) * (k * ww + (1 - k) * (1 - ww)) *
                    dot(c[i][j][k], weightVector);
         }
@@ -58,15 +60,15 @@ class PerlinNoise {
     permZ = generatePerm();
   }
 
-  double noise(const Point3& point) const {
-    auto u = point.getX() - std::floor(point.getX());
-    auto v = point.getY() - std::floor(point.getY());
-    auto w = point.getZ() - std::floor(point.getZ());
+  float noise(const Point3F& point) const {
+    auto u = point.x - std::floor(point.x);
+    auto v = point.y - std::floor(point.y);
+    auto w = point.z - std::floor(point.z);
 
-    int x = std::floor(point.getX());
-    int y = std::floor(point.getY());
-    int z = std::floor(point.getZ());
-    Vector3 c[2][2][2];
+    int x = std::floor(point.x);
+    int y = std::floor(point.y);
+    int z = std::floor(point.z);
+    Vector3F c[2][2][2];
 
     for (int i = 0; i < 2; i++)
       for (int j = 0; j < 2; j++)
@@ -76,7 +78,7 @@ class PerlinNoise {
     return trilinearInterpolation(c, u, v, w);
   }
 
-  double turbulence(const Point3& point, int depth = 7) const {
+  float turbulence(const Point3F& point, int depth = 7) const {
     auto accum = 0.0;
     auto factorPoint = point;
     auto weight = 1.0;

@@ -2,37 +2,37 @@
 #define ROTATE_HPP
 
 #include "GeometricalObject.hpp"
-#include "Utilities.hpp"
+#include "Math.hpp"
 
 class RotateY : public GeometricalObject {
  private:
   std::shared_ptr<GeometricalObject> object;
-  double sinTheta;
-  double cosTheta;
+  float sinTheta;
+  float cosTheta;
   bool hasBox;
   AABB boundingBox;
 
  public:
-  RotateY(std::shared_ptr<GeoObject> object, double angle) : object(object) {
+  RotateY(std::shared_ptr<GeoObject> object, float angle) : object(object) {
     auto radians = Math::degreesToRadians(angle);
     sinTheta = std::sin(radians);
     cosTheta = std::cos(radians);
     hasBox = object->computeBoundingBox(0, 1, boundingBox);
 
-    Point3 min(Math::infinity, Math::infinity, Math::infinity);
-    Point3 max(-Math::infinity, -Math::infinity, -Math::infinity);
+    Point3F min(Math::infinity, Math::infinity, Math::infinity);
+    Point3F max(-Math::infinity, -Math::infinity, -Math::infinity);
 
     for (size_t i = 0; i < 2; ++i) {
       for (size_t j = 0; j < 2; ++j) {
         for (size_t k = 0; k < 2; ++k) {
-          auto x = i * boundingBox.getMax().getX() + (1 - i) * boundingBox.getMin().getX();
-          auto y = j * boundingBox.getMax().getY() + (1 - j) * boundingBox.getMin().getY();
-          auto z = k * boundingBox.getMax().getZ() + (1 - k) * boundingBox.getMin().getZ();
+          auto x = i * boundingBox.getMax().x + (1 - i) * boundingBox.getMin().x;
+          auto y = j * boundingBox.getMax().y + (1 - j) * boundingBox.getMin().y;
+          auto z = k * boundingBox.getMax().z + (1 - k) * boundingBox.getMin().z;
 
           auto rotatedX = cosTheta * x + sinTheta * z;
           auto rotatedZ = -sinTheta * x + cosTheta * z;
 
-          Vector3 tester(rotatedX, y, rotatedZ);
+          Vector3F tester(rotatedX, y, rotatedZ);
 
           for (int c = 0; c < 3; c++) {
             min[c] = std::fmin(min[c], tester[c]);
@@ -44,7 +44,7 @@ class RotateY : public GeometricalObject {
     boundingBox = AABB(min, max);
   }
 
-  virtual bool hit(const Ray& ray, double tMin, double tMax, HitRecord& hitRecord) const override {
+  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     auto origin = ray.getOrigin();
     auto direction = ray.getDirection();
 
@@ -73,7 +73,7 @@ class RotateY : public GeometricalObject {
     return true;
   }
 
-  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
+  virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
     outputBox = boundingBox;
     return hasBox;
   }

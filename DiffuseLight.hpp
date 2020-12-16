@@ -4,7 +4,7 @@
 #include "HitRecord.hpp"
 #include "Material.hpp"
 #include "Texture.hpp"
-#include "Utilities.hpp"
+
 
 class DiffuseLight : public Material {
  private:
@@ -18,6 +18,6 @@ class DiffuseLight : public Material {
     return false;
   }
 
-  virtual Color emit(const UV& uv, const Point3& point) const override { return emission->lookup(uv, point); }
+  virtual Color emit(const UV& uv, const Point3F& point) const override { return emission->lookup(uv, point); }
 };
 #endif

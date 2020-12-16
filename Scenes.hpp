@@ -13,7 +13,6 @@
 #include "Sphere.hpp"
 #include "Texture.hpp"
 #include "Translate.hpp"
-#include "Utilities.hpp"
 
 namespace Scenes {
   Scene randomScene() {
@@ -21,23 +20,23 @@ namespace Scenes {
     Scene scene;
 
     // auto groundMat = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
-    // auto ground = std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, groundMat);
+    // auto ground = std::make_shared<Sphere>(Point3F(0, -1000, 0), 1000, groundMat);
     // scene.add(ground);
 
     auto checker = std::make_shared<CheckerTexture>(Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
-    scene.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(checker)));
+    scene.add(std::make_shared<Sphere>(Point3F(0, -1000, 0), 1000, std::make_shared<Lambertian>(checker)));
 
     for (int i = -11; i < 11; ++i) {
       for (int j = -11; j < 11; ++j) {
-        Point3 position(i + 0.9 * fraction(), 0.2, j + 0.9 * fraction());
+        Point3F position(i + 0.9 * fraction(), 0.2, j + 0.9 * fraction());
         auto chooseMat = fraction();
-        if ((position - Point3(4, 0.2, 0)).magnitude() > 0.9) {
+        if ((position - Point3F(4, 0.2, 0)).magnitude() > 0.9) {
           std::shared_ptr<Material> sphereMat;
 
           if (chooseMat < 0.8) {
             auto albedo = Random::vector() * Random::vector();
             sphereMat = std::make_shared<Lambertian>(albedo);
-            auto center2 = position + Vector3(0, Random::range(0, .5), 0);
+            auto center2 = position + Vector3F(0, Random::range(0, .5), 0);
             auto sphere = std::make_shared<MovingSphere>(position, center2, 0.0, 1.0, 0.2, sphereMat);
             scene.add(sphere);
           } else if (chooseMat < 0.95) {
@@ -56,13 +55,13 @@ namespace Scenes {
     }
 
     auto mat1 = std::make_shared<Dielectric>(1.5);
-    scene.add(std::make_shared<Sphere>(Point3(0, 1, 0), 1.0, mat1));
+    scene.add(std::make_shared<Sphere>(Point3F(0, 1, 0), 1.0, mat1));
 
     auto mat2 = std::make_shared<Lambertian>(Color(0.4, 0.2, 0.1));
-    scene.add(std::make_shared<Sphere>(Point3(-4, 1, 0), 1.0, mat2));
+    scene.add(std::make_shared<Sphere>(Point3F(-4, 1, 0), 1.0, mat2));
 
     auto mat3 = std::make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
-    scene.add(std::make_shared<Sphere>(Point3(4, 1, 0), 1.0, mat3));
+    scene.add(std::make_shared<Sphere>(Point3F(4, 1, 0), 1.0, mat3));
 
     return scene;
   }
@@ -71,8 +70,8 @@ namespace Scenes {
     Scene scene;
 
     auto checker = std::make_shared<CheckerTexture>(Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
-    scene.add(std::make_shared<Sphere>(Point3(0, -10, 0), 10, std::make_shared<Lambertian>(checker)));
-    scene.add(std::make_shared<Sphere>(Point3(0, 10, 0), 10, std::make_shared<Lambertian>(checker)));
+    scene.add(std::make_shared<Sphere>(Point3F(0, -10, 0), 10, std::make_shared<Lambertian>(checker)));
+    scene.add(std::make_shared<Sphere>(Point3F(0, 10, 0), 10, std::make_shared<Lambertian>(checker)));
 
     return scene;
   }
@@ -81,8 +80,8 @@ namespace Scenes {
     Scene scene;
 
     auto perlineTexture = std::make_shared<PerlinTexture>(4);
-    scene.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlineTexture)));
-    scene.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlineTexture)));
+    scene.add(std::make_shared<Sphere>(Point3F(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlineTexture)));
+    scene.add(std::make_shared<Sphere>(Point3F(0, 2, 0), 2, std::make_shared<Lambertian>(perlineTexture)));
 
     return scene;
   }
@@ -92,7 +91,7 @@ namespace Scenes {
 
     auto earthTexture = std::make_shared<ImageTexture>("../Textures/earthmap.jpg");
     auto earthMat = std::make_shared<Lambertian>(earthTexture);
-    auto globe = std::make_shared<Sphere>(Point3(0, 0, 0), 2, earthMat);
+    auto globe = std::make_shared<Sphere>(Point3F(0, 0, 0), 2, earthMat);
 
     return Scene(globe);
   }
@@ -101,8 +100,8 @@ namespace Scenes {
     Scene scene;
 
     auto perlinTexture = std::make_shared<PerlinTexture>(4);
-    scene.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlinTexture)));
-    scene.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlinTexture)));
+    scene.add(std::make_shared<Sphere>(Point3F(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlinTexture)));
+    scene.add(std::make_shared<Sphere>(Point3F(0, 2, 0), 2, std::make_shared<Lambertian>(perlinTexture)));
 
     auto diffuseLight = std::make_shared<DiffuseLight>(Color(0, 0, 4));
     RectangleXY rectangleXY({3, 5, 1, 3}, -2, diffuseLight);
@@ -134,14 +133,14 @@ namespace Scenes {
     scene.add(std::make_shared<RectangleXZ>(rectangleE));
     scene.add(std::make_shared<RectangleXY>(rectangleF));
 
-    std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
+    std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3F(0, 0, 0), Point3F(165, 330, 165), white);
     boxA = std::make_shared<RotateY>(boxA, 15);
-    boxA = std::make_shared<Translate>(boxA, Vector3(265, 0, 295));
+    boxA = std::make_shared<Translate>(boxA, Vector3F(265, 0, 295));
     scene.add(boxA);
 
-    std::shared_ptr<GeoObject> boxB = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 165, 165), white);
+    std::shared_ptr<GeoObject> boxB = std::make_shared<Box>(Point3F(0, 0, 0), Point3F(165, 165, 165), white);
     boxB = std::make_shared<RotateY>(boxB, -18);
-    boxB = std::make_shared<Translate>(boxB, Vector3(130, 0, 65));
+    boxB = std::make_shared<Translate>(boxB, Vector3F(130, 0, 65));
     scene.add(boxB);
     return scene;
   }
@@ -168,13 +167,13 @@ namespace Scenes {
     scene.add(std::make_shared<RectangleXZ>(sideE));
     scene.add(std::make_shared<RectangleXY>(sideF));
 
-    std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
+    std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3F(0, 0, 0), Point3F(165, 330, 165), white);
     boxA = std::make_shared<RotateY>(boxA, 15);
-    boxA = std::make_shared<Translate>(boxA, Vector3(265, 0, 295));
+    boxA = std::make_shared<Translate>(boxA, Vector3F(265, 0, 295));
 
-    std::shared_ptr<GeoObject> boxB = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 165, 165), white);
+    std::shared_ptr<GeoObject> boxB = std::make_shared<Box>(Point3F(0, 0, 0), Point3F(165, 165, 165), white);
     boxB = std::make_shared<RotateY>(boxB, -18);
-    boxB = std::make_shared<Translate>(boxB, Vector3(130, 0, 65));
+    boxB = std::make_shared<Translate>(boxB, Vector3F(130, 0, 65));
 
     scene.add(std::make_shared<ConstantMedium>(boxA, 0.01, Color(0, 0, 0)));
     scene.add(std::make_shared<ConstantMedium>(boxB, 0.01, Color(1, 1, 1)));
@@ -200,7 +199,7 @@ namespace Scenes {
         auto y1 = Random::range(1, 101);
         auto z1 = z0 + w;
 
-        ground.add(std::make_shared<Box>(Point3(x0, y0, z0), Point3(x1, y1, z1), groundMat));
+        ground.add(std::make_shared<Box>(Point3F(x0, y0, z0), Point3F(x1, y1, z1), groundMat));
       }
     }
 
@@ -212,36 +211,36 @@ namespace Scenes {
     scene.add(std::make_shared<RectangleXZ>(light));
 
     // Moving sphere
-    auto center1 = Point3(400, 400, 200);
-    auto center2 = center1 + Vector3(30, 0, 0);
+    auto center1 = Point3F(400, 400, 200);
+    auto center2 = center1 + Vector3F(30, 0, 0);
     auto moving_Sphere_material = std::make_shared<Lambertian>(Color(0.7, 0.3, 0.1));
     scene.add(std::make_shared<MovingSphere>(center1, center2, 0, 1, 50, moving_Sphere_material));
 
-    scene.add(std::make_shared<Sphere>(Point3(260, 150, 45), 50, std::make_shared<Dielectric>(1.5)));
-    scene.add(std::make_shared<Sphere>(Point3(0, 150, 145), 50, std::make_shared<Metal>(Color(0.8, 0.8, 0.9), 10.0)));
+    scene.add(std::make_shared<Sphere>(Point3F(260, 150, 45), 50, std::make_shared<Dielectric>(1.5)));
+    scene.add(std::make_shared<Sphere>(Point3F(0, 150, 145), 50, std::make_shared<Metal>(Color(0.8, 0.8, 0.9), 10.0)));
 
-    auto boundary = std::make_shared<Sphere>(Point3(360, 150, 145), 70, std::make_shared<Dielectric>(1.5));
+    auto boundary = std::make_shared<Sphere>(Point3F(360, 150, 145), 70, std::make_shared<Dielectric>(1.5));
     scene.add(boundary);
     scene.add(std::make_shared<ConstantMedium>(boundary, 0.2, Color(0.2, 0.4, 0.9)));
-    boundary = std::make_shared<Sphere>(Point3(0, 0, 0), 5000, std::make_shared<Dielectric>(1.5));
+    boundary = std::make_shared<Sphere>(Point3F(0, 0, 0), 5000, std::make_shared<Dielectric>(1.5));
     scene.add(std::make_shared<ConstantMedium>(boundary, .0001, Color(1, 1, 1)));
 
     // Earth
     auto earthMat = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("../Textures/earthmap.jpg"));
-    scene.add(std::make_shared<Sphere>(Point3(400, 200, 400), 100, earthMat));
+    scene.add(std::make_shared<Sphere>(Point3F(400, 200, 400), 100, earthMat));
 
     // Perlin Sphere
     auto perlinTexture = std::make_shared<PerlinTexture>(0.1);
-    scene.add(std::make_shared<Sphere>(Point3(220, 280, 300), 80, std::make_shared<Lambertian>(perlinTexture)));
+    scene.add(std::make_shared<Sphere>(Point3F(220, 280, 300), 80, std::make_shared<Lambertian>(perlinTexture)));
 
     // Spheres
     Scene spheres;
     auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
     int ns = 1000;
-    for (int j = 0; j < ns; j++) { spheres.add(std::make_shared<Sphere>(Random::vectorRange(0, 165), 10, white)); }
+    for (int j = 0; j < ns; j++) { spheres.add(std::make_shared<Sphere>(Random::pointRange(0, 165), 10, white)); }
 
     scene.add(std::make_shared<Translate>(std::make_shared<RotateY>(std::make_shared<BVHNode>(spheres, 0.0, 1.0), 15),
-                                          Vector3(-100, 270, 395)));
+                                          Vector3F(-100, 270, 395)));
 
     return scene;
   }

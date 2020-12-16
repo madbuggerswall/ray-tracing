@@ -3,12 +3,13 @@
 
 #include <iostream>
 
-#include "Utilities.hpp"
+#include "Geometry/Vector3.hpp"
+#include "Math.hpp"
 
 void writeColor(std::ostream& out, Color pixelColor, int samplesPerPixel) {
-  auto red = pixelColor.getX();
-  auto green = pixelColor.getY();
-  auto blue = pixelColor.getZ();
+  auto red = pixelColor.x;
+  auto green = pixelColor.y;
+  auto blue = pixelColor.z;
 
   //	Divide the color total by the number of samples.
   //	Gamma-correct for gamma=2.0.

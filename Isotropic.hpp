@@ -3,7 +3,7 @@
 
 #include "Material.hpp"
 #include "Texture.hpp"
-#include "Utilities.hpp"
+
 
 class Isotropic : public Material {
  private:

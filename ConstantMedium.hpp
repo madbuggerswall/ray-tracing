@@ -5,25 +5,25 @@
 #include "Isotropic.hpp"
 #include "Material.hpp"
 #include "Texture.hpp"
-#include "Utilities.hpp"
+
 
 class ConstantMedium : public GeometricalObject {
  private:
   std::shared_ptr<GeometricalObject> shape;
   std::shared_ptr<Material> phaseFunction;
-  double negInvDensity;
+  float negInvDensity;
 
  public:
-  ConstantMedium(std::shared_ptr<GeoObject> shape, double density, std::shared_ptr<Texture> albedo) :
+  ConstantMedium(std::shared_ptr<GeoObject> shape, float density, std::shared_ptr<Texture> albedo) :
       shape(shape),
       negInvDensity(-1 / density),
       phaseFunction(std::make_shared<Isotropic>(albedo)) {}
-  ConstantMedium(std::shared_ptr<GeoObject> shape, double density, Color color) :
+  ConstantMedium(std::shared_ptr<GeoObject> shape, float density, Color color) :
       shape(shape),
       negInvDensity(-1 / density),
       phaseFunction(std::make_shared<Isotropic>(color)) {}
 
-  virtual bool hit(const Ray& ray, double tMin, double tMax, HitRecord& hitRecord) const override {
+  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     HitRecord hitRecA, hitRecB;
 
     if (!shape->hit(ray, -Math::infinity, Math::infinity, hitRecA)) return false;
@@ -46,14 +46,14 @@ class ConstantMedium : public GeometricalObject {
     hitRecord.t = hitRecA.t + hitDistance / rayLength;
     hitRecord.point = ray.at(hitRecord.t);
 
-    hitRecord.normal = Vector3(1, 0, 0);  // arbitrary
+    hitRecord.normal = Vector3F(1, 0, 0);  // arbitrary
     hitRecord.frontFace = true;           // also arbitrary
     hitRecord.materialPtr = phaseFunction;
 
     return true;
   }
 
-  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
+  virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
     return shape->computeBoundingBox(t0, t1, outputBox);
   }
 };
