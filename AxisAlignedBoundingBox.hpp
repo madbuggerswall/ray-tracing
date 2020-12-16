@@ -4,7 +4,7 @@
 #include "Geometry/Point3.hpp"
 // #include "Geometry/Ray.hpp"
 #include "Geometry/Vector3.hpp"
-#include "Ray.hpp"
+#include "Geometry/Ray.hpp"
 
 class AxisAlignedBoundingBox {
   using AABB = AxisAlignedBoundingBox;
@@ -22,9 +22,9 @@ class AxisAlignedBoundingBox {
 
   inline bool hit(const Ray& ray, float tMin, float tMax) const {
     for (int a = 0; a < 3; a++) {
-      auto inverseDirection = 1.0f / ray.getDirection()[a];
-      auto t0 = (min[a] - ray.getOrigin()[a]) * inverseDirection;
-      auto t1 = (max[a] - ray.getOrigin()[a]) * inverseDirection;
+      auto inverseDirection = 1.0f / ray.direction[a];
+      auto t0 = (min[a] - ray.origin[a]) * inverseDirection;
+      auto t1 = (max[a] - ray.origin[a]) * inverseDirection;
       if (inverseDirection < 0.0f) std::swap(t0, t1);
       tMin = t0 > tMin ? t0 : tMin;
       tMax = t1 < tMax ? t1 : tMax;

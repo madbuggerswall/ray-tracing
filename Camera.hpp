@@ -5,7 +5,7 @@
 #include "Geometry/Vector3.hpp"
 #include "Math.hpp"
 #include "Random.hpp"
-#include "Ray.hpp"
+#include "Geometry/Ray.hpp"
 
 class Camera {
  private:

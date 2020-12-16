@@ -30,9 +30,9 @@ class MovingSphere : public GeometricalObject {
       material(material) {}
 
   virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    Vector3F oc = ray.getOrigin() - centerAt(ray.getTime());
-    auto a = ray.getDirection().magnitudeSquared();
-    auto halfB = dot(oc, ray.getDirection());
+    Vector3F oc = ray.origin - centerAt(ray.getTime());
+    auto a = ray.direction.magnitudeSquared();
+    auto halfB = dot(oc, ray.direction);
     auto c = oc.magnitudeSquared() - radius * radius;
 
     auto discriminant = halfB * halfB - a * c;

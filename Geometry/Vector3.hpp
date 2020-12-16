@@ -15,7 +15,30 @@ class Vector3 {
   T x, y, z;  // Scalar components of the vector.
   Vector3() : x(0), y(0), z(0) {}
   Vector3(T x, T y, T z) : x(x), y(y), z(z) { assert(!hasNaNs()); }
+// Copy constructor
+  Vector3(const Vector3& other) : x(other.x), y(other.y), z(other.z) {}
 
+  // Move constructor
+  Vector3(Vector3&& other) :
+      x(std::exchange(other.x, 0)),
+      y(std::exchange(other.y, 0)),
+      z(std::exchange(other.z, 0)) {}
+
+  // Copy assignment
+  Vector3& operator=(const Vector3& other) {
+    x = other.x;
+    y = other.y;
+    z = other.z;
+    return *this;
+  }
+
+  // Move assignment
+  Vector3& operator=(Vector3&& other) {
+    x = std::move(other.x);
+    y = std::move(other.y);
+    z = std::move(other.z);
+    return *this;
+  }
   // Avoid implicitly constructing from a Point.
 
   explicit Vector3(const Point3<T>& point);

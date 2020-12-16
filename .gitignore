@@ -1,7 +1,12 @@
+# Files
+notes.cpp
+
+# Folders
 build
 build-debug
 build
 output
 output-archive
 
+# Editor folders
 .vscode

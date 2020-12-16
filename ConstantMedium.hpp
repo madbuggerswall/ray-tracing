@@ -37,7 +37,7 @@ class ConstantMedium : public GeometricalObject {
 
     if (hitRecA.t < 0) hitRecA.t = 0;
 
-    const auto rayLength = ray.getDirection().magnitude();
+    const auto rayLength = ray.direction.magnitude();
     const auto distanceInsideShape = (hitRecB.t - hitRecA.t) * rayLength;
     const auto hitDistance = negInvDensity * std::log(Random::fraction());
 

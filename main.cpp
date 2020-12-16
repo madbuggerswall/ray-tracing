@@ -10,7 +10,6 @@
 #include "Sphere.hpp"
 #include "Stopwatch.hpp"
 
-
 // Branch test.
 Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int bounceLimit) {
   HitRecord record;
@@ -145,6 +144,7 @@ int main(int argc, char const* argv[]) {
   std::cout << imageWidth << "	" << imageHeight << std::endl;
   std::cout << "255" << std::endl;
 
+  Ray ray;
   for (int j = imageHeight - 1; j >= 0; --j) {
     std::cerr << "\rScanlines remaining: " << j << "	" << std::flush;
     for (int i = 0; i < imageWidth; ++i) {
@@ -152,7 +152,7 @@ int main(int argc, char const* argv[]) {
       for (int s = 0; s < samplesPerPixel; ++s) {
         auto u = float(i + Random::fraction()) / (imageWidth - 1);
         auto v = float(j + Random::fraction()) / (imageHeight - 1);
-        Ray ray = camera.getRay(u, v);
+        ray = camera.getRay(u, v);
         pixelColor += rayColor(ray, background, scene, bounceLimit);
       }
       writeColor(std::cout, pixelColor, samplesPerPixel);

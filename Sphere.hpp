@@ -18,9 +18,9 @@ class Sphere : public GeometricalObject {
       materialPtr(materialPtr) {}
 
   virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    Vector3F oc = ray.getOrigin() - center;
-    auto a = ray.getDirection().magnitudeSquared();
-    auto halfB = dot(oc, ray.getDirection());
+    Vector3F oc = ray.origin - center;
+    auto a = ray.direction.magnitudeSquared();
+    auto halfB = dot(oc, ray.direction);
     auto c = oc.magnitudeSquared() - radius * radius;
     auto discriminant = halfB * halfB - a * c;
 

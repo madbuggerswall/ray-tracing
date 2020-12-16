@@ -3,7 +3,7 @@
 
 #include "AxisAlignedBoundingBox.hpp"
 #include "HitRecord.hpp"
-#include "Ray.hpp"
+#include "Geometry/Ray.hpp"
 
 class GeometricalObject {
  public:

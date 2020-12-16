@@ -9,6 +9,7 @@ AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortIfStatementsOnASingleLine: true
 AllowShortBlocksOnASingleLine: true
 AllowShortFunctionsOnASingleLine: true
+AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: true
 BinPackParameters: true
 BreakBeforeBinaryOperators: None
@@ -16,5 +17,8 @@ BreakConstructorInitializers: AfterColon
 ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ContinuationIndentWidth: 4
+DerivePointerAlignment: false
 FixNamespaceComments: false
 NamespaceIndentation: All
+PointerAlignment: Left
+SpaceAfterCStyleCast: true

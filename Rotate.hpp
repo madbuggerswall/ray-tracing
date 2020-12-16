@@ -45,14 +45,14 @@ class RotateY : public GeometricalObject {
   }
 
   virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    auto origin = ray.getOrigin();
-    auto direction = ray.getDirection();
+    auto origin = ray.origin;
+    auto direction = ray.direction;
 
-    origin[0] = cosTheta * ray.getOrigin()[0] - sinTheta * ray.getOrigin()[2];
-    origin[2] = sinTheta * ray.getOrigin()[0] + cosTheta * ray.getOrigin()[2];
+    origin[0] = cosTheta * ray.origin[0] - sinTheta * ray.origin[2];
+    origin[2] = sinTheta * ray.origin[0] + cosTheta * ray.origin[2];
 
-    direction[0] = cosTheta * ray.getDirection()[0] - sinTheta * ray.getDirection()[2];
-    direction[2] = sinTheta * ray.getDirection()[0] + cosTheta * ray.getDirection()[2];
+    direction[0] = cosTheta * ray.direction[0] - sinTheta * ray.direction[2];
+    direction[2] = sinTheta * ray.direction[0] + cosTheta * ray.direction[2];
 
     Ray rotatedRay(origin, direction, ray.getTime());
 

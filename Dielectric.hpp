@@ -20,7 +20,7 @@ class Dielectric : public Material {
       refractiveRatio = 1.0 / refractiveIndex;
     else
       refractiveRatio = refractiveIndex;
-    Vector3F direction = incoming.getDirection().normalized();
+    Vector3F direction = incoming.direction.normalized();
 
     float cosTheta = std::fmin(dot(-direction, hitRecord.normal), 1.0);
     float sinTheta = std::sqrt(1.0 - cosTheta * cosTheta);

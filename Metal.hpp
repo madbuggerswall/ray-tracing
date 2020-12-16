@@ -5,7 +5,7 @@
 #include "Material.hpp"
 #include "Math.hpp"
 #include "Random.hpp"
-#include "Ray.hpp"
+#include "Geometry/Ray.hpp"
 
 class Metal : public Material {
  private:
@@ -17,11 +17,11 @@ class Metal : public Material {
 
   virtual bool scatter(const Ray& incoming, const HitRecord& hitRecord, Color& attenuation,
                        Ray& scattered) const override {
-    Vector3F incomingDirection = incoming.getDirection().normalized();
+    Vector3F incomingDirection = incoming.direction.normalized();
     Vector3F reflected = incomingDirection.reflect(hitRecord.normal);
     scattered = Ray(hitRecord.point, reflected + fuzz * Random::vectorInUnitSphere());
     attenuation = albedo;
-    return (dot(scattered.getDirection(), hitRecord.normal) > 0);
+    return (dot(scattered.direction, hitRecord.normal) > 0);
   }
 };
 

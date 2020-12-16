@@ -3,7 +3,7 @@
 
 #include "GeometricalObject.hpp"
 #include "Geometry/Vector3.hpp"
-#include "Ray.hpp"
+#include "Geometry/Ray.hpp"
 
 class Material {
  private:

@@ -16,6 +16,26 @@ class Vector2 {
   Vector2() : x(0), y(0) {}
   Vector2(T x, T y) : x(x), y(y) { assert(!hasNaNs()); }
 
+  // Copy constructor
+  Vector2(const Vector2& other) : x(other.x), y(other.y) {}
+
+  // Move constructor
+  Vector2(Vector2&& other) : x(std::exchange(other.x, 0)), y(std::exchange(other.y, 0)) {}
+
+  // Copy assignment
+  Vector2& operator=(const Vector2& other) {
+    x = other.x;
+    y = other.y;
+    return *this;
+  }
+
+  // Move assignment
+  Vector2& operator=(Vector2&& other) {
+    x = std::move(other.x);
+    y = std::move(other.y);
+    return *this;
+  }
+
   explicit Vector2(const Point2<T>& point);
   explicit Vector2(const Point3<T>& point);
 

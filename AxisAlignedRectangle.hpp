@@ -39,11 +39,11 @@ class RectangleXY : public Rectangle {
       Rectangle(corners, k, material) {}
 
   virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    auto t = (k - ray.getOrigin().z) / ray.getDirection().z;
+    auto t = (k - ray.origin.z) / ray.direction.z;
     if (t < tMin || t > tMax) return false;
 
-    auto x = ray.getOrigin().x + t * ray.getDirection().x;
-    auto y = ray.getOrigin().y + t * ray.getDirection().y;
+    auto x = ray.origin.x + t * ray.direction.x;
+    auto y = ray.origin.y + t * ray.direction.y;
     if (x < corners[0] || x > corners[1] || y < corners[2] || y > corners[3]) return false;
 
     setHitRecord(ray, hitRecord, Vector3F(0, 0, 1), x, y, t);
@@ -58,11 +58,11 @@ class RectangleXZ : public Rectangle {
       Rectangle(corners, k, material) {}
 
   virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    auto t = (k - ray.getOrigin().y) / ray.getDirection().y;
+    auto t = (k - ray.origin.y) / ray.direction.y;
     if (t < tMin || t > tMax) return false;
 
-    auto x = ray.getOrigin().x + t * ray.getDirection().x;
-    auto z = ray.getOrigin().z + t * ray.getDirection().z;
+    auto x = ray.origin.x + t * ray.direction.x;
+    auto z = ray.origin.z + t * ray.direction.z;
     if (x < corners[0] || x > corners[1] || z < corners[2] || z > corners[3]) return false;
 
     setHitRecord(ray, hitRecord, Vector3F(0, 1, 0), x, z, t);
@@ -77,11 +77,11 @@ class RectangleYZ : public Rectangle {
       Rectangle(corners, k, material) {}
 
   virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    auto t = (k - ray.getOrigin().x) / ray.getDirection().x;
+    auto t = (k - ray.origin.x) / ray.direction.x;
     if (t < tMin || t > tMax) return false;
 
-    auto y = ray.getOrigin().y + t * ray.getDirection().y;
-    auto z = ray.getOrigin().z + t * ray.getDirection().z;
+    auto y = ray.origin.y + t * ray.direction.y;
+    auto z = ray.origin.z + t * ray.direction.z;
     if (y < corners[0] || y > corners[1] || z < corners[2] || z > corners[3]) return false;
 
     setHitRecord(ray, hitRecord, Vector3F(1, 0, 0), y, z, t);
