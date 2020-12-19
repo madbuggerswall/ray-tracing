@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "External/stb_image_wrapper.hpp"
+#include "external/stb_image_wrapper.hpp"
 #include "Geometry/Point3.hpp"
 #include "Math.hpp"
 #include "PerlinNoise.hpp"

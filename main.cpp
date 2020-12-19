@@ -10,7 +10,6 @@
 #include "Sphere.hpp"
 #include "Stopwatch.hpp"
 
-// Branch test.
 Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int bounceLimit) {
   HitRecord record;
   // If a ray exceeds the bounce limit, return black.
