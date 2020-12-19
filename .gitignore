@@ -1,5 +1,8 @@
 build
+build-debug
 output
 output-archive
 
 .vscode
+
+notes.cpp
