@@ -3,8 +3,8 @@
 
 #include "Geometry/Point3.hpp"
 // #include "Geometry/Ray.hpp"
-#include "Geometry/Vector3.hpp"
 #include "Geometry/Ray.hpp"
+#include "Geometry/Vector3.hpp"
 
 class AxisAlignedBoundingBox {
   using AABB = AxisAlignedBoundingBox;

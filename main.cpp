@@ -43,11 +43,12 @@ int main(int argc, char const* argv[]) {
 
   // Camera Config.
   float aspectRatio = 16.0 / 9.0;
-  int imageWidth = 400;
-  int imageHeight = static_cast<int>(imageWidth / aspectRatio);
   int bounceLimit = 50;
   auto focusDist = 10.0;
   Vector3F viewUp(0, 1, 0);
+
+  size_t imageWidth = 400;
+  size_t imageHeight = static_cast<size_t>(imageWidth / aspectRatio);
 
   // Scene Selection
   switch (8) {
@@ -137,11 +138,7 @@ int main(int argc, char const* argv[]) {
   }
 
   Camera camera(lookFrom, lookAt, viewUp, verticalFOV, aspectRatio, aperture, focusDist, 0.0, 1.0);
-
-  // Render
-  std::cout << "P3" << std::endl;
-  std::cout << imageWidth << "	" << imageHeight << std::endl;
-  std::cout << "255" << std::endl;
+  Image image(imageHeight, imageWidth);
 
   Ray ray;
   for (int j = imageHeight - 1; j >= 0; --j) {
@@ -154,10 +151,22 @@ int main(int argc, char const* argv[]) {
         ray = camera.getRay(u, v);
         pixelColor += rayColor(ray, background, scene, bounceLimit);
       }
-      writeColor(std::cout, pixelColor, samplesPerPixel);
+      // writeColor(std::cout, pixelColor, samplesPerPixel);
+      image[j][i] = pixelColor;
     }
   }
   std::cerr << std::endl << "Done." << std::endl;
+  stopwatch.stop();
+  stopwatch.printTime();
+
+  std::cerr << std::endl << "Writing image to file." << std::endl;
+  stopwatch.start();
+  std::string fileName;
+  if (argc >= 2)
+    fileName = argv[1];
+  else
+    fileName = "";
+  writeImage(image, fileName, samplesPerPixel);
   stopwatch.stop();
   stopwatch.printTime();
   return 0;
