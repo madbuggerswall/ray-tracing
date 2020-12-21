@@ -7,6 +7,7 @@ build-debug
 build
 output
 output-archive
+test-outputs
 
 # Editor folders
 .vscode

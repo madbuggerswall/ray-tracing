@@ -3,13 +3,12 @@
 
 #include <random>
 
-#include "Geometry/Vector3.hpp"
 #include "Geometry/Point3.hpp"
+#include "Geometry/Vector3.hpp"
 #include "Math.hpp"
 
 namespace Random {
-  std::random_device randomDevice;
-  std::mt19937 generator(randomDevice());
+  std::default_random_engine generator;
 
   inline float range(float min, float max) {
     std::uniform_real_distribution<float> distribution(min, max);
