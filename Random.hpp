@@ -13,11 +13,9 @@ namespace Random {
 
   inline float fraction() {
     return distribution(generator);
-    // return rand() / (RAND_MAX + 1.0);
   }
 
   inline float range(float min, float max) {
-    // return distribution(generator);
     return min + (max - min) * fraction();
   }
 

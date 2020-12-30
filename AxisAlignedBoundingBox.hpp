@@ -22,7 +22,7 @@ class AxisAlignedBoundingBox {
 
   inline bool intersect(const Ray& ray, float tMin, float tMax) const {
     for (int a = 0; a < 3; a++) {
-      auto inverseDirection = 1.0f / ray.direction[a];
+      const auto inverseDirection = 1.0f / ray.direction[a];
       auto t0 = (min[a] - ray.origin[a]) * inverseDirection;
       auto t1 = (max[a] - ray.origin[a]) * inverseDirection;
       if (inverseDirection < 0.0f) std::swap(t0, t1);
@@ -33,16 +33,16 @@ class AxisAlignedBoundingBox {
     return true;
   }
 
-  static AABB surroundingBox(AABB box0, AABB box1) {
-    auto xMin = fmin(box0.getMin().x, box1.getMin().x);
-    auto yMin = fmin(box0.getMin().y, box1.getMin().y);
-    auto zMin = fmin(box0.getMin().z, box1.getMin().z);
-    auto xMax = fmax(box0.getMax().x, box1.getMax().x);
-    auto yMax = fmax(box0.getMax().y, box1.getMax().y);
-    auto zMax = fmax(box0.getMax().z, box1.getMax().z);
+  static AABB surroundingBox(const AABB& box0, const AABB& box1) {
+    const auto xMin = fmin(box0.getMin().x, box1.getMin().x);
+    const auto yMin = fmin(box0.getMin().y, box1.getMin().y);
+    const auto zMin = fmin(box0.getMin().z, box1.getMin().z);
+    const auto xMax = fmax(box0.getMax().x, box1.getMax().x);
+    const auto yMax = fmax(box0.getMax().y, box1.getMax().y);
+    const auto zMax = fmax(box0.getMax().z, box1.getMax().z);
 
-    Point3F small(xMin, yMin, zMin);
-    Point3F big(xMax, yMax, zMax);
+    const Point3F small(xMin, yMin, zMin);
+    const Point3F big(xMax, yMax, zMax);
 
     return AABB(small, big);
   }

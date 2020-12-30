@@ -14,12 +14,12 @@ class Box : public GeometricalObject {
  public:
   Box() {}
   Box(const Point3F& min, const Point3F& max, std::shared_ptr<Material> material) : min(min), max(max) {
-    RectangleXY sideA({min.x, max.x, min.y, max.y}, max.z, material);
-    RectangleXY sideB({min.x, max.x, min.y, max.y}, min.z, material);
-    RectangleXZ sideC({min.x, max.x, min.z, max.z}, max.y, material);
-    RectangleXZ sideD({min.x, max.x, min.z, max.z}, min.y, material);
-    RectangleYZ sideE({min.y, max.y, min.z, max.z}, max.x, material);
-    RectangleYZ sideF({min.y, max.y, min.z, max.z}, min.x, material);
+    const RectangleXY sideA({min.x, max.x, min.y, max.y}, max.z, material);
+    const RectangleXY sideB({min.x, max.x, min.y, max.y}, min.z, material);
+    const RectangleXZ sideC({min.x, max.x, min.z, max.z}, max.y, material);
+    const RectangleXZ sideD({min.x, max.x, min.z, max.z}, min.y, material);
+    const RectangleYZ sideE({min.y, max.y, min.z, max.z}, max.x, material);
+    const RectangleYZ sideF({min.y, max.y, min.z, max.z}, min.x, material);
 
     sides.add(std::make_shared<RectangleXY>(sideA));
     sides.add(std::make_shared<RectangleXY>(sideB));

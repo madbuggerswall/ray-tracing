@@ -11,8 +11,8 @@ class Stopwatch {
   Stopwatch() {}
   void start() { startPoint = std::chrono::high_resolution_clock::now(); }
   void stop() { stopPoint = std::chrono::high_resolution_clock::now(); }
-  void printTime() {
-    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(stopPoint - startPoint);
+  void printTime() const {
+    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(stopPoint - startPoint);
     std::cout << seconds.count() << "s" << std::endl;
   }
 };

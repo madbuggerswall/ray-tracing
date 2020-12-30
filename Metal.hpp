@@ -17,8 +17,8 @@ class Metal : public Material {
 
   virtual bool scatter(const Ray& incoming, const SInteraction& interaction, Color& attenuation,
                        Ray& scattered) const override {
-    Vector3F incomingDirection = incoming.direction.normalized();
-    Vector3F reflected = incomingDirection.reflect(interaction.normal);
+    const Vector3F incomingDirection = incoming.direction.normalized();
+    const Vector3F reflected = incomingDirection.reflect(interaction.normal);
     scattered = Ray(interaction.point, reflected + fuzz * Random::vectorInUnitSphere());
     attenuation = albedo;
     return (dot(scattered.direction, interaction.normal) > 0);

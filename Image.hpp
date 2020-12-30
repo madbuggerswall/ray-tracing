@@ -1,5 +1,5 @@
-#ifndef COLOR_HPP
-#define COLOR_HPP
+#ifndef IMAGE_HPP
+#define IMAGE_HPP
 
 #include <fstream>
 #include <iostream>
@@ -50,7 +50,7 @@ void Image::writeToFile(std::string fileName, int samplesPerPixel) {
 
       //	Divide the color total by the number of samples.
       //	Gamma-correct for gamma=2.0.
-      auto scale = 1.0 / samplesPerPixel;
+      const auto scale = 1.0 / samplesPerPixel;
       red = std::sqrt(red * scale);
       green = std::sqrt(green * scale);
       blue = std::sqrt(blue * scale);

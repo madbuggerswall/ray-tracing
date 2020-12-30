@@ -1,7 +1,9 @@
-
+#ifndef SCENES_HPP
+#define SCENES_HPP
 #include "AxisAlignedRectangle.hpp"
 #include "BVHNode.hpp"
 #include "Box.hpp"
+#include "Configuration.hpp"
 #include "ConstantMedium.hpp"
 #include "Dielectric.hpp"
 #include "DiffuseLight.hpp"
@@ -183,7 +185,7 @@ namespace Scenes {
 
   Scene finalScene() {
     Scene scene;
-		
+
     // Ground
     Scene ground;
     auto groundMat = std::make_shared<Lambertian>(Color(0.48, 0.83, 0.53));
@@ -244,4 +246,100 @@ namespace Scenes {
 
     return scene;
   }
+
+  Scene selectScene(int index, CConfig& config) {
+    Scene scene;
+    switch (index) {
+      case 1:
+        scene = Scenes::randomScene();
+        config.lookFrom = Point3F(13, 2, 3);
+        config.lookAt = Point3F(0, 0, 0);
+        config.verticalFOV = 20.0;
+        config.aperture = 0.1;
+        config.background = Color(0.70, 0.80, 1.00);
+        break;
+
+      case 2:
+        scene = Scenes::twoSpheres();
+        config.lookFrom = Point3F(13, 2, 3);
+        config.lookAt = Point3F(0, 0, 0);
+        config.verticalFOV = 20.0;
+        config.background = Color(0.70, 0.80, 1.00);
+        break;
+
+      case 3:
+        scene = Scenes::twoPerlinSpheres();
+        config.lookFrom = Point3F(13, 2, 3);
+        config.lookAt = Point3F(0, 0, 0);
+        config.verticalFOV = 20.0;
+        config.background = Color(0.70, 0.80, 1.00);
+        break;
+
+      case 4:
+        scene = Scenes::earth();
+        config.lookFrom = Point3F(13, 2, 3);
+        config.lookAt = Point3F(0, 0, 0);
+        config.verticalFOV = 20.0;
+        config.background = Color(0.70, 0.80, 1.00);
+        break;
+
+      case 5:
+        scene = Scenes::simpleLight();
+        config.lookFrom = Point3F(26, 3, 6);
+        config.lookAt = Point3F(0, 2, 0);
+        config.verticalFOV = 20.0;
+        config.aspectRatio = 1.0;
+        config.imageWidth = 800;
+        config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
+        config.background = Color(0, 0, 0);
+        config.samplesPerPixel = 320;
+        break;
+
+      case 6:
+        scene = Scenes::cornellBox();
+        config.lookFrom = Point3F(278, 278, -800);
+        config.lookAt = Point3F(278, 278, 0);
+        config.verticalFOV = 40.0;
+        config.aspectRatio = 1.0;
+        config.imageWidth = 600;
+        config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
+        config.background = Color(0, 0, 0);
+        config.samplesPerPixel = 12;
+        break;
+
+      case 7:
+        scene = Scenes::cornellSmoke();
+        config.aspectRatio = 1.0;
+        config.imageWidth = 600;
+        config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
+        config.samplesPerPixel = 225;
+        config.lookFrom = Point3F(278, 278, -800);
+        config.lookAt = Point3F(278, 278, 0);
+        config.verticalFOV = 40.0;
+
+      case 8:
+        scene = Scenes::finalScene();
+        config.aspectRatio = 1.0;
+        config.imageWidth = 800;
+        config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
+        config.samplesPerPixel = 256;
+        config.bounceLimit = 16;
+        config.background = Color(0, 0, 0);
+        config.lookFrom = Point3F(478, 278, -600);
+        config.lookAt = Point3F(278, 278, 0);
+        config.verticalFOV = 40.0;
+        break;
+
+      default:
+        scene = Scenes::randomScene();
+        config.lookFrom = Point3F(13, 2, 3);
+        config.lookAt = Point3F(0, 0, 0);
+        config.verticalFOV = 20.0;
+        config.aperture = 0.1;
+        break;
+    }
+    return scene;
+  }
 }
+
+#endif

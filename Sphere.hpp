@@ -19,17 +19,17 @@ class Sphere : public GeometricalObject {
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     Vector3F oc = ray.origin - center;
-    auto a = ray.direction.magnitudeSquared();
-    auto halfB = dot(oc, ray.direction);
-    auto c = oc.magnitudeSquared() - radius * radius;
-    auto discriminant = halfB * halfB - a * c;
+    const auto a = ray.direction.magnitudeSquared();
+    const auto halfB = dot(oc, ray.direction);
+    const auto c = oc.magnitudeSquared() - radius * radius;
+    const auto discriminant = halfB * halfB - a * c;
 
-    auto root = std::sqrt(discriminant);
+    const auto root = std::sqrt(discriminant);
     auto t = (-halfB - root) / a;
     if (t < tMax && t > tMin) {
       interaction.t = t;
       interaction.point = ray.at(interaction.t);
-      Vector3F outwardNormal = (interaction.point - center) / radius;
+      const Vector3F outwardNormal = (interaction.point - center) / radius;
       interaction.setFaceNormal(ray, outwardNormal);
       interaction.materialPtr = materialPtr;
       interaction.uv = getUV(outwardNormal);
@@ -39,7 +39,7 @@ class Sphere : public GeometricalObject {
     if (t < tMax && t > tMin) {
       interaction.t = t;
       interaction.point = ray.at(interaction.t);
-      Vector3F outwardNormal = (interaction.point - center) / radius;
+      const Vector3F outwardNormal = (interaction.point - center) / radius;
       interaction.setFaceNormal(ray, outwardNormal);
       interaction.uv = getUV(outwardNormal);
       interaction.materialPtr = materialPtr;
@@ -55,10 +55,10 @@ class Sphere : public GeometricalObject {
   }
 
   UV getUV(const Vector3F& outwardNormal) const {
-    auto phi = std::atan2(outwardNormal.z, outwardNormal.x);
-    auto theta = std::asin(outwardNormal.y);
-    float u = 1 - (phi + Math::pi) / (2 * Math::pi);
-    float v = (theta + Math::pi / 2) / Math::pi;
+    const auto phi = std::atan2(outwardNormal.z, outwardNormal.x);
+    const auto theta = std::asin(outwardNormal.y);
+    const float u = 1 - (phi + Math::pi) / (2 * Math::pi);
+    const float v = (theta + Math::pi / 2) / Math::pi;
     return UV(u, v);
   }
 };

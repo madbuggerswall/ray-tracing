@@ -14,7 +14,7 @@ class RotateY : public GeometricalObject {
 
  public:
   RotateY(std::shared_ptr<GeoObject> object, float angle) : object(object) {
-    auto radians = Math::degreesToRadians(angle);
+    const auto radians = Math::degreesToRadians(angle);
     sinTheta = std::sin(radians);
     cosTheta = std::cos(radians);
     hasBox = object->computeBoundingBox(0, 1, boundingBox);
@@ -54,7 +54,7 @@ class RotateY : public GeometricalObject {
     direction[0] = cosTheta * ray.direction[0] - sinTheta * ray.direction[2];
     direction[2] = sinTheta * ray.direction[0] + cosTheta * ray.direction[2];
 
-    Ray rotatedRay(origin, direction, ray.getTime());
+    const Ray rotatedRay(origin, direction, ray.getTime());
 
     if (!object->intersect(rotatedRay, tMin, tMax, interaction)) return false;
 

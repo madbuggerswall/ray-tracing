@@ -30,13 +30,11 @@ class BVHNode : public GeometricalObject {
   BVHNode() {}
   BVHNode(Scene& scene, float time0, float time1) :
       BVHNode(scene.getObjects(), 0, scene.getObjects().size(), time0, time1) {
-    // std::cout << "BVHNode(...){}" << std::endl;
   }
   BVHNode(std::vector<std::shared_ptr<GeoObject>>& objects, size_t start, size_t end, float time0, float time1) {
-    // std::cout << "BVHNode(...){...}" << std::endl;
     int axis = Random::rangeInt(0, 2);
     auto comparator = (axis == 0) ? boxCompareX : (axis == 1) ? boxCompareY : boxCompareZ;
-    size_t objectSpan = end - start;
+    const ushort objectSpan = end - start;
 
     if (objectSpan == 1) {
       left = right = objects[start];
@@ -57,16 +55,16 @@ class BVHNode : public GeometricalObject {
 
     // Check whether there is a bounding box at all
     AABB boxLeft, boxRight;
-    bool isLeftBoxEmpty = !left->computeBoundingBox(time0, time1, boxLeft);
-    bool isRightBoxEmpty = !right->computeBoundingBox(time0, time1, boxRight);
+    const bool isLeftBoxEmpty = !left->computeBoundingBox(time0, time1, boxLeft);
+    const bool isRightBoxEmpty = !right->computeBoundingBox(time0, time1, boxRight);
     if (isLeftBoxEmpty || isRightBoxEmpty) { std::cerr << "No bounding box in BVHNode ctor." << std::endl; }
     box = AABB::surroundingBox(boxLeft, boxRight);
   }
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     if (!box.intersect(ray, tMin, tMax)) return false;
-    bool hitLeft = left->intersect(ray, tMin, tMax, interaction);
-    bool hitRight = right->intersect(ray, tMin, hitLeft ? interaction.t : tMax, interaction);
+    const bool hitLeft = left->intersect(ray, tMin, tMax, interaction);
+    const bool hitRight = right->intersect(ray, tMin, hitLeft ? interaction.t : tMax, interaction);
     return hitLeft || hitRight;
   }
 

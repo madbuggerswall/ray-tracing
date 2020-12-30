@@ -3,10 +3,10 @@
 
 #include <string>
 
-#include "stb_image_wrapper.hpp"
 #include "Geometry/Point3.hpp"
 #include "Math.hpp"
 #include "PerlinNoise.hpp"
+#include "stb_image_wrapper.hpp"
 
 class Texture {
  private:
@@ -68,9 +68,11 @@ class PerlinTexture : public Texture {
 class ImageTexture : public Texture {
  private:
   const static int bytesPerPixel = 3;
+  const float colorScale = 1.0 / 255.0;
   int width;
   int height;
   int bytesPerScanline;
+
   // std::vector<unsigned char> data;
   unsigned char* dataPtr;
 
@@ -99,8 +101,8 @@ class ImageTexture : public Texture {
     };
 
     // Clamp input texture coordinates to [0,1] x [1,0]
-    float u = Math::clamp(uv.u, 0.0, 1.0);
-    float v = 1.0 - Math::clamp(uv.v, 0.0, 1.0);
+    const float u = Math::clamp(uv.u, 0.0, 1.0);
+    const float v = 1.0 - Math::clamp(uv.v, 0.0, 1.0);
 
     auto i = static_cast<int>(u * width);
     auto j = static_cast<int>(v * height);
@@ -109,7 +111,6 @@ class ImageTexture : public Texture {
     if (i >= width) i = width - 1;
     if (j >= height) j = height - 1;
 
-    const auto colorScale = 1.0 / 255.0;
     auto pixel = dataPtr + j * bytesPerScanline + i * bytesPerPixel;
     return Color(colorScale * pixel[0], colorScale * pixel[1], colorScale * pixel[2]);
 

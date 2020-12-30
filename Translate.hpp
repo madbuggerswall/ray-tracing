@@ -3,7 +3,6 @@
 
 #include "GeometricalObject.hpp"
 
-
 class Translate : public GeometricalObject {
  private:
   std::shared_ptr<GeometricalObject> object;
@@ -12,7 +11,7 @@ class Translate : public GeometricalObject {
  public:
   Translate(std::shared_ptr<GeoObject> object, const Vector3F& offset) : object(object), offset(offset) {}
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
-    Ray movedRay(ray.origin - offset, ray.direction, ray.getTime());
+    const Ray movedRay(ray.origin - offset, ray.direction, ray.getTime());
     if (!object->intersect(movedRay, tMin, tMax, interaction)) return false;
 
     interaction.point += offset;

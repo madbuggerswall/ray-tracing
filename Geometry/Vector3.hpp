@@ -52,10 +52,10 @@ class Vector3 {
   Vector3 normalized() const { return Vector3(*this / magnitude()); }
 
   Vector3 reflect(const Vector3& normal) const { return *this - 2 * dot(*this, normal) * normal; }
-  Vector3 refract(const Vector3& normal, float refractiveRatio) {
-    auto cosTheta = dot(-*this, normal);
-    Vector3 outParallel = refractiveRatio * (*this + cosTheta * normal);
-    Vector3 outPerp = -std::sqrt(1.0 - outParallel.magnitudeSquared()) * normal;
+  Vector3 refract(const Vector3& normal, float refractiveRatio) const {
+    const auto cosTheta = dot(-*this, normal);
+    const Vector3 outParallel = refractiveRatio * (*this + cosTheta * normal);
+    const Vector3 outPerp = -std::sqrt(1.0 - outParallel.magnitudeSquared()) * normal;
     return outParallel + outPerp;
   }
 
