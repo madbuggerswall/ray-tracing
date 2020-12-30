@@ -19,15 +19,15 @@ class Scene : public GeometricalObject {
   void add(std::shared_ptr<GeoObject> object) { objects.push_back(object); }
   void clear() { objects.clear(); }
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    HitRecord record;
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+    SInteraction record;
     bool hitAnything = false;
     auto closestSoFar = tMax;
     for (const auto& object : objects) {
       if (object->intersect(ray, tMin, closestSoFar, record)) {
         hitAnything = true;
         closestSoFar = record.t;
-        hitRecord = record;
+        interaction = record;
       }
     }
     return hitAnything;

@@ -11,12 +11,12 @@ class Translate : public GeometricalObject {
 
  public:
   Translate(std::shared_ptr<GeoObject> object, const Vector3F& offset) : object(object), offset(offset) {}
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     Ray movedRay(ray.origin - offset, ray.direction, ray.getTime());
-    if (!object->intersect(movedRay, tMin, tMax, hitRecord)) return false;
+    if (!object->intersect(movedRay, tMin, tMax, interaction)) return false;
 
-    hitRecord.point += offset;
-    hitRecord.setFaceNormal(movedRay, hitRecord.normal);
+    interaction.point += offset;
+    interaction.setFaceNormal(movedRay, interaction.normal);
     return true;
   }
   virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {

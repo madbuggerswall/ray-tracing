@@ -17,7 +17,7 @@ class Sphere : public GeometricalObject {
       radius(radius),
       materialPtr(materialPtr) {}
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     Vector3F oc = ray.origin - center;
     auto a = ray.direction.magnitudeSquared();
     auto halfB = dot(oc, ray.direction);
@@ -27,22 +27,22 @@ class Sphere : public GeometricalObject {
     auto root = std::sqrt(discriminant);
     auto t = (-halfB - root) / a;
     if (t < tMax && t > tMin) {
-      hitRecord.t = t;
-      hitRecord.point = ray.at(hitRecord.t);
-      Vector3F outwardNormal = (hitRecord.point - center) / radius;
-      hitRecord.setFaceNormal(ray, outwardNormal);
-      hitRecord.materialPtr = materialPtr;
-      hitRecord.uv = getUV(outwardNormal);
+      interaction.t = t;
+      interaction.point = ray.at(interaction.t);
+      Vector3F outwardNormal = (interaction.point - center) / radius;
+      interaction.setFaceNormal(ray, outwardNormal);
+      interaction.materialPtr = materialPtr;
+      interaction.uv = getUV(outwardNormal);
       return true;
     }
     t = (-halfB + root) / a;
     if (t < tMax && t > tMin) {
-      hitRecord.t = t;
-      hitRecord.point = ray.at(hitRecord.t);
-      Vector3F outwardNormal = (hitRecord.point - center) / radius;
-      hitRecord.setFaceNormal(ray, outwardNormal);
-      hitRecord.uv = getUV(outwardNormal);
-      hitRecord.materialPtr = materialPtr;
+      interaction.t = t;
+      interaction.point = ray.at(interaction.t);
+      Vector3F outwardNormal = (interaction.point - center) / radius;
+      interaction.setFaceNormal(ray, outwardNormal);
+      interaction.uv = getUV(outwardNormal);
+      interaction.materialPtr = materialPtr;
       return true;
     }
     return false;

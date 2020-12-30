@@ -63,10 +63,10 @@ class BVHNode : public GeometricalObject {
     box = AABB::surroundingBox(boxLeft, boxRight);
   }
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     if (!box.intersect(ray, tMin, tMax)) return false;
-    bool hitLeft = left->intersect(ray, tMin, tMax, hitRecord);
-    bool hitRight = right->intersect(ray, tMin, hitLeft ? hitRecord.t : tMax, hitRecord);
+    bool hitLeft = left->intersect(ray, tMin, tMax, interaction);
+    bool hitRight = right->intersect(ray, tMin, hitLeft ? interaction.t : tMax, interaction);
     return hitLeft || hitRight;
   }
 

@@ -1,12 +1,12 @@
-#ifndef HITRECORD_HPP
-#define HITRECORD_HPP
+#ifndef SURFACE_INTERACTION_HPP
+#define SURFACE_INTERACTION_HPP
 
 #include "Geometry/Point3.hpp"
 #include "Geometry/Ray.hpp"
 #include "Geometry/Vector3.hpp"
 
 class Material;
-struct HitRecord {
+struct SurfaceInteraction {
   Point3F point;
   Vector3F normal;
   UV uv;
@@ -14,10 +14,10 @@ struct HitRecord {
   bool frontFace;
   std::shared_ptr<Material> materialPtr;
 
-  HitRecord() = default;
+  SurfaceInteraction() = default;
 
   // Copy constructor
-  HitRecord(const HitRecord& other) :
+  SurfaceInteraction(const SurfaceInteraction& other) :
       point(other.point),
       normal(other.normal),
       uv(other.uv),
@@ -26,7 +26,7 @@ struct HitRecord {
       materialPtr(other.materialPtr) {}
 
   // Move constructor
-  HitRecord(HitRecord&& other) :
+  SurfaceInteraction(SurfaceInteraction&& other) :
       point(std::move(other.point)),
       normal(std::move(other.normal)),
       uv(std::move(other.uv)),
@@ -35,7 +35,7 @@ struct HitRecord {
       materialPtr(std::move(other.materialPtr)) {}
 
   // Copy assignment
-  HitRecord& operator=(const HitRecord& other) {
+  SurfaceInteraction& operator=(const SurfaceInteraction& other) {
     point = other.point;
     normal = other.normal;
     uv = other.uv;
@@ -46,7 +46,7 @@ struct HitRecord {
   }
 
   // Move assignment
-  HitRecord& operator=(HitRecord&& other) {
+  SurfaceInteraction& operator=(SurfaceInteraction&& other) {
     point = std::move(other.point);
     normal = std::move(other.normal);
     uv = other.uv;
@@ -61,5 +61,5 @@ struct HitRecord {
     normal = frontFace ? outwardNormal : -outwardNormal;
   }
 };
-
+using SInteraction = SurfaceInteraction;
 #endif

@@ -44,7 +44,7 @@ class RotateY : public GeometricalObject {
     boundingBox = AABB(min, max);
   }
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     auto origin = ray.origin;
     auto direction = ray.direction;
 
@@ -56,19 +56,19 @@ class RotateY : public GeometricalObject {
 
     Ray rotatedRay(origin, direction, ray.getTime());
 
-    if (!object->intersect(rotatedRay, tMin, tMax, hitRecord)) return false;
+    if (!object->intersect(rotatedRay, tMin, tMax, interaction)) return false;
 
-    auto point = hitRecord.point;
-    auto normal = hitRecord.normal;
+    auto point = interaction.point;
+    auto normal = interaction.normal;
 
-    point[0] = cosTheta * hitRecord.point[0] + sinTheta * hitRecord.point[2];
-    point[2] = -sinTheta * hitRecord.point[0] + cosTheta * hitRecord.point[2];
+    point[0] = cosTheta * interaction.point[0] + sinTheta * interaction.point[2];
+    point[2] = -sinTheta * interaction.point[0] + cosTheta * interaction.point[2];
 
-    normal[0] = cosTheta * hitRecord.normal[0] + sinTheta * hitRecord.normal[2];
-    normal[2] = -sinTheta * hitRecord.normal[0] + cosTheta * hitRecord.normal[2];
+    normal[0] = cosTheta * interaction.normal[0] + sinTheta * interaction.normal[2];
+    normal[2] = -sinTheta * interaction.normal[0] + cosTheta * interaction.normal[2];
 
-    hitRecord.point = point;
-    hitRecord.setFaceNormal(rotatedRay, normal);
+    interaction.point = point;
+    interaction.setFaceNormal(rotatedRay, normal);
 
     return true;
   }

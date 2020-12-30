@@ -11,7 +11,7 @@
 #include "Stopwatch.hpp"
 
 Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int bounceLimit) {
-  HitRecord record;
+  SInteraction record;
   // If a ray exceeds the bounce limit, return black.
   if (bounceLimit <= 0) return Color(0, 0, 0);
 

@@ -29,8 +29,8 @@ class Box : public GeometricalObject {
     sides.add(std::make_shared<RectangleYZ>(sideF));
   }
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    return sides.intersect(ray, tMin, tMax, hitRecord);
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+    return sides.intersect(ray, tMin, tMax, interaction);
   }
 
   virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {

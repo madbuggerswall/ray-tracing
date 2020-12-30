@@ -29,7 +29,7 @@ class MovingSphere : public GeometricalObject {
       radius(radius),
       material(material) {}
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     Vector3F oc = ray.origin - centerAt(ray.getTime());
     auto a = ray.direction.magnitudeSquared();
     auto halfB = dot(oc, ray.direction);
@@ -42,21 +42,21 @@ class MovingSphere : public GeometricalObject {
       auto t = (-halfB - root) / a;
 
       if (t < tMax && t > tMin) {
-        hitRecord.t = t;
-        hitRecord.point = ray.at(hitRecord.t);
-        auto outwardNormal = (hitRecord.point - centerAt(ray.getTime())) / radius;
-        hitRecord.setFaceNormal(ray, outwardNormal);
-        hitRecord.materialPtr = material;
+        interaction.t = t;
+        interaction.point = ray.at(interaction.t);
+        auto outwardNormal = (interaction.point - centerAt(ray.getTime())) / radius;
+        interaction.setFaceNormal(ray, outwardNormal);
+        interaction.materialPtr = material;
         return true;
       }
 
       t = (-halfB + root) / a;
       if (t < tMax && t > tMin) {
-        hitRecord.t = t;
-        hitRecord.point = ray.at(hitRecord.t);
-        auto outwardNormal = (hitRecord.point - centerAt(ray.getTime())) / radius;
-        hitRecord.setFaceNormal(ray, outwardNormal);
-        hitRecord.materialPtr = material;
+        interaction.t = t;
+        interaction.point = ray.at(interaction.t);
+        auto outwardNormal = (interaction.point - centerAt(ray.getTime())) / radius;
+        interaction.setFaceNormal(ray, outwardNormal);
+        interaction.materialPtr = material;
         return true;
       }
     }

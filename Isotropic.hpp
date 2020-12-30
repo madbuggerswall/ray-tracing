@@ -13,9 +13,9 @@ class Isotropic : public Material {
   Isotropic(Color color) : albedo(std::make_shared<SolidColor>(color)) {}
   Isotropic(std::shared_ptr<Texture> albedo) : albedo(albedo) {}
 
-  virtual bool scatter(const Ray& in, const HitRecord& hitRecord, Color& attenuation, Ray& scattered) const override {
-    scattered = Ray(hitRecord.point, Random::vectorInUnitSphere(), in.getTime());
-    attenuation = albedo->lookup(hitRecord.uv, hitRecord.point);
+  virtual bool scatter(const Ray& in, const SInteraction& interaction, Color& attenuation, Ray& scattered) const override {
+    scattered = Ray(interaction.point, Random::vectorInUnitSphere(), in.getTime());
+    attenuation = albedo->lookup(interaction.uv, interaction.point);
     return true;
   }
 };

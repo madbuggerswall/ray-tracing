@@ -13,10 +13,10 @@ class Lambertian : public Material {
   Lambertian(const Color& albedo) : albedo(std::make_shared<SolidColor>(albedo)) {}
   Lambertian(std::shared_ptr<Texture> albedo) : albedo(albedo) {}
 
-  virtual bool scatter(const Ray& in, const HitRecord& hitRecord, Color& attenuation, Ray& scattered) const override {
-    Vector3F scatterDirection = hitRecord.normal + Random::unitVector();
-    scattered = Ray(hitRecord.point, scatterDirection, in.getTime());
-    attenuation = albedo->lookup(hitRecord.uv, hitRecord.point);
+  virtual bool scatter(const Ray& in, const SInteraction& interaction, Color& attenuation, Ray& scattered) const override {
+    Vector3F scatterDirection = interaction.normal + Random::unitVector();
+    scattered = Ray(interaction.point, scatterDirection, in.getTime());
+    attenuation = albedo->lookup(interaction.uv, interaction.point);
     return true;
   }
 };

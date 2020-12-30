@@ -15,13 +15,13 @@ class Metal : public Material {
  public:
   Metal(const Color& albedo, float fuzz) : albedo(albedo), fuzz(Math::clamp(fuzz, 0.0, 1.0)) {}
 
-  virtual bool scatter(const Ray& incoming, const HitRecord& hitRecord, Color& attenuation,
+  virtual bool scatter(const Ray& incoming, const SInteraction& interaction, Color& attenuation,
                        Ray& scattered) const override {
     Vector3F incomingDirection = incoming.direction.normalized();
-    Vector3F reflected = incomingDirection.reflect(hitRecord.normal);
-    scattered = Ray(hitRecord.point, reflected + fuzz * Random::vectorInUnitSphere());
+    Vector3F reflected = incomingDirection.reflect(interaction.normal);
+    scattered = Ray(interaction.point, reflected + fuzz * Random::vectorInUnitSphere());
     attenuation = albedo;
-    return (dot(scattered.direction, hitRecord.normal) > 0);
+    return (dot(scattered.direction, interaction.normal) > 0);
   }
 };
 

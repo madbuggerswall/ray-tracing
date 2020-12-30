@@ -12,33 +12,33 @@ class Dielectric : public Material {
  public:
   Dielectric(float refractiveIndex) : refractiveIndex(refractiveIndex) {}
 
-  virtual bool scatter(const Ray& incoming, const HitRecord& hitRecord, Color& attenuation,
+  virtual bool scatter(const Ray& incoming, const SInteraction& interaction, Color& attenuation,
                        Ray& scattered) const override {
     attenuation = Color(1.0, 1.0, 1.0);
     float refractiveRatio;
-    if (hitRecord.frontFace)
+    if (interaction.frontFace)
       refractiveRatio = 1.0 / refractiveIndex;
     else
       refractiveRatio = refractiveIndex;
     Vector3F direction = incoming.direction.normalized();
 
-    float cosTheta = std::fmin(dot(-direction, hitRecord.normal), 1.0);
+    float cosTheta = std::fmin(dot(-direction, interaction.normal), 1.0);
     float sinTheta = std::sqrt(1.0 - cosTheta * cosTheta);
     if (refractiveRatio * sinTheta > 1.0) {
-      Vector3F reflected = direction.reflect(hitRecord.normal);
-      scattered = Ray(hitRecord.point, reflected);
+      Vector3F reflected = direction.reflect(interaction.normal);
+      scattered = Ray(interaction.point, reflected);
       return true;
     }
 
     float reflectProb = schlickApprox(cosTheta, refractiveRatio);
     if (Random::fraction() < reflectProb) {
-      Vector3F reflected = direction.reflect(hitRecord.normal);
-      scattered = Ray(hitRecord.point, reflected);
+      Vector3F reflected = direction.reflect(interaction.normal);
+      scattered = Ray(interaction.point, reflected);
       return true;
     }
 
-    Vector3F refracted = direction.refract(hitRecord.normal, refractiveRatio);
-    scattered = Ray(hitRecord.point, refracted);
+    Vector3F refracted = direction.refract(interaction.normal, refractiveRatio);
+    scattered = Ray(interaction.point, refracted);
     return true;
   }
 };

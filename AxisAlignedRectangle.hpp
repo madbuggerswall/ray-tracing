@@ -17,12 +17,12 @@ class Rectangle : public GeometricalObject {
       k(k),
       material(material) {}
 
-  void setHitRecord(const Ray& ray, HitRecord& hitRecord, Vector3F outwardNormal, float x, float y, float t) const {
-    hitRecord.uv = UV((x - corners[0]) / (corners[1] - corners[0]), (y - corners[2]) / (corners[3] - corners[2]));
-    hitRecord.t = t;
-    hitRecord.setFaceNormal(ray, outwardNormal);
-    hitRecord.materialPtr = material;
-    hitRecord.point = ray.at(t);
+  void setHitRecord(const Ray& ray, SInteraction& interaction, Vector3F outwardNormal, float x, float y, float t) const {
+    interaction.uv = UV((x - corners[0]) / (corners[1] - corners[0]), (y - corners[2]) / (corners[3] - corners[2]));
+    interaction.t = t;
+    interaction.setFaceNormal(ray, outwardNormal);
+    interaction.materialPtr = material;
+    interaction.point = ray.at(t);
   }
 
   virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
@@ -38,7 +38,7 @@ class RectangleXY : public Rectangle {
   RectangleXY(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     auto t = (k - ray.origin.z) / ray.direction.z;
     if (t < tMin || t > tMax) return false;
 
@@ -46,7 +46,7 @@ class RectangleXY : public Rectangle {
     auto y = ray.origin.y + t * ray.direction.y;
     if (x < corners[0] || x > corners[1] || y < corners[2] || y > corners[3]) return false;
 
-    setHitRecord(ray, hitRecord, Vector3F(0, 0, 1), x, y, t);
+    setHitRecord(ray, interaction, Vector3F(0, 0, 1), x, y, t);
     return true;
   }
 };
@@ -57,7 +57,7 @@ class RectangleXZ : public Rectangle {
   RectangleXZ(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     auto t = (k - ray.origin.y) / ray.direction.y;
     if (t < tMin || t > tMax) return false;
 
@@ -65,7 +65,7 @@ class RectangleXZ : public Rectangle {
     auto z = ray.origin.z + t * ray.direction.z;
     if (x < corners[0] || x > corners[1] || z < corners[2] || z > corners[3]) return false;
 
-    setHitRecord(ray, hitRecord, Vector3F(0, 1, 0), x, z, t);
+    setHitRecord(ray, interaction, Vector3F(0, 1, 0), x, z, t);
     return true;
   }
 };
@@ -76,7 +76,7 @@ class RectangleYZ : public Rectangle {
   RectangleYZ(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     auto t = (k - ray.origin.x) / ray.direction.x;
     if (t < tMin || t > tMax) return false;
 
@@ -84,7 +84,7 @@ class RectangleYZ : public Rectangle {
     auto z = ray.origin.z + t * ray.direction.z;
     if (y < corners[0] || y > corners[1] || z < corners[2] || z > corners[3]) return false;
 
-    setHitRecord(ray, hitRecord, Vector3F(1, 0, 0), y, z, t);
+    setHitRecord(ray, interaction, Vector3F(1, 0, 0), y, z, t);
     return true;
   }
 };
