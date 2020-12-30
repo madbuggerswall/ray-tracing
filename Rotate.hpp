@@ -44,7 +44,7 @@ class RotateY : public GeometricalObject {
     boundingBox = AABB(min, max);
   }
 
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     auto origin = ray.origin;
     auto direction = ray.direction;
 
@@ -56,7 +56,7 @@ class RotateY : public GeometricalObject {
 
     Ray rotatedRay(origin, direction, ray.getTime());
 
-    if (!object->hit(rotatedRay, tMin, tMax, hitRecord)) return false;
+    if (!object->intersect(rotatedRay, tMin, tMax, hitRecord)) return false;
 
     auto point = hitRecord.point;
     auto normal = hitRecord.normal;

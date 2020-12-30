@@ -103,7 +103,7 @@ namespace Scenes {
     scene.add(std::make_shared<Sphere>(Point3F(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlinTexture)));
     scene.add(std::make_shared<Sphere>(Point3F(0, 2, 0), 2, std::make_shared<Lambertian>(perlinTexture)));
 
-    auto diffuseLight = std::make_shared<DiffuseLight>(Color(0, 0, 4));
+    auto diffuseLight = std::make_shared<DiffuseLight>(Color(4, 4, 4));
     RectangleXY rectangleXY({3, 5, 1, 3}, -2, diffuseLight);
     scene.add(std::make_shared<RectangleXY>(rectangleXY));
 
@@ -183,7 +183,7 @@ namespace Scenes {
 
   Scene finalScene() {
     Scene scene;
-
+		
     // Ground
     Scene ground;
     auto groundMat = std::make_shared<Lambertian>(Color(0.48, 0.83, 0.53));

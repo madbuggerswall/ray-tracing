@@ -23,12 +23,12 @@ class ConstantMedium : public GeometricalObject {
       negInvDensity(-1 / density),
       phaseFunction(std::make_shared<Isotropic>(color)) {}
 
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     HitRecord hitRecA, hitRecB;
 
-    if (!shape->hit(ray, -Math::infinity, Math::infinity, hitRecA)) return false;
+    if (!shape->intersect(ray, -Math::infinity, Math::infinity, hitRecA)) return false;
 
-    if (!shape->hit(ray, hitRecA.t + 0.0001, Math::infinity, hitRecB)) return false;
+    if (!shape->intersect(ray, hitRecA.t + 0.0001, Math::infinity, hitRecB)) return false;
 
     if (hitRecA.t < tMin) hitRecA.t = tMin;
     if (hitRecB.t > tMax) hitRecB.t = tMax;

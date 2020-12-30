@@ -38,7 +38,7 @@ class RectangleXY : public Rectangle {
   RectangleXY(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
 
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     auto t = (k - ray.origin.z) / ray.direction.z;
     if (t < tMin || t > tMax) return false;
 
@@ -57,7 +57,7 @@ class RectangleXZ : public Rectangle {
   RectangleXZ(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
 
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     auto t = (k - ray.origin.y) / ray.direction.y;
     if (t < tMin || t > tMax) return false;
 
@@ -76,7 +76,7 @@ class RectangleYZ : public Rectangle {
   RectangleYZ(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
 
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     auto t = (k - ray.origin.x) / ray.direction.x;
     if (t < tMin || t > tMax) return false;
 

@@ -11,9 +11,9 @@ class Translate : public GeometricalObject {
 
  public:
   Translate(std::shared_ptr<GeoObject> object, const Vector3F& offset) : object(object), offset(offset) {}
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     Ray movedRay(ray.origin - offset, ray.direction, ray.getTime());
-    if (!object->hit(movedRay, tMin, tMax, hitRecord)) return false;
+    if (!object->intersect(movedRay, tMin, tMax, hitRecord)) return false;
 
     hitRecord.point += offset;
     hitRecord.setFaceNormal(movedRay, hitRecord.normal);

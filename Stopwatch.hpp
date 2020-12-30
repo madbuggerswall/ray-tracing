@@ -13,6 +13,6 @@ class Stopwatch {
   void stop() { stopPoint = std::chrono::high_resolution_clock::now(); }
   void printTime() {
     auto seconds = std::chrono::duration_cast<std::chrono::seconds>(stopPoint - startPoint);
-    std::cerr << seconds.count() << "s" << std::endl;
+    std::cout << seconds.count() << "s" << std::endl;
   }
 };

@@ -9,22 +9,22 @@
 
 namespace Random {
   std::default_random_engine generator;
+  std::uniform_real_distribution<float> distribution(0.0, 1.0);
+
+  inline float fraction() {
+    return distribution(generator);
+    // return rand() / (RAND_MAX + 1.0);
+  }
 
   inline float range(float min, float max) {
-    std::uniform_real_distribution<float> distribution(min, max);
-    return distribution(generator);
-    // return min + (max - min) * fraction();
+    // return distribution(generator);
+    return min + (max - min) * fraction();
   }
 
   inline float rangeInt(int min, int max) {
     std::uniform_int_distribution<int> distribution(min, max);
     return distribution(generator);
     // return min + (max - min) * fraction();
-  }
-
-  inline float fraction() {
-    return range(0.0, 1.0);
-    // return rand() / (RAND_MAX + 1.0);
   }
 
   inline Vector3F vector() { return Vector3F(fraction(), fraction(), fraction()); }

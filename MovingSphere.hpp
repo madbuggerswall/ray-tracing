@@ -29,7 +29,7 @@ class MovingSphere : public GeometricalObject {
       radius(radius),
       material(material) {}
 
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     Vector3F oc = ray.origin - centerAt(ray.getTime());
     auto a = ray.direction.magnitudeSquared();
     auto halfB = dot(oc, ray.direction);

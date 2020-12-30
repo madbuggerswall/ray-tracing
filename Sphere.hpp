@@ -17,7 +17,7 @@ class Sphere : public GeometricalObject {
       radius(radius),
       materialPtr(materialPtr) {}
 
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
     Vector3F oc = ray.origin - center;
     auto a = ray.direction.magnitudeSquared();
     auto halfB = dot(oc, ray.direction);
@@ -49,6 +49,7 @@ class Sphere : public GeometricalObject {
   }
 
   virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
+    // std::cout << "Bounding Box computed for:" << (this) << std::endl;
     outputBox = AABB(center - Vector3F(radius, radius, radius), center + Vector3F(radius, radius, radius));
     return true;
   }

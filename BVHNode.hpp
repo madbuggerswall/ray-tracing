@@ -29,8 +29,11 @@ class BVHNode : public GeometricalObject {
  public:
   BVHNode() {}
   BVHNode(Scene& scene, float time0, float time1) :
-      BVHNode(scene.getObjects(), 0, scene.getObjects().size(), time0, time1) {}
+      BVHNode(scene.getObjects(), 0, scene.getObjects().size(), time0, time1) {
+    // std::cout << "BVHNode(...){}" << std::endl;
+  }
   BVHNode(std::vector<std::shared_ptr<GeoObject>>& objects, size_t start, size_t end, float time0, float time1) {
+    // std::cout << "BVHNode(...){...}" << std::endl;
     int axis = Random::rangeInt(0, 2);
     auto comparator = (axis == 0) ? boxCompareX : (axis == 1) ? boxCompareY : boxCompareZ;
     size_t objectSpan = end - start;
@@ -60,10 +63,10 @@ class BVHNode : public GeometricalObject {
     box = AABB::surroundingBox(boxLeft, boxRight);
   }
 
-  virtual bool hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
-    if (!box.hit(ray, tMin, tMax)) return false;
-    bool hitLeft = left->hit(ray, tMin, tMax, hitRecord);
-    bool hitRight = right->hit(ray, tMin, hitLeft ? hitRecord.t : tMax, hitRecord);
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override {
+    if (!box.intersect(ray, tMin, tMax)) return false;
+    bool hitLeft = left->intersect(ray, tMin, tMax, hitRecord);
+    bool hitRight = right->intersect(ray, tMin, hitLeft ? hitRecord.t : tMax, hitRecord);
     return hitLeft || hitRight;
   }
 

@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "Camera.hpp"
-#include "Color.hpp"
 #include "Dielectric.hpp"
+#include "Image.hpp"
 #include "Lambertian.hpp"
 #include "Metal.hpp"
 #include "MovingSphere.hpp"
@@ -16,7 +16,7 @@ Color rayColor(const Ray& ray, const Color& background, const Scene& scene, int 
   if (bounceLimit <= 0) return Color(0, 0, 0);
 
   // If a ray does not hit anything in the scene, return background color
-  if (!scene.hit(ray, 0.001, Math::infinity, record)) return background;
+  if (!scene.intersect(ray, 0.001, Math::infinity, record)) return background;
 
   Ray scattered;
   Color attenuation;
@@ -39,11 +39,11 @@ int main(int argc, char const* argv[]) {
   auto verticalFOV = 40.0;
   auto aperture = 0.0;
   Color background(0, 0, 0);
-  int samplesPerPixel = 100;
+  int samplesPerPixel = 24;
 
   // Camera Config.
   float aspectRatio = 16.0 / 9.0;
-  int bounceLimit = 50;
+  int bounceLimit = 24;
   auto focusDist = 10.0;
   Vector3F viewUp(0, 1, 0);
 
@@ -87,11 +87,15 @@ int main(int argc, char const* argv[]) {
 
     case 5:
       scene = Scenes::simpleLight();
-      samplesPerPixel = 400;
+      samplesPerPixel = 320;
       background = Color(0, 0, 0);
       lookFrom = Point3F(26, 3, 6);
       lookAt = Point3F(0, 2, 0);
       verticalFOV = 20.0;
+
+      aspectRatio = 1.0;
+      imageWidth = 800;
+      imageHeight = static_cast<int>(imageWidth / aspectRatio);
       break;
 
     case 6:
@@ -99,7 +103,7 @@ int main(int argc, char const* argv[]) {
       aspectRatio = 1.0;
       imageWidth = 600;
       imageHeight = static_cast<int>(imageWidth / aspectRatio);
-      samplesPerPixel = 200;
+      samplesPerPixel = 12;
       background = Color(0, 0, 0);
       lookFrom = Point3F(278, 278, -800);
       lookAt = Point3F(278, 278, 0);
@@ -142,7 +146,7 @@ int main(int argc, char const* argv[]) {
 
   Ray ray;
   for (int j = imageHeight - 1; j >= 0; --j) {
-    std::cerr << "\rScanlines remaining: " << j << "	" << std::flush;
+    std::cout << "\rScanlines remaining: " << j << "	" << std::flush;
     for (int i = 0; i < imageWidth; ++i) {
       Color pixelColor(0, 0, 0);
       for (int s = 0; s < samplesPerPixel; ++s) {
@@ -151,22 +155,21 @@ int main(int argc, char const* argv[]) {
         ray = camera.getRay(u, v);
         pixelColor += rayColor(ray, background, scene, bounceLimit);
       }
-      // writeColor(std::cout, pixelColor, samplesPerPixel);
-      image[j][i] = pixelColor;
+      image[j * imageWidth + i] = pixelColor;
     }
   }
-  std::cerr << std::endl << "Done." << std::endl;
+  std::cout << std::endl << "Done." << std::endl;
   stopwatch.stop();
   stopwatch.printTime();
 
-  std::cerr << std::endl << "Writing image to file." << std::endl;
+  std::cout << std::endl << "Writing image to file." << std::endl;
   stopwatch.start();
   std::string fileName;
   if (argc >= 2)
     fileName = argv[1];
   else
     fileName = "";
-  writeImage(image, fileName, samplesPerPixel);
+  image.writeToFile(fileName, samplesPerPixel);
   stopwatch.stop();
   stopwatch.printTime();
   return 0;

@@ -20,7 +20,7 @@ class AxisAlignedBoundingBox {
   Point3F getMin() const { return min; }
   Point3F getMax() const { return max; }
 
-  inline bool hit(const Ray& ray, float tMin, float tMax) const {
+  inline bool intersect(const Ray& ray, float tMin, float tMax) const {
     for (int a = 0; a < 3; a++) {
       auto inverseDirection = 1.0f / ray.direction[a];
       auto t0 = (min[a] - ray.origin[a]) * inverseDirection;

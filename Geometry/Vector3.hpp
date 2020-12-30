@@ -15,14 +15,11 @@ class Vector3 {
   T x, y, z;  // Scalar components of the vector.
   Vector3() : x(0), y(0), z(0) {}
   Vector3(T x, T y, T z) : x(x), y(y), z(z) { assert(!hasNaNs()); }
-// Copy constructor
+  // Copy constructor
   Vector3(const Vector3& other) : x(other.x), y(other.y), z(other.z) {}
 
   // Move constructor
-  Vector3(Vector3&& other) :
-      x(std::exchange(other.x, 0)),
-      y(std::exchange(other.y, 0)),
-      z(std::exchange(other.z, 0)) {}
+  Vector3(Vector3&& other) : x(std::exchange(other.x, 0)), y(std::exchange(other.y, 0)), z(std::exchange(other.z, 0)) {}
 
   // Copy assignment
   Vector3& operator=(const Vector3& other) {
@@ -54,7 +51,7 @@ class Vector3 {
   void normalize() { *this / magnitude(); }
   Vector3 normalized() const { return Vector3(*this / magnitude()); }
 
-  Vector3 reflect(const Vector3& normal) { return *this - 2 * dot(*this, normal) * normal; }
+  Vector3 reflect(const Vector3& normal) const { return *this - 2 * dot(*this, normal) * normal; }
   Vector3 refract(const Vector3& normal, float refractiveRatio) {
     auto cosTheta = dot(-*this, normal);
     Vector3 outParallel = refractiveRatio * (*this + cosTheta * normal);
@@ -87,16 +84,16 @@ class Vector3 {
     z -= rhs.z;
     return *this;
   }
-  Vector3& operator*=(const float value) {
-    x *= value;
-    y *= value;
-    z *= value;
-    return *this;
-  }
   Vector3& operator*=(const Vector3& rhs) {
     x *= rhs.x;
     y *= rhs.y;
     z *= rhs.z;
+    return *this;
+  }
+  Vector3& operator*=(const float scalar) {
+    x *= scalar;
+    y *= scalar;
+    z *= scalar;
     return *this;
   }
   Vector3& operator/=(const float scalar) {
@@ -124,12 +121,12 @@ class Vector3 {
 
   // Friend functions are implicitly inline.
   friend Vector3 operator*(float scalar, const Vector3& rhs) { return rhs * scalar; }
-  friend std::ostream& operator<<(std::ostream& out, const Vector3& v) {
-    return out << v.x << ' ' << v.y << ' ' << v.z;
+  friend std::ostream& operator<<(std::ostream& out, const Vector3& vector) {
+    return out << vector.x << ' ' << vector.y << ' ' << vector.z;
   }
   friend T dot(const Vector3& lhs, const Vector3& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z; }
   friend T absDot(const Vector3& lhs, const Vector3& rhs) { return std::abs(dot(lhs, rhs)); }
-  friend Vector3 abs(const Vector3& v) { return Vector3(std::abs(v.x), std::abs(v.y), std::abs(v.z)); }
+  friend Vector3 abs(const Vector3& vec) { return Vector3(std::abs(vec.x), std::abs(vec.y), std::abs(vec.z)); }
   friend Vector3 cross(const Vector3& lhs, const Vector3& rhs) {
     return Vector3(lhs.y * rhs.z - lhs.z * rhs.y, lhs.z * rhs.x - lhs.x * rhs.z, lhs.x * rhs.y - lhs.y * rhs.x);
   }
