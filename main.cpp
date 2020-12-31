@@ -15,8 +15,10 @@
 int main(int argc, char const* argv[]) {
   Stopwatch stopwatch;
   stopwatch.start();
-
-  // Config
+	
+	std::cout << "Happy new year!" << std::endl;
+  
+	// Config
   CConfig config;
   Scene scene = Scenes::selectScene(8, config);
   Camera camera(config, 0.0, 1.0);
