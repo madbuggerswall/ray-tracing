@@ -24,26 +24,26 @@ class ConstantMedium : public GeometricalObject {
       phaseFunction(std::make_shared<Isotropic>(color)) {}
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
-    SInteraction hitRecA, hitRecB;
+    SInteraction interactionA, interactionB;
 
-    if (!shape->intersect(ray, -Math::infinity, Math::infinity, hitRecA)) return false;
+    if (!shape->intersect(ray, -Math::infinity, Math::infinity, interactionA)) return false;
 
-    if (!shape->intersect(ray, hitRecA.t + 0.0001, Math::infinity, hitRecB)) return false;
+    if (!shape->intersect(ray, interactionA.t + 0.0001, Math::infinity, interactionB)) return false;
 
-    if (hitRecA.t < tMin) hitRecA.t = tMin;
-    if (hitRecB.t > tMax) hitRecB.t = tMax;
+    if (interactionA.t < tMin) interactionA.t = tMin;
+    if (interactionB.t > tMax) interactionB.t = tMax;
 
-    if (hitRecA.t >= hitRecB.t) return false;
+    if (interactionA.t >= interactionB.t) return false;
 
-    if (hitRecA.t < 0) hitRecA.t = 0;
+    if (interactionA.t < 0) interactionA.t = 0;
 
     const auto rayLength = ray.direction.magnitude();
-    const auto distanceInsideShape = (hitRecB.t - hitRecA.t) * rayLength;
+    const auto distanceInsideShape = (interactionB.t - interactionA.t) * rayLength;
     const auto hitDistance = negInvDensity * std::log(Random::fraction());
 
     if (hitDistance > distanceInsideShape) return false;
 
-    interaction.t = hitRecA.t + hitDistance / rayLength;
+    interaction.t = interactionA.t + hitDistance / rayLength;
     interaction.point = ray.at(interaction.t);
 
     interaction.normal = Vector3F(1, 0, 0);  // arbitrary

@@ -227,6 +227,13 @@ namespace Scenes {
     boundary = std::make_shared<Sphere>(Point3F(0, 0, 0), 5000, std::make_shared<Dielectric>(1.5));
     scene.add(std::make_shared<ConstantMedium>(boundary, .0001, Color(1, 1, 1)));
 
+    auto glassSphereA = std::make_shared<Sphere>(Point3F(120, 150, 145), 50, std::make_shared<Dielectric>(1.5));
+    auto glassSphereB = std::make_shared<Sphere>(Point3F(120, 450, 145), 50, std::make_shared<Dielectric>(1.5));
+    auto glassSphereC = std::make_shared<Sphere>(Point3F(120, 150, 0), 50, std::make_shared<Dielectric>(1.5));
+    scene.add(glassSphereA);
+    scene.add(glassSphereB);
+    scene.add(glassSphereC);
+
     // Earth
     auto earthMat = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("../Textures/earthmap.jpg"));
     scene.add(std::make_shared<Sphere>(Point3F(400, 200, 400), 100, earthMat));
@@ -238,8 +245,8 @@ namespace Scenes {
     // Spheres
     Scene spheres;
     auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
-    int ns = 1000;
-    for (int j = 0; j < ns; j++) { spheres.add(std::make_shared<Sphere>(Random::pointRange(0, 165), 10, white)); }
+    int sphereCount = 160;
+    for (int j = 0; j < sphereCount; j++) { spheres.add(std::make_shared<Sphere>(Random::pointRange(0, 165), 10, white)); }
 
     scene.add(std::make_shared<Translate>(std::make_shared<RotateY>(std::make_shared<BVHNode>(spheres, 0.0, 1.0), 15),
                                           Vector3F(-100, 270, 395)));
@@ -322,8 +329,8 @@ namespace Scenes {
         config.aspectRatio = 1.0;
         config.imageWidth = 800;
         config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
-        config.samplesPerPixel = 256;
-        config.bounceLimit = 16;
+        config.samplesPerPixel = 800;
+        config.bounceLimit = 48;
         config.background = Color(0, 0, 0);
         config.lookFrom = Point3F(478, 278, -600);
         config.lookAt = Point3F(278, 278, 0);
