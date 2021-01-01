@@ -7,13 +7,13 @@
 
 class Ray {
  public:
-  Point3F origin;
-  Vector3F direction;
+  Point3 origin;
+  Vector3 direction;
   float tMin, tMax;
   float time;
 
   Ray() {}
-  Ray(const Point3F& origin, const Vector3F& direction, float time = 0.0) :
+  Ray(const Point3& origin, const Vector3& direction, float time = 0.0) :
       origin(origin),
       direction(direction),
       time(time) {}
@@ -54,12 +54,12 @@ class Ray {
     return *this;
   }
 
-  Point3F operator()(float t) { return origin + t * direction; }
+  Point3 operator()(float t) { return origin + t * direction; }
 
   // P(t) = O+ t * d
-  Point3F at(float t) const { return origin + t * direction; }
-  Point3F getOrigin() const { return origin; }
-  Vector3F getDirection() const { return direction; }
+  Point3 at(float t) const { return origin + t * direction; }
+  Point3 getOrigin() const { return origin; }
+  Vector3 getDirection() const { return direction; }
 
   float getTime() const { return time; }
 };

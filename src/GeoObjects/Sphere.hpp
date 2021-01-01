@@ -6,19 +6,19 @@
 
 class Sphere : public GeometricalObject {
  private:
-  Point3F center;
+  Point3 center;
   float radius;
   std::shared_ptr<Material> materialPtr;
 
  public:
   Sphere() {}
-  Sphere(Point3F center, float radius, std::shared_ptr<Material> materialPtr) :
+  Sphere(Point3 center, float radius, std::shared_ptr<Material> materialPtr) :
       center(center),
       radius(radius),
       materialPtr(materialPtr) {}
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
-    Vector3F oc = ray.origin - center;
+    Vector3 oc = ray.origin - center;
     const auto a = ray.direction.magnitudeSquared();
     const auto halfB = dot(oc, ray.direction);
     const auto c = oc.magnitudeSquared() - radius * radius;
@@ -29,7 +29,7 @@ class Sphere : public GeometricalObject {
     if (t < tMax && t > tMin) {
       interaction.t = t;
       interaction.point = ray.at(interaction.t);
-      const Vector3F outwardNormal = (interaction.point - center) / radius;
+      const Vector3 outwardNormal = (interaction.point - center) / radius;
       interaction.setFaceNormal(ray, outwardNormal);
       interaction.materialPtr = materialPtr;
       interaction.uv = getUV(outwardNormal);
@@ -39,7 +39,7 @@ class Sphere : public GeometricalObject {
     if (t < tMax && t > tMin) {
       interaction.t = t;
       interaction.point = ray.at(interaction.t);
-      const Vector3F outwardNormal = (interaction.point - center) / radius;
+      const Vector3 outwardNormal = (interaction.point - center) / radius;
       interaction.setFaceNormal(ray, outwardNormal);
       interaction.uv = getUV(outwardNormal);
       interaction.materialPtr = materialPtr;
@@ -50,11 +50,11 @@ class Sphere : public GeometricalObject {
 
   virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
     // std::cout << "Bounding Box computed for:" << (this) << std::endl;
-    outputBox = AABB(center - Vector3F(radius, radius, radius), center + Vector3F(radius, radius, radius));
+    outputBox = AABB(center - Vector3(radius, radius, radius), center + Vector3(radius, radius, radius));
     return true;
   }
 
-  UV getUV(const Vector3F& outwardNormal) const {
+  UV getUV(const Vector3& outwardNormal) const {
     const auto phi = std::atan2(outwardNormal.z, outwardNormal.x);
     const auto theta = std::asin(outwardNormal.y);
     const float u = 1 - (phi + Math::pi) / (2 * Math::pi);

@@ -7,13 +7,13 @@
 
 class Box : public GeometricalObject {
  private:
-  Point3F min;
-  Point3F max;
+  Point3 min;
+  Point3 max;
   Scene sides;
 
  public:
   Box() {}
-  Box(const Point3F& min, const Point3F& max, std::shared_ptr<Material> material) : min(min), max(max) {
+  Box(const Point3& min, const Point3& max, std::shared_ptr<Material> material) : min(min), max(max) {
     const RectangleXY sideA({min.x, max.x, min.y, max.y}, max.z, material);
     const RectangleXY sideB({min.x, max.x, min.y, max.y}, min.z, material);
     const RectangleXZ sideC({min.x, max.x, min.z, max.z}, max.y, material);

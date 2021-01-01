@@ -15,7 +15,7 @@ class CheckerTexture : public Texture {
       even(std::make_shared<SolidColor>(colorA)),
       odd(std::make_shared<SolidColor>(colorB)) {}
 
-  virtual Color lookup(const UV& uv, const Point3F& point) const override {
+  virtual Color lookup(const UV& uv, const Point3& point) const override {
     auto checkerSize = 10;
     auto sines = std::sin(checkerSize * point.x);
     sines *= std::sin(checkerSize * point.y);

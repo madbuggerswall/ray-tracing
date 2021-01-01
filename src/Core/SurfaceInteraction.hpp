@@ -7,8 +7,8 @@
 
 class Material;
 struct SurfaceInteraction {
-  Point3F point;
-  Vector3F normal;
+  Point3 point;
+  Vector3 normal;
   UV uv;
   float t;
   bool frontFace;
@@ -56,7 +56,7 @@ struct SurfaceInteraction {
     return *this;
   }
 
-  inline void setFaceNormal(const Ray& ray, const Vector3F& outwardNormal) {
+  inline void setFaceNormal(const Ray& ray, const Vector3& outwardNormal) {
     frontFace = dot(ray.direction, outwardNormal) < 0;
     normal = frontFace ? outwardNormal : -outwardNormal;
   }

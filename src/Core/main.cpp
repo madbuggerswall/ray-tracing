@@ -2,13 +2,13 @@
 
 #include "../GeoObjects/MovingSphere.hpp"
 #include "../GeoObjects/Sphere.hpp"
+#include "../Integrators/Integrator.hpp"
 #include "../Materials/Dielectric.hpp"
 #include "../Materials/Lambertian.hpp"
 #include "../Materials/Metal.hpp"
 #include "Camera.hpp"
 #include "Configuration.hpp"
 #include "Image.hpp"
-#include "Integrator.hpp"
 #include "Scenes.hpp"
 #include "Stopwatch.hpp"
 
@@ -24,7 +24,7 @@ int main(int argc, char const* argv[]) {
 
   // Rendering
   Sampler sampler(config);
-  Integrator integrator(config);
+  PathIntegrator integrator(config);
   integrator.render(camera, scene, sampler, image);
 
   std::cout << std::endl << "Done." << std::endl;

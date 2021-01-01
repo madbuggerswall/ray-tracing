@@ -4,16 +4,15 @@
 #include "Point3.hpp"
 #include "Ray.hpp"
 
-template <typename T>
 class Bounds3 {
  public:
-  Point3<T> minPoint, maxPoint;
+  Point3 minPoint, maxPoint;
 
   Bounds3() {
-    T minLimit = std::numeric_limits<T>::lowest();
-    T maxLimit = std::numeric_limits<T>::maxPoint();
-    minPoint = Point3<T>(maxLimit, maxLimit, maxLimit);
-    maxPoint = Point3<T>(minLimit, minLimit, minLimit);
+    float minLimit = std::numeric_limits<float>::lowest();
+    float maxLimit = std::numeric_limits<float>::max();
+    minPoint = Point3(maxLimit, maxLimit, maxLimit);
+    maxPoint = Point3(minLimit, minLimit, minLimit);
   }
 
   // Copy constructor
@@ -36,30 +35,30 @@ class Bounds3 {
     return *this;
   }
 
-  explicit Bounds3(const Point3<T>& point) : minPoint(point), maxPoint(point) {}
-  Bounds3(const Point3<T>& p1, const Point3<T>& p2) : minPoint(min(p1, p2)), maxPoint(max(p1, p2)) {}
+  explicit Bounds3(const Point3& point) : minPoint(point), maxPoint(point) {}
+  Bounds3(const Point3& p1, const Point3& p2) : minPoint(min(p1, p2)), maxPoint(max(p1, p2)) {}
 
-  const Point3<T>& operator[](int i) const;
-  Point3<T>& operator[](int i);
+  const Point3& operator[](int i) const;
+  Point3& operator[](int i);
 
-  bool operator==(const Bounds3<T>& b) const { return b.minPoint == minPoint && b.maxPoint == maxPoint; }
-  bool operator!=(const Bounds3<T>& b) const { return b.minPoint != minPoint || b.maxPoint != maxPoint; }
+  bool operator==(const Bounds3& b) const { return b.minPoint == minPoint && b.maxPoint == maxPoint; }
+  bool operator!=(const Bounds3& b) const { return b.minPoint != minPoint || b.maxPoint != maxPoint; }
 
-  Point3<T> getCorner(int corner) const {
-    return Point3<T>((*this)[(corner & 1)].x, (*this)[(corner & 2) ? 1 : 0].y, (*this)[(corner & 4) ? 1 : 0].z);
+  Point3 getCorner(int corner) const {
+    return Point3((*this)[(corner & 1)].x, (*this)[(corner & 2) ? 1 : 0].y, (*this)[(corner & 4) ? 1 : 0].z);
   }
-  Vector3<T> getDiagonal() const { return maxPoint - minPoint; }
+  Vector3 getDiagonal() const { return maxPoint - minPoint; }
 
-  T getSurfaceArea() const {
-    Vector3<T> diagonal = getDiagonal();
+  float getSurfaceArea() const {
+    Vector3 diagonal = getDiagonal();
     return 2 * (diagonal.x * diagonal.y + diagonal.x * diagonal.z + diagonal.y * diagonal.z);
   }
-  T getVolume() const {
-    Vector3<T> diagonal = getDiagonal();
+  float getVolume() const {
+    Vector3 diagonal = getDiagonal();
     return diagonal.x * diagonal.y * diagonal.z;
   }
   int getMaximumExtent() const {
-    Vector3<T> diagonal = getDiagonal();
+    Vector3 diagonal = getDiagonal();
     if (diagonal.x > diagonal.y && diagonal.x > diagonal.z)
       return 0;
     else if (diagonal.y > diagonal.z)
@@ -68,21 +67,12 @@ class Bounds3 {
       return 2;
   }
 
-  Point3<T> lerp(const Point3F& t) const {
-    return Point3<T>(lerp(t.x, minPoint.x, maxPoint.x), lerp(t.y, minPoint.y, maxPoint.y),
-                     lerp(t.z, minPoint.z, maxPoint.z));
-  }
-  Vector3<T> offset(const Point3<T>& point) const {
-    Vector3<T> o = point - minPoint;
+  Vector3 offset(const Point3& point) const {
+    Vector3 o = point - minPoint;
     if (maxPoint.x > minPoint.x) o.x /= maxPoint.x - minPoint.x;
     if (maxPoint.y > minPoint.y) o.y /= maxPoint.y - minPoint.y;
     if (maxPoint.z > minPoint.z) o.z /= maxPoint.z - minPoint.z;
     return o;
-  }
-
-  template <typename U>
-  explicit operator Bounds3<U>() const {
-    return Bounds3<U>((Point3<U>) minPoint, (Point3<U>) maxPoint);
   }
 
   bool intersectP(const Ray& ray, float* hitt0 = nullptr, float* hitt1 = nullptr) const {
@@ -105,7 +95,7 @@ class Bounds3 {
     return true;
   }
   bool intersectP(const Ray& ray, const Vector3F& invDir, const int dirIsNeg[3]) const {
-    const Bounds3<float>& bounds = *this;
+    const Bounds3& bounds = *this;
     // <<Check for ray intersection against  and  slabs>>
     float tMin = (bounds[dirIsNeg[0]].x - ray.origin.x) * invDir.x;
     float tMax = (bounds[1 - dirIsNeg[0]].x - ray.origin.x) * invDir.x;
@@ -129,37 +119,33 @@ class Bounds3 {
     return (tMin < ray.tMax) && (tMax > 0);
   }
 
-  friend Bounds3 getUnion(const Bounds3& bounds, const Point3<T>& point) {
-    return Bounds3(Point3<T>(min(bounds.minPoint, point)), Point3<T>(max(bounds.maxPoint, point)));
+  friend Bounds3 getUnion(const Bounds3& bounds, const Point3& point) {
+    return Bounds3(Point3(min(bounds.minPoint, point)), Point3(max(bounds.maxPoint, point)));
   }
-  friend Bounds3 getUnion(const Bounds3& b1, const Bounds3<T>& b2) {
-    return Bounds3(Point3<T>(min(b1.minPoint, b2.minPoint)), Point3<T>(std::max(b1.maxPoint, b2.maxPoint)));
+  friend Bounds3 getUnion(const Bounds3& b1, const Bounds3& b2) {
+    return Bounds3(Point3(min(b1.minPoint, b2.minPoint)), Point3(std::max(b1.maxPoint, b2.maxPoint)));
   }
-  friend Bounds3 intersect(const Bounds3& b1, const Bounds3<T>& b2) {
-    return Bounds3(Point3<T>(max(b1.minPoint, b2.minPoint)), Point3<T>(min(b1.maxPoint, b2.maxPoint)));
+  friend Bounds3 intersect(const Bounds3& b1, const Bounds3& b2) {
+    return Bounds3(Point3(max(b1.minPoint, b2.minPoint)), Point3(min(b1.maxPoint, b2.maxPoint)));
   }
-  friend bool overlaps(const Bounds3& b1, const Bounds3<T>& b2) {
+  friend bool overlaps(const Bounds3& b1, const Bounds3& b2) {
     bool x = (b1.maxPoint.x >= b2.minPoint.x) && (b1.minPoint.x <= b2.maxPoint.x);
     bool y = (b1.maxPoint.y >= b2.minPoint.y) && (b1.minPoint.y <= b2.maxPoint.y);
     bool z = (b1.maxPoint.z >= b2.minPoint.z) && (b1.minPoint.z <= b2.maxPoint.z);
     return (x && y && z);
   }
-  friend bool inside(const Point3<T>& point, const Bounds3<T>& bounds) {
+  friend bool inside(const Point3& point, const Bounds3& bounds) {
     return (point.x >= bounds.minPoint.x && point.x <= bounds.maxPoint.x && point.y >= bounds.minPoint.y &&
             point.y <= bounds.maxPoint.y && point.z >= bounds.minPoint.z && point.z <= bounds.maxPoint.z);
   }
-  friend bool insideExclusive(const Point3<T>& point, const Bounds3<T>& bounds) {
+  friend bool insideExclusive(const Point3& point, const Bounds3& bounds) {
     return (point.x >= bounds.minPoint.x && point.x < bounds.maxPoint.x && point.y >= bounds.minPoint.y &&
             point.y < bounds.maxPoint.y && point.z >= bounds.minPoint.z && point.z < bounds.maxPoint.z);
   }
   template <typename U>
-  inline Bounds3<T> expand(const Bounds3<T>& bounds, U delta) {
-    return Bounds3<T>(bounds.minPoint - Vector3<T>(delta, delta, delta),
-                      bounds.maxPoint + Vector3<T>(delta, delta, delta));
+  inline Bounds3 expand(const Bounds3& bounds, U delta) {
+    return Bounds3(bounds.minPoint - Vector3(delta, delta, delta), bounds.maxPoint + Vector3(delta, delta, delta));
   }
 };
-
-using Bounds3F = Bounds3<float>;
-using Bounds3Int = Bounds3<int>;
 
 #endif

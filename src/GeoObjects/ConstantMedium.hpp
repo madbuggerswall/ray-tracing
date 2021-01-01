@@ -46,7 +46,7 @@ class ConstantMedium : public GeometricalObject {
     interaction.t = interactionA.t + hitDistance / rayLength;
     interaction.point = ray.at(interaction.t);
 
-    interaction.normal = Vector3F(1, 0, 0);  // arbitrary
+    interaction.normal = Vector3(1, 0, 0);  // arbitrary
     interaction.frontFace = true;           // also arbitrary
     interaction.materialPtr = phaseFunction;
 

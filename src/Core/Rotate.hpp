@@ -19,8 +19,8 @@ class RotateY : public GeometricalObject {
     cosTheta = std::cos(radians);
     hasBox = object->computeBoundingBox(0, 1, boundingBox);
 
-    Point3F min(Math::infinity, Math::infinity, Math::infinity);
-    Point3F max(-Math::infinity, -Math::infinity, -Math::infinity);
+    Point3 min(Math::infinity, Math::infinity, Math::infinity);
+    Point3 max(-Math::infinity, -Math::infinity, -Math::infinity);
 
     for (size_t i = 0; i < 2; ++i) {
       for (size_t j = 0; j < 2; ++j) {
@@ -32,7 +32,7 @@ class RotateY : public GeometricalObject {
           auto rotatedX = cosTheta * x + sinTheta * z;
           auto rotatedZ = -sinTheta * x + cosTheta * z;
 
-          Vector3F tester(rotatedX, y, rotatedZ);
+          Vector3 tester(rotatedX, y, rotatedZ);
 
           for (int c = 0; c < 3; c++) {
             min[c] = std::fmin(min[c], tester[c]);

@@ -6,10 +6,10 @@
 class Translate : public GeometricalObject {
  private:
   std::shared_ptr<GeometricalObject> object;
-  Vector3F offset;
+  Vector3 offset;
 
  public:
-  Translate(std::shared_ptr<GeoObject> object, const Vector3F& offset) : object(object), offset(offset) {}
+  Translate(std::shared_ptr<GeoObject> object, const Vector3& offset) : object(object), offset(offset) {}
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     const Ray movedRay(ray.origin - offset, ray.direction, ray.getTime());
     if (!object->intersect(movedRay, tMin, tMax, interaction)) return false;

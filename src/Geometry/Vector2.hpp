@@ -4,17 +4,14 @@
 #include <cmath>
 #include <iostream>
 
-template <typename T>
 class Point2;
-template <typename T>
 class Point3;
 
-template <typename T>
 class Vector2 {
  public:
-  T x, y;
+  float x, y;
   Vector2() : x(0), y(0) {}
-  Vector2(T x, T y) : x(x), y(y) { assert(!hasNaNs()); }
+  Vector2(float x, float y) : x(x), y(y) { assert(!hasNaNs()); }
 
   // Copy constructor
   Vector2(const Vector2& other) : x(other.x), y(other.y) {}
@@ -36,13 +33,13 @@ class Vector2 {
     return *this;
   }
 
-  explicit Vector2(const Point2<T>& point);
-  explicit Vector2(const Point3<T>& point);
+  explicit Vector2(const Point2& point);
+  explicit Vector2(const Point3& point);
 
   bool hasNaNs() { return std::isnan(x) || std::isnan(y); }
 
-  T magnitude() const { return std::sqrt(magnitudeSquared()); }
-  T magnitudeSquared() const { return x * x + y * y; }
+  float magnitude() const { return std::sqrt(magnitudeSquared()); }
+  float magnitudeSquared() const { return x * x + y * y; }
 
   void normalize() { *this / magnitude(); }
   Vector2 normalized() const { return Vector2(*this / magnitude()); }
@@ -57,16 +54,16 @@ class Vector2 {
 
   // Member functions are implicitly inline.
   Vector2 operator-() const { return Vector2(-x, -y); }
-  T operator[](int i) const {
+  float operator[](int i) const {
     if (i == 0)
       return x;
-    else if (i == 1)
+    else
       return y;
   }
-  T& operator[](int i) {
+  float& operator[](int i) {
     if (i == 0)
       return x;
-    else if (i == 1)
+    else
       return y;
   }
 
@@ -110,11 +107,8 @@ class Vector2 {
   // Friend functions are implicitly inline.
   friend Vector2 operator*(float scalar, const Vector2& rhs) { return rhs * scalar; }
   friend std::ostream& operator<<(std::ostream& out, const Vector2& v) { return out << v.x << ' ' << v.y; }
-  friend T dot(const Vector2& lhs, const Vector2& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y; }
-  friend T absDot(const Vector2& lhs, const Vector2& rhs) { return std::abs(dot(lhs, rhs)); }
+  friend float dot(const Vector2& lhs, const Vector2& rhs);
+  friend float absDot(const Vector2& lhs, const Vector2& rhs) { return std::abs(dot(lhs, rhs)); }
 };
-
-using Vector2F = Vector2<float>;
-using Vector2Int = Vector2<int>;
-
+float dot(const Vector2& lhs, const Vector2& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y; }
 #endif

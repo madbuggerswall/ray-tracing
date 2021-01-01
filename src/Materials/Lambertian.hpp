@@ -3,6 +3,7 @@
 
 #include "../Textures/SolidColor.hpp"
 #include "Material.hpp"
+#include "../Core/Random.hpp"
 
 class Lambertian : public Material {
  private:
@@ -14,7 +15,7 @@ class Lambertian : public Material {
 
   virtual bool scatter(const Ray& in, const SInteraction& interaction, Color& attenuation,
                        Ray& scattered) const override {
-    const Vector3F scatterDirection = interaction.normal + Random::unitVector();
+    const Vector3 scatterDirection = interaction.normal + Random::unitVector();
     scattered = Ray(interaction.point, scatterDirection, in.getTime());
     attenuation = albedo->lookup(interaction.uv, interaction.point);
     return true;

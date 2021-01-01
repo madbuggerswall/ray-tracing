@@ -11,17 +11,17 @@
 
 class Camera {
  private:
-  Point3F origin;
-  Point3F lowerLeftCorner;
-  Vector3F horizontal;
-  Vector3F vertical;
-  Vector3F u, v, w;
+  Point3 origin;
+  Point3 lowerLeftCorner;
+  Vector3 horizontal;
+  Vector3 vertical;
+  Vector3 u, v, w;
   float lensRadius;
   float time0;
   float time1;
 
  public:
-  Camera(Point3F lookFrom, Point3F lookAt, Vector3F viewUp, float vertFov, float aspectRatio, float aperture,
+  Camera(Point3 lookFrom, Point3 lookAt, Vector3 viewUp, float vertFov, float aspectRatio, float aperture,
          float focusDist, float time0, float time1) {
     const auto viewportHeight = 2.0 * std::tan(Math::degreesToRadians(vertFov) / 2.0);
     const auto viewportWidth = viewportHeight * aspectRatio;
@@ -45,9 +45,9 @@ class Camera {
       Camera(config.lookFrom, config.lookAt, config.viewUp, config.verticalFOV, config.aspectRatio, config.aperture,
              config.focusDist, time0, time1) {}
 
-  Ray getRay(Point2F sample) const {
-    const Vector3F random = lensRadius * Random::vectorInUnitDisk();
-    const Vector3F offset = u * random.x + v * random.y;
+  Ray getRay(Point2 sample) const {
+    const Vector3 random = lensRadius * Random::vectorInUnitDisk();
+    const Vector3 offset = u * random.x + v * random.y;
     const Vector3 direction = lowerLeftCorner + sample.x * horizontal + sample.y * vertical - origin - offset;
     return Ray(origin + offset, direction, Random::range(time0, time1));
   }

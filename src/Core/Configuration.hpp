@@ -5,9 +5,9 @@
 #include "../Geometry/Vector3.hpp"
 
 struct CameraConfiguration {
-  Point3F lookFrom;
-  Point3F lookAt;
-  Vector3F viewUp = Vector3F(0, 1, 0);
+  Point3 lookFrom;
+  Point3 lookAt;
+  Vector3 viewUp = Vector3(0, 1, 0);
 
   float verticalFOV = 40.0;
   float aspectRatio = 16.0 / 9.0;

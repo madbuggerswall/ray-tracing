@@ -22,24 +22,24 @@ class Dielectric : public Material {
     else
       refractiveRatio = refractiveIndex;
 
-    const Vector3F direction = incoming.direction.normalized();
+    const Vector3 direction = incoming.direction.normalized();
 
     const float cosTheta = std::fmin(dot(-direction, interaction.normal), 1.0);
     const float sinTheta = std::sqrt(1.0 - cosTheta * cosTheta);
     if (refractiveRatio * sinTheta > 1.0) {
-      const Vector3F reflected = direction.reflect(interaction.normal);
+      const Vector3 reflected = direction.reflect(interaction.normal);
       scattered = Ray(interaction.point, reflected);
       return true;
     }
 
     const float reflectProb = schlickApprox(cosTheta, refractiveRatio);
     if (Random::fraction() < reflectProb) {
-      const Vector3F reflected = direction.reflect(interaction.normal);
+      const Vector3 reflected = direction.reflect(interaction.normal);
       scattered = Ray(interaction.point, reflected);
       return true;
     }
 
-    const Vector3F refracted = direction.refract(interaction.normal, refractiveRatio);
+    const Vector3 refracted = direction.refract(interaction.normal, refractiveRatio);
     scattered = Ray(interaction.point, refracted);
     return true;
   }

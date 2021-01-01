@@ -32,7 +32,7 @@ class ImageTexture : public Texture {
 
   ~ImageTexture() { delete dataPtr; }
 
-  virtual Color lookup(const UV& uv, const Point3F& point) const override {
+  virtual Color lookup(const UV& uv, const Point3& point) const override {
     // If we have no texture data, then return solid cyan as a debugging aid.
     if (dataPtr == nullptr) {
       return Color(1, 0, 0);

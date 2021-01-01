@@ -17,7 +17,7 @@ class Rectangle : public GeometricalObject {
       k(k),
       material(material) {}
 
-  void setHitRecord(const Ray& ray, SInteraction& interaction, const Vector3F outwardNormal, float x, float y,
+  void setHitRecord(const Ray& ray, SInteraction& interaction, const Vector3 outwardNormal, float x, float y,
                     float t) const {
     interaction.uv = UV((x - corners[0]) / (corners[1] - corners[0]), (y - corners[2]) / (corners[3] - corners[2]));
     interaction.t = t;
@@ -28,7 +28,7 @@ class Rectangle : public GeometricalObject {
 
   virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
     float padding = 0.0001;
-    outputBox = AABB(Point3F(corners[0], corners[2], k - padding), Point3F(corners[1], corners[3], k + padding));
+    outputBox = AABB(Point3(corners[0], corners[2], k - padding), Point3(corners[1], corners[3], k + padding));
     return true;
   }
 };
@@ -47,7 +47,7 @@ class RectangleXY : public Rectangle {
     const auto y = ray.origin.y + t * ray.direction.y;
     if (x < corners[0] || x > corners[1] || y < corners[2] || y > corners[3]) return false;
 
-    setHitRecord(ray, interaction, Vector3F(0, 0, 1), x, y, t);
+    setHitRecord(ray, interaction, Vector3(0, 0, 1), x, y, t);
     return true;
   }
 };
@@ -66,7 +66,7 @@ class RectangleXZ : public Rectangle {
     const auto z = ray.origin.z + t * ray.direction.z;
     if (x < corners[0] || x > corners[1] || z < corners[2] || z > corners[3]) return false;
 
-    setHitRecord(ray, interaction, Vector3F(0, 1, 0), x, z, t);
+    setHitRecord(ray, interaction, Vector3(0, 1, 0), x, z, t);
     return true;
   }
 };
@@ -85,7 +85,7 @@ class RectangleYZ : public Rectangle {
     const auto z = ray.origin.z + t * ray.direction.z;
     if (y < corners[0] || y > corners[1] || z < corners[2] || z > corners[3]) return false;
 
-    setHitRecord(ray, interaction, Vector3F(1, 0, 0), y, z, t);
+    setHitRecord(ray, interaction, Vector3(1, 0, 0), y, z, t);
     return true;
   }
 };

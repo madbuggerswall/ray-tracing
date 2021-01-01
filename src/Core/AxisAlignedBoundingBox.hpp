@@ -10,15 +10,15 @@ class AxisAlignedBoundingBox {
   using AABB = AxisAlignedBoundingBox;
 
  private:
-  Point3F min;
-  Point3F max;
+  Point3 min;
+  Point3 max;
 
  public:
   AxisAlignedBoundingBox() {}
-  AxisAlignedBoundingBox(const Point3F& min, const Point3F& max) : min(min), max(max) {}
+  AxisAlignedBoundingBox(const Point3& min, const Point3& max) : min(min), max(max) {}
 
-  Point3F getMin() const { return min; }
-  Point3F getMax() const { return max; }
+  Point3 getMin() const { return min; }
+  Point3 getMax() const { return max; }
 
   inline bool intersect(const Ray& ray, float tMin, float tMax) const {
     for (int a = 0; a < 3; a++) {
@@ -41,8 +41,8 @@ class AxisAlignedBoundingBox {
     const auto yMax = fmax(box0.getMax().y, box1.getMax().y);
     const auto zMax = fmax(box0.getMax().z, box1.getMax().z);
 
-    const Point3F small(xMin, yMin, zMin);
-    const Point3F big(xMax, yMax, zMax);
+    const Point3 small(xMin, yMin, zMin);
+    const Point3 big(xMax, yMax, zMax);
 
     return AABB(small, big);
   }

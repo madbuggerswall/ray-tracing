@@ -44,20 +44,15 @@ void Image::writeToFile(std::string fileName, int samplesPerPixel) {
   for (int j = height - 1; j >= 0; --j) {
     for (int i = 0; i < width; ++i) {
       Color color = pixels[j * width + i];
-      auto red = color.x;
-      auto green = color.y;
-      auto blue = color.z;
 
       //	Divide the color total by the number of samples.
       //	Gamma-correct for gamma=2.0.
       const auto scale = 1.0 / samplesPerPixel;
-      red = std::sqrt(red * scale);
-      green = std::sqrt(green * scale);
-      blue = std::sqrt(blue * scale);
+      Color printColor(std::sqrt(color.red * scale), std::sqrt(color.green * scale), std::sqrt(color.blue * scale));
 
-      outputFile << static_cast<int>(256 * Math::clamp(red, 0.0, 0.999)) << "	"
-                 << static_cast<int>(256 * Math::clamp(green, 0.0, 0.999)) << "	"
-                 << static_cast<int>(256 * Math::clamp(blue, 0.0, 0.999)) << std::endl;
+      outputFile << static_cast<int>(256 * Math::clamp(printColor.red, 0.0, 0.999)) << "	"
+                 << static_cast<int>(256 * Math::clamp(printColor.green, 0.0, 0.999)) << "	"
+                 << static_cast<int>(256 * Math::clamp(printColor.blue, 0.0, 0.999)) << std::endl;
     }
   }
 }

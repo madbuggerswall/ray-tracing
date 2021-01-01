@@ -4,17 +4,14 @@
 #include <cmath>
 #include <iostream>
 
-template <typename T>
 class Normal3;
-template <typename T>
 class Point3;
 
-template <typename T>
 class Vector3 {
  public:
-  T x, y, z;  // Scalar components of the vector.
+  float x, y, z;  // Scalar components of the vector.
   Vector3() : x(0), y(0), z(0) {}
-  Vector3(T x, T y, T z) : x(x), y(y), z(z) { assert(!hasNaNs()); }
+  Vector3(float x, float y, float z) : x(x), y(y), z(z) { assert(!hasNaNs()); }
   // Copy constructor
   Vector3(const Vector3& other) : x(other.x), y(other.y), z(other.z) {}
 
@@ -38,17 +35,17 @@ class Vector3 {
   }
   // Avoid implicitly constructing from a Point.
 
-  explicit Vector3(const Point3<T>& point);
-  explicit Vector3(const Normal3<T>& normal);
+  explicit Vector3(const Point3& point);
+  explicit Vector3(const Normal3& normal);
 
   // For debugging
   bool hasNaNs() { return std::isnan(x) || std::isnan(y) || std::isnan(z); }
 
   // Member functions are implicitly inline.
-  T magnitude() const { return std::sqrt(magnitudeSquared()); }
-  T magnitudeSquared() const { return x * x + y * y + z * z; }
+  float magnitude() const { return std::sqrt(magnitudeSquared()); }
+  float magnitudeSquared() const { return x * x + y * y + z * z; }
 
-  void normalize() { *this / magnitude(); }
+  void normalize() { *this /= magnitude(); }
   Vector3 normalized() const { return Vector3(*this / magnitude()); }
 
   Vector3 reflect(const Vector3& normal) const { return *this - 2 * dot(*this, normal) * normal; }
@@ -60,12 +57,12 @@ class Vector3 {
   }
 
   // Member access operators
-  T operator[](int i) const {
+  float operator[](int i) const {
     if (i == 0) return x;
     if (i == 1) return y;
     return z;
   }
-  T& operator[](int i) {
+  float& operator[](int i) {
     if (i == 0) return x;
     if (i == 1) return y;
     return z;
@@ -113,8 +110,8 @@ class Vector3 {
     return Vector3(x * fraction, y * fraction, z * fraction);
   }
 
-  T minComponent() const { return std::min(x, std::min(y, z)); }
-  T maxComponent() const { return std::max(x, std::max(y, z)); }
+  float minComponent() const { return std::min(x, std::min(y, z)); }
+  float maxComponent() const { return std::max(x, std::max(y, z)); }
 
   // Returns the index of the largest component.
   int maxDimension() { return (x > y) ? ((x > z) ? 0 : 2) : ((y > z) ? 1 : 2); }
@@ -124,17 +121,17 @@ class Vector3 {
   friend std::ostream& operator<<(std::ostream& out, const Vector3& vector) {
     return out << vector.x << ' ' << vector.y << ' ' << vector.z;
   }
-  friend T dot(const Vector3& lhs, const Vector3& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z; }
-  friend T absDot(const Vector3& lhs, const Vector3& rhs) { return std::abs(dot(lhs, rhs)); }
+  friend float dot(const Vector3& lhs, const Vector3& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z; }
+  friend float absDot(const Vector3& lhs, const Vector3& rhs) { return std::abs(dot(lhs, rhs)); }
   friend Vector3 abs(const Vector3& vec) { return Vector3(std::abs(vec.x), std::abs(vec.y), std::abs(vec.z)); }
   friend Vector3 cross(const Vector3& lhs, const Vector3& rhs) {
     return Vector3(lhs.y * rhs.z - lhs.z * rhs.y, lhs.z * rhs.x - lhs.x * rhs.z, lhs.x * rhs.y - lhs.y * rhs.x);
   }
   friend Vector3 min(const Vector3& lhs, const Vector3& rhs) {
-    return Vector3<T>(std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z));
+    return Vector3(std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z));
   }
   friend Vector3 max(const Vector3& lhs, const Vector3& rhs) {
-    return Vector3<T>(std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z));
+    return Vector3(std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z));
   }
   friend void createLocalCoordinateSystem(const Vector3& v1, Vector3* v2, Vector3* v3) {
     // This function assumes v1 is normalized.
@@ -142,14 +139,9 @@ class Vector3 {
       *v2 = Vector3(-v1.z, 0, v1.x).normalized();
     else
       *v2 = Vector3(0, v1.z, -v1.y).normalized();
-    *v3 = Cross(v1, *v2);
+    *v3 = cross(v1, *v2);
   }
 };
-
-using Vector3F = Vector3<float>;
-using Vector3Int = Vector3<int>;
-
-using Color = Vector3<float>;
 
 // Member functions defined in the class body are implicitly inline.
 
@@ -158,6 +150,34 @@ struct UV {
   float v;
   UV() : u(0), v(0) {}
   UV(float u, float v) : u(u), v(v) {}
+};
+
+class Color {
+ public:
+  float red;
+  float green;
+  float blue;
+
+  Color() : red(0), green(0), blue(0) {}
+  Color(float red, float green, float blue) : red(red), green(green), blue(blue) {}
+
+  Color operator+(const Color& rhs) const { return Color(red + rhs.red, green + rhs.green, blue + rhs.blue); }
+  Color operator-(const Color& rhs) const { return Color(red - rhs.red, green - rhs.green, blue - rhs.blue); }
+  Color operator*(const Color& rhs) const { return Color(red * rhs.red, green * rhs.green, blue * rhs.blue); }
+  Color operator*(float scalar) const { return Color(red * scalar, green * scalar, blue * scalar); }
+
+  Color& operator+=(const Color& rhs) {
+    red += rhs.red;
+    green += rhs.green;
+    blue += rhs.blue;
+    return *this;
+  }
+  Color& operator*=(const Color& rhs) {
+    red *= rhs.red;
+    green *= rhs.green;
+    blue *= rhs.blue;
+    return *this;
+  }
 };
 
 #endif

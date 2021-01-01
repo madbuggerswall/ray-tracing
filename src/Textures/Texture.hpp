@@ -9,7 +9,7 @@
 class Texture {
  private:
  public:
-  virtual Color lookup(const UV& coordinates, const Point3F& point) const = 0;
+  virtual Color lookup(const UV& coordinates, const Point3& point) const = 0;
 };
 
 #endif

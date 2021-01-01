@@ -6,21 +6,17 @@
 
 #include "Vector3.hpp"
 
-template <typename T>
 class Point3 {
  public:
-  T x, y, z;
+  float x, y, z;
   Point3() : x(0), y(0), z(0) {}
-  Point3(T x, T y, T z) : x(x), y(y), z(z) {}
+  Point3(float x, float y, float z) : x(x), y(y), z(z) {}
 
   // Copy constructor
   Point3(const Point3& other) : x(other.x), y(other.y), z(other.z) {}
 
   // Move constructor
-  Point3(Point3&& other) :
-      x(std::exchange(other.x, 0)),
-      y(std::exchange(other.y, 0)),
-      z(std::exchange(other.z, 0)) {}
+  Point3(Point3&& other) : x(std::exchange(other.x, 0)), y(std::exchange(other.y, 0)), z(std::exchange(other.z, 0)) {}
 
   // Copy assignment
   Point3& operator=(const Point3& other) {
@@ -41,25 +37,25 @@ class Point3 {
   bool HasNaNs() const { return std::isnan(x) || std::isnan(y) || std::isnan(z); }
 
   // Member access operators
-  T operator[](int i) const {
+  float operator[](int i) const {
     if (i == 0) return x;
     if (i == 1) return y;
     return z;
   }
-  T& operator[](int i) {
+  float& operator[](int i) {
     if (i == 0) return x;
     if (i == 1) return y;
     return z;
   }
 
   // Arithmetic assignment operators
-  Point3& operator+=(const Vector3<T>& rhs) {
+  Point3& operator+=(const Vector3& rhs) {
     x += rhs.x;
     y += rhs.y;
     z += rhs.z;
     return *this;
   }
-  Point3& operator-=(const Vector3<T>& rhs) {
+  Point3& operator-=(const Vector3& rhs) {
     x -= rhs.x;
     y -= rhs.y;
     z -= rhs.z;
@@ -71,13 +67,13 @@ class Point3 {
     z += rhs.z;
     return *this;
   }
-  Point3& operator*=(T scalar) {
+  Point3& operator*=(float scalar) {
     x *= scalar;
     y *= scalar;
     z *= scalar;
     return *this;
   }
-  Point3& operator/=(T scalar) {
+  Point3& operator/=(float scalar) {
     float fraction = 1.f / scalar;
     x *= fraction;
     y *= fraction;
@@ -87,26 +83,28 @@ class Point3 {
 
   // Arithmetic operators
   Point3 operator-() const { return Point3(-x, -y, -z); }
-  Point3 operator+(const Vector3<T>& rhs) const { return Point3(x + rhs.x, y + rhs.y, z + rhs.z); }
-  Point3 operator-(const Vector3<T>& rhs) const { return Point3(x - rhs.x, y - rhs.y, z - rhs.z); }
+  Point3 operator+(const Vector3& rhs) const { return Point3(x + rhs.x, y + rhs.y, z + rhs.z); }
+  Point3 operator-(const Vector3& rhs) const { return Point3(x - rhs.x, y - rhs.y, z - rhs.z); }
   Point3 operator+(const Point3& rhs) const { return Point3(x + rhs.x, y + rhs.y, z + rhs.z); }
-  Point3 operator*(T scalar) const { return Point3(scalar * x, scalar * y, scalar * z); }
-  Point3 operator/(T scalar) const {
+  Point3 operator*(float scalar) const { return Point3(scalar * x, scalar * y, scalar * z); }
+  Point3 operator/(float scalar) const {
     float fraction = 1.f / scalar;
     return Point3(fraction * x, fraction * y, fraction * z);
   }
-  Vector3<T> operator-(const Point3& rhs) const { return Vector3(x - rhs.x, y - rhs.y, z - rhs.z); }
+  Vector3 operator-(const Point3& rhs) const { return Vector3(x - rhs.x, y - rhs.y, z - rhs.z); }
 
   // Comparison operators
   bool operator==(const Point3& rhs) const { return x == rhs.x && y == rhs.y && z == rhs.z; }
   bool operator!=(const Point3& rhs) const { return x != rhs.x || y != rhs.y || z != rhs.z; }
 
-  friend std::ostream& operator<<(std::ostream& os, const Point3<T>& p) {
+  friend std::ostream& operator<<(std::ostream& os, const Point3& p) {
     os << "[" << p.x << ", " << p.y << ", " << p.z << "]";
     return os;
   }
-  friend T distance(const Point3& p1, const Point3& p2) { return (p1 - p2).magnitude(); }
-  friend T distanceSquared(const Point3& p1, const Point3& p2) { return (p1 - p2).magnitudeSquared(); }
+  friend Point3 operator*(float scalar, const Point3& rhs);
+
+  friend float distance(const Point3& p1, const Point3& p2) { return (p1 - p2).magnitude(); }
+  friend float distanceSquared(const Point3& p1, const Point3& p2) { return (p1 - p2).magnitudeSquared(); }
   friend Point3 lerp(float t, const Point3& p1, const Point3& p2) { return (1 - t) * p1 + t * p2; }
   friend Point3 min(const Point3& p1, const Point3& p2) {
     return Point3(std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::min(p1.z, p2.z));
@@ -118,19 +116,8 @@ class Point3 {
   friend Point3 ceil(const Point3& p) { return Point3(std::ceil(p.x), std::ceil(p.y), std::ceil(p.z)); }
   friend Point3 abs(const Point3& p) { return Point3(std::abs(p.x), std::abs(p.y), std::abs(p.z)); }
   friend Point3 permute(const Point3& p, int x, int y, int z) { return Point3(p[x], p[y], p[z]); }
-
-  // Constructor. Convert Point<T> to Point<U>. Never implicitly.
-  template <typename U>
-  explicit Point3(const Point3<U>& p) : x((T) p.x), y((T) p.y), z((T) p.z) {}
-
-  // Cast operator. Convert Point<T> to Vector<U>. Never implicitly.
-  template <typename U>
-  explicit operator Vector3<U>() const {
-    return Vector3<U>(x, y, z);
-  }
 };
 
-using Point3F = Point3<float>;
-using Point3Int = Point3<int>;
+Point3 operator*(float scalar, const Point3& rhs) { return Point3(scalar * rhs.x, scalar * rhs.y, scalar * rhs.z); }
 
 #endif
