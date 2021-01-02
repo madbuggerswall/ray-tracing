@@ -17,8 +17,8 @@ class Rectangle : public GeometricalObject {
       k(k),
       material(material) {}
 
-  void setHitRecord(const Ray& ray, SInteraction& interaction, const Vector3 outwardNormal, float x, float y,
-                    float t) const {
+  void setInteraction(const Ray& ray, SInteraction& interaction, const Vector3 outwardNormal, float x, float y,
+                      float t) const {
     interaction.uv = UV((x - corners[0]) / (corners[1] - corners[0]), (y - corners[2]) / (corners[3] - corners[2]));
     interaction.t = t;
     interaction.setFaceNormal(ray, outwardNormal);
@@ -40,14 +40,14 @@ class RectangleXY : public Rectangle {
       Rectangle(corners, k, material) {}
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
-    const auto t = (k - ray.origin.z) / ray.direction.z;
+    const float t = (k - ray.origin.z) / ray.direction.z;
     if (t < tMin || t > tMax) return false;
 
-    const auto x = ray.origin.x + t * ray.direction.x;
-    const auto y = ray.origin.y + t * ray.direction.y;
+    const float x = ray.origin.x + t * ray.direction.x;
+    const float y = ray.origin.y + t * ray.direction.y;
     if (x < corners[0] || x > corners[1] || y < corners[2] || y > corners[3]) return false;
 
-    setHitRecord(ray, interaction, Vector3(0, 0, 1), x, y, t);
+    setInteraction(ray, interaction, Vector3(0, 0, 1), x, y, t);
     return true;
   }
 };
@@ -59,14 +59,14 @@ class RectangleXZ : public Rectangle {
       Rectangle(corners, k, material) {}
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
-    const auto t = (k - ray.origin.y) / ray.direction.y;
+    const float t = (k - ray.origin.y) / ray.direction.y;
     if (t < tMin || t > tMax) return false;
 
-    const auto x = ray.origin.x + t * ray.direction.x;
-    const auto z = ray.origin.z + t * ray.direction.z;
+    const float x = ray.origin.x + t * ray.direction.x;
+    const float z = ray.origin.z + t * ray.direction.z;
     if (x < corners[0] || x > corners[1] || z < corners[2] || z > corners[3]) return false;
 
-    setHitRecord(ray, interaction, Vector3(0, 1, 0), x, z, t);
+    setInteraction(ray, interaction, Vector3(0, 1, 0), x, z, t);
     return true;
   }
 };
@@ -78,14 +78,14 @@ class RectangleYZ : public Rectangle {
       Rectangle(corners, k, material) {}
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
-    const auto t = (k - ray.origin.x) / ray.direction.x;
+    const float t = (k - ray.origin.x) / ray.direction.x;
     if (t < tMin || t > tMax) return false;
 
-    const auto y = ray.origin.y + t * ray.direction.y;
-    const auto z = ray.origin.z + t * ray.direction.z;
+    const float y = ray.origin.y + t * ray.direction.y;
+    const float z = ray.origin.z + t * ray.direction.z;
     if (y < corners[0] || y > corners[1] || z < corners[2] || z > corners[3]) return false;
 
-    setHitRecord(ray, interaction, Vector3(1, 0, 0), y, z, t);
+    setInteraction(ray, interaction, Vector3(1, 0, 0), y, z, t);
     return true;
   }
 };
