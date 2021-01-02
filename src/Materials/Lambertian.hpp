@@ -1,9 +1,9 @@
 #ifndef LAMBERTIAN_HPP
 #define LAMBERTIAN_HPP
 
+#include "../Core/Random.hpp"
 #include "../Textures/SolidColor.hpp"
 #include "Material.hpp"
-#include "../Core/Random.hpp"
 
 class Lambertian : public Material {
  private:

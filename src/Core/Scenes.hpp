@@ -232,7 +232,7 @@ namespace Scenes {
     scene.add(std::make_shared<ConstantMedium>(boundary, .0001, Color(1, 1, 1)));
 
     auto glassSphereA = std::make_shared<Sphere>(Point3(120, 150, 145), 50, std::make_shared<Dielectric>(1.5));
-    auto glassSphereB = std::make_shared<Sphere>(Point3(120, 450, 145), 50, std::make_shared<Dielectric>(2.4));
+    auto glassSphereB = std::make_shared<Sphere>(Point3(120, 450, 145), 50, std::make_shared<Dielectric>(1.5));
     auto glassSphereC = std::make_shared<Sphere>(Point3(120, 150, 0), 50, std::make_shared<Dielectric>(1.5));
     scene.add(glassSphereA);
     scene.add(glassSphereB);
@@ -305,7 +305,6 @@ namespace Scenes {
         config.imageWidth = 800;
         config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
         config.background = Color(0, 0, 0);
-        config.samplesPerPixel = 320;
         break;
 
       case 6:
@@ -317,7 +316,6 @@ namespace Scenes {
         config.imageWidth = 600;
         config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
         config.background = Color(0, 0, 0);
-        config.samplesPerPixel = 12;
         break;
 
       case 7:
@@ -325,7 +323,6 @@ namespace Scenes {
         config.aspectRatio = 1.0;
         config.imageWidth = 600;
         config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
-        config.samplesPerPixel = 225;
         config.lookFrom = Point3(278, 278, -800);
         config.lookAt = Point3(278, 278, 0);
         config.verticalFOV = 40.0;
@@ -335,8 +332,6 @@ namespace Scenes {
         config.aspectRatio = 1.0;
         config.imageWidth = 800;
         config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
-        config.samplesPerPixel = 64;
-        config.bounceLimit = 64;
         config.background = Color(0, 0, 0);
         config.lookFrom = Point3(478, 278, -600);
         config.lookAt = Point3(278, 278, 0);
@@ -345,6 +340,7 @@ namespace Scenes {
 
       default:
         scene = Scenes::randomScene();
+        config.background = Color(0.70, 0.80, 1.00);
         config.lookFrom = Point3(13, 2, 3);
         config.lookAt = Point3(0, 0, 0);
         config.verticalFOV = 20.0;

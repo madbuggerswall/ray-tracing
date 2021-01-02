@@ -1,8 +1,8 @@
 #ifndef SPHERE_HPP
 #define SPHERE_HPP
 
-#include "GeometricalObject.hpp"
 #include "../Core/Math.hpp"
+#include "GeometricalObject.hpp"
 
 class Sphere : public GeometricalObject {
  private:

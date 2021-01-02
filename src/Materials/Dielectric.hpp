@@ -1,8 +1,8 @@
 #ifndef DIELECTRIC_HPP
 #define DIELECTRIC_HPP
 
-#include "Material.hpp"
 #include "../Core/Random.hpp"
+#include "Material.hpp"
 
 class Dielectric : public Material {
  private:
@@ -15,8 +15,8 @@ class Dielectric : public Material {
   virtual bool scatter(const Ray& incoming, const SInteraction& interaction, Color& attenuation,
                        Ray& scattered) const override {
     attenuation = Color(1.0, 1.0, 1.0);
-    
-		float refractiveRatio;
+
+    float refractiveRatio;
     if (interaction.frontFace)
       refractiveRatio = 1.0 / refractiveIndex;
     else

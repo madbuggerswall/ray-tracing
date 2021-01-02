@@ -1,9 +1,9 @@
 #ifndef MATERIAL_HPP
 #define MATERIAL_HPP
 
-#include "../Geometry/Vector3.hpp"
-#include "../Geometry/Ray.hpp"
 #include "../Core/SurfaceInteraction.hpp"
+#include "../Geometry/Ray.hpp"
+#include "../Geometry/Vector3.hpp"
 
 class Material {
  public:

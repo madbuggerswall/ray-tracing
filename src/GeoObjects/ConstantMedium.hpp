@@ -1,11 +1,10 @@
 #ifndef CONSTANT_MEDIUM_HPP
 #define CONSTANT_MEDIUM_HPP
 
-#include "GeometricalObject.hpp"
 #include "../Materials/Isotropic.hpp"
 #include "../Materials/Material.hpp"
 #include "../Textures/Texture.hpp"
-
+#include "GeometricalObject.hpp"
 
 class ConstantMedium : public GeometricalObject {
  private:

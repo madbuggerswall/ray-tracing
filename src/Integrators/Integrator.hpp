@@ -16,32 +16,39 @@
 
 class Integrator {
  protected:
+  Sampler sampler;
+  Scene scene;
+  Camera camera;
+
+  Color background;
+
   ushort imageHeight;
   ushort imageWidth;
 
   ushort samplesPerPixel;
   ushort bounceLimit;
 
-  Color background;
-
  public:
   Integrator() = delete;
-  Integrator(const CConfig& config) :
+  Integrator(const CConfig& config, const Scene& scene, const Camera& camera) :
       imageHeight(config.imageHeight),
       imageWidth(config.imageWidth),
       samplesPerPixel(config.samplesPerPixel),
       bounceLimit(config.bounceLimit),
-      background(config.background) {}
+      background(config.background),
+      sampler(config),
+      scene(scene),
+      camera(camera) {}
 
-  virtual Color tracePath(const Ray& ray, const Scene& scene, int bounceLimit) const { return Color(0.5, 0.5, 0.5); };
-  virtual void render(const Camera& camera, const Scene& scene, const Sampler& sampler, Image& image) const {};
+  virtual Color tracePath(const Ray& ray, int bounceLimit) const { return Color(0.5, 0.5, 0.5); };
+  virtual void render(Image& image) const {};
 };
 
 class PathIntegrator : public Integrator {
  public:
-  PathIntegrator(const CConfig config) : Integrator(config) {}
+  PathIntegrator(const CConfig config, const Scene& scene, const Camera& camera) : Integrator(config, scene, camera) {}
 
-  Color tracePath(const Ray& ray, const Scene& scene, int bounceLimit) const override {
+  Color tracePath(const Ray& ray, int bounceLimit) const override {
     SInteraction interaction;
     // If a ray exceeds the bounce limit, return black.
     if (bounceLimit <= 0) return Color(0, 0, 0);
@@ -57,10 +64,10 @@ class PathIntegrator : public Integrator {
     if (!interaction.materialPtr->scatter(ray, interaction, attenuation, scattered)) return emission;
 
     // If a ray hits any other material, scatter by spawning a new ray in a recursive way.
-    return emission + attenuation * tracePath(scattered, scene, bounceLimit - 1);
+    return emission + attenuation * tracePath(scattered, bounceLimit - 1);
   }
 
-  void render(const Camera& camera, const Scene& scene, const Sampler& sampler, Image& image) const override {
+  void render(Image& image) const override {
     Ray ray;
     for (int j = imageHeight - 1; j >= 0; --j) {
       std::cout << "\rScanlines remaining: " << j << "	" << std::flush;
@@ -68,7 +75,7 @@ class PathIntegrator : public Integrator {
         Color pixelColor(0, 0, 0);
         for (int s = 0; s < samplesPerPixel; ++s) {
           ray = camera.getRay(sampler.getRandomSample(i, j));
-          pixelColor += tracePath(ray, scene, bounceLimit);
+          pixelColor += tracePath(ray, bounceLimit);
         }
         image[j * imageWidth + i] = pixelColor;
       }
@@ -77,26 +84,34 @@ class PathIntegrator : public Integrator {
 };
 
 class Vertex {
+ public:
   Point3 point;
   Vector3 normal;
 
- public:
   Vertex(Point3 point, Vector3 normal) : point(point), normal(normal) {}
   Vertex(const SInteraction& interaction) : Vertex(interaction.point, interaction.normal) {}
 };
 
 class Path {
   std::vector<Vertex> vertices;
-	Color contribution;
+
  public:
+  Color contribution;
+  ushort pixelX, pixelY;
+
   Path() {}
-  void addVertex(const Vertex& vertex) { vertices.push_back(vertex); }
+  void add(const Vertex& vertex) { vertices.push_back(vertex); }
 };
 
+// TODO: BPT
 class BidirectionalPathIntegrator : public Integrator {
-  BidirectionalPathIntegrator(const CConfig config) : Integrator(config) {}
+  std::vector<Path> camPaths;
+  std::vector<Path> lightPaths;
 
-  Color tracePath(const Ray& ray, const Scene& scene, int bounceLimit) const override {
+  BidirectionalPathIntegrator(const CConfig& config, const Scene& scene, const Camera& camera) :
+      Integrator(config, scene, camera) {}
+
+  Color tracePath(const Ray& ray, int bounceLimit, Path& path) const {
     SInteraction interaction;
     // If a ray exceeds the bounce limit, return black.
     if (bounceLimit <= 0) return Color(0, 0, 0);
@@ -111,14 +126,30 @@ class BidirectionalPathIntegrator : public Integrator {
     // If a ray hits a light, return the light's emission color.
     if (!interaction.materialPtr->scatter(ray, interaction, attenuation, scattered)) return emission;
 
+    // Add vertex to path
+    path.add(Vertex(interaction));
+
     // If a ray hits any other material, scatter by spawning a new ray in a recursive way.
-    return emission + attenuation * tracePath(scattered, scene, bounceLimit - 1);
+    return emission + attenuation * tracePath(scattered, bounceLimit - 1, path);
   }
 
-  Path generateCameraPath() {
-    Path result;
-    return result;
+  void render(Image& image) const override {
+    Ray ray;
+    for (int j = imageHeight - 1; j >= 0; --j) {
+      std::cout << "\rScanlines remaining: " << j << "	" << std::flush;
+      for (int i = 0; i < imageWidth; ++i) {
+        for (int s = 0; s < samplesPerPixel; ++s) { Path camPath = generateCameraPath(i, j); }
+      }
+    }
+  }
+
+  Path generateCameraPath(ushort pixelX, ushort pixelY) const {
+    Path path;
+    Ray ray = camera.getRay(sampler.getRandomSample(pixelX, pixelY));
+    path.contribution = tracePath(ray, bounceLimit, path);
+    return path;
   }
 };
 
+using BDPTIntegrator = BidirectionalPathIntegrator;
 #endif

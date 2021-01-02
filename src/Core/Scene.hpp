@@ -5,10 +5,12 @@
 #include <vector>
 
 #include "../GeoObjects/GeometricalObject.hpp"
+#include "../Materials/Material.hpp"
 
 class Scene : public GeometricalObject {
  private:
   std::vector<std::shared_ptr<GeoObject>> objects;
+  std::vector<std::shared_ptr<GeoObject>> lights;
 
  public:
   Scene() {}
