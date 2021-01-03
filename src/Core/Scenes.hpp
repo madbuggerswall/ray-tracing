@@ -124,8 +124,8 @@ namespace Scenes {
     auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
     auto light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
 
-    RectangleYZ rectangleA({0, 555, 0, 555}, 555, green);
-    RectangleYZ rectangleB({0, 555, 0, 555}, 0, red);
+    RectangleYZ rectangleA({0, 555, 0, 555}, 555, red);
+    RectangleYZ rectangleB({0, 555, 0, 555}, 0, green);
     RectangleXZ rectangleC({213, 343, 227, 332}, 554, light);
     RectangleXZ rectangleD({0, 555, 0, 555}, 0, white);
     RectangleXZ rectangleE({0, 555, 0, 555}, 555, white);
