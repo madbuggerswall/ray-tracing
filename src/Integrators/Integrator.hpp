@@ -112,6 +112,8 @@ class Path {
   Vertex first() const { return vertices.front(); }
   int length() const { return vertices.size(); }
   bool empty() const { return vertices.empty(); }
+  void removeLast() { vertices.pop_back(); }
+  void append(const Path& path) { vertices.insert(vertices.end(), path.vertices.begin(), path.vertices.end()); }
 };
 
 // TODO: BPT
@@ -123,13 +125,13 @@ class BidirectionalPathIntegrator : public Integrator {
   BidirectionalPathIntegrator(const CConfig& config, const Scene& scene, const Camera& camera) :
       Integrator(config, scene, camera) {}
 
-  Color tracePath(const Ray& ray, int bounceLimit, Path& path) const {
+  void tracePath(const Ray& ray, int bounceLimit, Path& path) const {
     SInteraction interaction;
     // If a ray exceeds the bounce limit, return black.
-    if (bounceLimit <= 0) return Color(0, 0, 0);
+    if (bounceLimit <= 0) return;
 
     // If a ray does not hit anything in the scene, return background color
-    if (!scene.intersect(ray, 0.001, Math::infinity, interaction)) return background;
+    if (!scene.intersect(ray, 0.001, Math::infinity, interaction)) return;
 
     Ray scattered;
     Color attenuation;
@@ -139,25 +141,53 @@ class BidirectionalPathIntegrator : public Integrator {
     if (!interaction.materialPtr->scatter(ray, interaction, attenuation, scattered)) {
       // Add vertex to path
       path.add(Vertex(interaction, true));
-      return emission;
+      return;
     }
     // Add vertex to path
     path.add(Vertex(interaction, false));
 
+    tracePath(scattered, bounceLimit - 1, path);
+  }
+
+  Color evaluatePath(const Path& path, int index) const {
+    SInteraction interaction;
+
+    // If a ray exceeds the bounce limit, return black.
+    if (!(index < path.length() - 1)) return Color(0, 0, 0);
+
+    Vector3 direction = (path[index + 1].point - path[index].point).normalized();
+    Ray ray(path[index].point, direction);
+    // If a ray does not hit anything in the scene, return background color
+    if (!scene.intersect(ray, 0.001, Math::infinity, interaction)) return background;
+
+    Ray scattered;
+    Color attenuation;
+    Color emission = interaction.materialPtr->emit(interaction.uv, interaction.point);
+
+    // If a ray hits a light, return the light's emission color.
+    if (!interaction.materialPtr->scatter(ray, interaction, attenuation, scattered)) return emission;
+
     // If a ray hits any other material, scatter by spawning a new ray in a recursive way.
-    return emission + attenuation * tracePath(scattered, bounceLimit - 1, path);
+    return emission + attenuation * evaluatePath(path, index + 1);
   }
 
   void render(Image& image) const override {
     for (int j = imageHeight - 1; j >= 0; --j) {
       std::cout << "\rScanlines remaining: " << j << "	" << std::flush;
       for (int i = 0; i < imageWidth; ++i) {
+        Color pixelColor(0, 0, 0);
         for (int s = 0; s < samplesPerPixel; ++s) {
           Path camPath = generateCameraPath(i, j);
-          Path lightPath = generateLightPath();
-          if (isConnectable(camPath, lightPath))
-            image[j * imageWidth + i] = camPath.contribution + lightPath.contribution;
+          Path lightPath;
+          Path combined;
+          combined.append(camPath);
+          if (!camPath.last().hitLight) {
+            lightPath = generateLightPath();
+            if (isConnectable(camPath, lightPath)) { combined.append(lightPath); }
+          }
+          pixelColor += evaluatePath(combined, 0);
         }
+        image[j * imageWidth + i] = pixelColor;
       }
     }
   }
@@ -165,22 +195,25 @@ class BidirectionalPathIntegrator : public Integrator {
   Path generateCameraPath(ushort pixelX, ushort pixelY) const {
     Path path;
     Ray ray = camera.getRay(sampler.getRandomSample(pixelX, pixelY));
-    path.contribution = tracePath(ray, bounceLimit, path);
+    path.add(Vertex(ray.origin, Vector3(0, 0, 0), false));
+    tracePath(ray, bounceLimit / 2, path);
     return path;
   }
 
   Path generateLightPath() const {
     Path path;
     Ray ray(scene.getRandomLight()->samplePoint(), Random::unitVector());
-    path.contribution = tracePath(ray, bounceLimit, path);
+    path.add(Vertex(ray.origin, ray.direction, true));
+    tracePath(ray, bounceLimit / 2, path);
+    if (path.length() >= 2) {
+      if (path.last().hitLight) { path.removeLast(); }
+    }
     return path;
   }
 
   bool isConnectable(const Path& camPath, const Path& lightPath) const {
     bool result;
-    if (camPath.empty() && lightPath.empty()) {
-      result = false;
-    } else if (camPath.empty() && (lightPath.length() >= 2)) {
+    if (camPath.empty() && (lightPath.length() >= 2)) {
       // No direct hit to the film (pinhole)
       result = false;
     } else if ((camPath.length() >= 2) && lightPath.empty()) {
@@ -189,15 +222,15 @@ class BidirectionalPathIntegrator : public Integrator {
     } else if ((camPath.length() == 1) && (lightPath.length() >= 1)) {
       // light tracing
       SInteraction interaction;
-      Ray ray(camPath[0].point, (lightPath.last().point - camPath.first().point).normalized());
-      double tMax = (lightPath.last().point - camPath[0].point).magnitude() / ray.direction.magnitude();
-      result = !scene.intersect(ray, 0.001, tMax, interaction);
+      Ray ray(camPath.first().point, (lightPath.last().point - camPath.first().point).normalized());
+      double tMax = (lightPath.last().point - camPath.first().point).magnitude() / ray.direction.magnitude();
+      result = !scene.intersect(ray, 0.001, tMax - 0.001, interaction);
     } else {
       // shadow ray connection
       SInteraction interaction;
       Ray ray(camPath.last().point, (lightPath.last().point - camPath.last().point).normalized());
       double tMax = (lightPath.last().point - camPath.last().point).magnitude() / ray.direction.magnitude();
-      result = !scene.intersect(ray, 0.001, tMax, interaction);
+      result = !scene.intersect(ray, 0.001, tMax - 0.001, interaction);
     }
     return result;
   }

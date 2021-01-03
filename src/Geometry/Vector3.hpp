@@ -165,7 +165,11 @@ class Color {
   Color operator-(const Color& rhs) const { return Color(red - rhs.red, green - rhs.green, blue - rhs.blue); }
   Color operator*(const Color& rhs) const { return Color(red * rhs.red, green * rhs.green, blue * rhs.blue); }
   Color operator*(float scalar) const { return Color(red * scalar, green * scalar, blue * scalar); }
-
+  Color operator/(float scalar) const {
+    assert(scalar != 0);
+    float fraction = 1.f / scalar;
+    return Color(red * fraction, green * fraction, blue * fraction);
+  }
   Color& operator+=(const Color& rhs) {
     red += rhs.red;
     green += rhs.green;
