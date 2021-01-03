@@ -67,6 +67,8 @@ class MovingSphere : public GeometricalObject {
     return true;
   }
 
+  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
+
   Point3 centerAt(float time) const { return center0 + ((time - time0) / (time1 - time0)) * (center1 - center0); }
 };
 

@@ -31,8 +31,7 @@ int main(int argc, char const* argv[]) {
   Image image(config.imageHeight, config.imageWidth);
 
   // Rendering
-  Sampler sampler(config);
-  PathIntegrator integrator(config, scene, camera);
+  BDPTIntegrator integrator(config, scene, camera);
   integrator.render(image);
 
   std::cout << std::endl << "Done." << std::endl;

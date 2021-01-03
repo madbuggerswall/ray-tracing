@@ -77,6 +77,8 @@ class RotateY : public GeometricalObject {
     outputBox = boundingBox;
     return hasBox;
   }
+
+  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
 };
 
 #endif

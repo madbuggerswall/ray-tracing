@@ -12,19 +12,15 @@ namespace Random {
   std::uniform_real_distribution<float> distribution(0.0, 1.0);
 
   inline float fraction() { return distribution(generator); }
-
   inline float range(float min, float max) { return min + (max - min) * fraction(); }
-
-  inline float rangeInt(int min, int max) {
-    std::uniform_int_distribution<int> distribution(min, max);
-    return distribution(generator);
-    // return min + (max - min) * fraction();
-  }
+	
+	// Returns an integer between [min, max).
+  inline int rangeInt(int min, int max) { return std::floor(range(min, max)); }
 
   inline Color color() { return Color(fraction(), fraction(), fraction()); }
   inline Color colorRange(float min, float max) { return Color(range(min, max), range(min, max), range(min, max)); }
-  
-	inline Vector3 vector() { return Vector3(fraction(), fraction(), fraction()); }
+
+  inline Vector3 vector() { return Vector3(fraction(), fraction(), fraction()); }
   inline Vector3 vectorRange(float min, float max) {
     return Vector3(range(min, max), range(min, max), range(min, max));
   }

@@ -1,9 +1,8 @@
 #ifndef BOX_HPP
 #define BOX_HPP
 
-
-#include "../GeoObjects/AxisAlignedRectangle.hpp"
 #include "../Core/Scene.hpp"
+#include "../GeoObjects/AxisAlignedRectangle.hpp"
 
 class Box : public GeometricalObject {
  private:
@@ -37,6 +36,8 @@ class Box : public GeometricalObject {
     outputBox = AABB(min, max);
     return true;
   }
+
+  virtual Point3 samplePoint() const override { return Point3(0,0,0); }
 };
 
 #endif

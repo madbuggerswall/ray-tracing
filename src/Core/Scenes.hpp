@@ -122,22 +122,21 @@ namespace Scenes {
     auto red = std::make_shared<Lambertian>(Color(.65, .05, .05));
     auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
     auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
-    auto light = std::make_shared<DiffuseLight>(Color(15, 15, 15));
 
     RectangleYZ rectangleA({0, 555, 0, 555}, 555, red);
     RectangleYZ rectangleB({0, 555, 0, 555}, 0, green);
-    RectangleXZ rectangleC({213, 343, 227, 332}, 554, light);
-    RectangleXZ rectangleD({0, 555, 0, 555}, 0, white);
-    RectangleXZ rectangleE({0, 555, 0, 555}, 555, white);
-    RectangleXY rectangleF({0, 555, 0, 555}, 555, white);
+    RectangleXZ rectangleC({0, 555, 0, 555}, 0, white);
+    RectangleXZ rectangleD({0, 555, 0, 555}, 555, white);
+    RectangleXY rectangleE({0, 555, 0, 555}, 555, white);
+    LightRectangleXZ rectangleLight({213, 343, 227, 332}, 554, Color(15, 15, 15));
 
     // Walls
     scene.add(std::make_shared<RectangleYZ>(rectangleA));
     scene.add(std::make_shared<RectangleYZ>(rectangleB));
     scene.add(std::make_shared<RectangleXZ>(rectangleC));
     scene.add(std::make_shared<RectangleXZ>(rectangleD));
-    scene.add(std::make_shared<RectangleXZ>(rectangleE));
-    scene.add(std::make_shared<RectangleXY>(rectangleF));
+    scene.add(std::make_shared<RectangleXY>(rectangleE));
+    scene.add(std::make_shared<LightRectangleXZ>(rectangleLight));
 
     std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
     boxA = std::make_shared<RotateY>(boxA, 15);
@@ -339,12 +338,14 @@ namespace Scenes {
         break;
 
       default:
-        scene = Scenes::randomScene();
-        config.background = Color(0.70, 0.80, 1.00);
-        config.lookFrom = Point3(13, 2, 3);
-        config.lookAt = Point3(0, 0, 0);
-        config.verticalFOV = 20.0;
-        config.aperture = 0.1;
+        scene = Scenes::cornellBox();
+        config.lookFrom = Point3(278, 278, -800);
+        config.lookAt = Point3(278, 278, 0);
+        config.verticalFOV = 40.0;
+        config.aspectRatio = 1.0;
+        config.imageWidth = 600;
+        config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
+        config.background = Color(0, 0, 0);
         break;
     }
     return scene;

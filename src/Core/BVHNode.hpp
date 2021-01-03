@@ -29,8 +29,7 @@ class BVHNode : public GeometricalObject {
  public:
   BVHNode() {}
   BVHNode(Scene& scene, float time0, float time1) :
-      BVHNode(scene.getObjects(), 0, scene.getObjects().size(), time0, time1) {
-  }
+      BVHNode(scene.getObjects(), 0, scene.getObjects().size(), time0, time1) {}
   BVHNode(std::vector<std::shared_ptr<GeoObject>>& objects, size_t start, size_t end, float time0, float time1) {
     int axis = Random::rangeInt(0, 2);
     auto comparator = (axis == 0) ? boxCompareX : (axis == 1) ? boxCompareY : boxCompareZ;
@@ -61,7 +60,7 @@ class BVHNode : public GeometricalObject {
     box = AABB::surroundingBox(boxLeft, boxRight);
   }
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+  bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     if (!box.intersect(ray, tMin, tMax)) return false;
     const bool hitLeft = left->intersect(ray, tMin, tMax, interaction);
     const bool hitRight = right->intersect(ray, tMin, hitLeft ? interaction.t : tMax, interaction);
@@ -72,6 +71,8 @@ class BVHNode : public GeometricalObject {
     outputBox = box;
     return true;
   }
+  
+	Point3 samplePoint() const override { return Point3(0, 0, 0); }
 };
 
 #endif

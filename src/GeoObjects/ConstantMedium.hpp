@@ -55,6 +55,8 @@ class ConstantMedium : public GeometricalObject {
   virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
     return shape->computeBoundingBox(t0, t1, outputBox);
   }
+
+  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
 };
 
 #endif

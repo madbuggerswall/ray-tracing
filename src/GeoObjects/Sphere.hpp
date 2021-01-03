@@ -53,6 +53,8 @@ class Sphere : public GeometricalObject {
     outputBox = AABB(center - Vector3(radius, radius, radius), center + Vector3(radius, radius, radius));
     return true;
   }
+	
+	virtual Point3 samplePoint() const override { return Point3(0,0,0); }
 
   UV getUV(const Vector3& outwardNormal) const {
     const auto phi = std::atan2(outwardNormal.z, outwardNormal.x);

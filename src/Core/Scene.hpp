@@ -4,7 +4,9 @@
 #include <memory>
 #include <vector>
 
+#include "../GeoObjects/AxisAlignedRectangle.hpp"
 #include "../GeoObjects/GeometricalObject.hpp"
+#include "../GeoObjects/Sphere.hpp"
 #include "../Materials/Material.hpp"
 
 class Scene : public GeometricalObject {
@@ -18,6 +20,10 @@ class Scene : public GeometricalObject {
 
   std::vector<std::shared_ptr<GeoObject>>& getObjects() { return objects; }
 
+  void add(std::shared_ptr<LightRectangleXZ> object) {
+    objects.push_back(object);
+    lights.push_back(object);
+  }
   void add(std::shared_ptr<GeoObject> object) { objects.push_back(object); }
   void clear() { objects.clear(); }
 
@@ -47,6 +53,17 @@ class Scene : public GeometricalObject {
       firstBox = false;
     }
     return true;
+  }
+
+  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
+
+  std::shared_ptr<GeoObject> getRandomLight() const {
+    if (lights.size() == 0)
+      return nullptr;
+    else if (lights.size() == 1)
+      return lights[0];
+    else
+      return lights[Random::rangeInt(0, lights.size())];
   }
 };
 

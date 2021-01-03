@@ -9,6 +9,7 @@ class GeometricalObject {
  public:
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const = 0;
   virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const = 0;
+	virtual Point3 samplePoint() const = 0;
 };
 
 using GeoObject = GeometricalObject;
