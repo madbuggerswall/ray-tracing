@@ -94,7 +94,7 @@ class Bounds3 {
     if (hitt1) *hitt1 = t1;
     return true;
   }
-  bool intersectP(const Ray& ray, const Vector3F& invDir, const int dirIsNeg[3]) const {
+  bool intersectP(const Ray& ray, const Vector3& invDir, const int dirIsNeg[3]) const {
     const Bounds3& bounds = *this;
     // <<Check for ray intersection against  and  slabs>>
     float tMin = (bounds[dirIsNeg[0]].x - ray.origin.x) * invDir.x;
