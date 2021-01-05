@@ -33,6 +33,9 @@ class Rectangle : public GeometricalObject {
     outputBox = AABB(Point3(corners[0], corners[2], k - padding), Point3(corners[1], corners[3], k + padding));
     return true;
   }
+
+	// Returns a pointer to the rectangle material
+  std::shared_ptr<Material> getMaterial() const override { return material; }
 };
 
 class RectangleXY : public Rectangle {

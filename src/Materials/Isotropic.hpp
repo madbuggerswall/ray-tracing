@@ -19,6 +19,14 @@ class Isotropic : public Material {
     attenuation = albedo->lookup(interaction.uv, interaction.point);
     return true;
   }
+
+	// Lambertian BRDF
+	float brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override { return 1.0 / Math::pi; }
+	
+	// Lambertian BRDF
+  float pdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override {
+    return std::abs(dot(wo, normal)) / Math::pi;
+  }
 };
 
 #endif

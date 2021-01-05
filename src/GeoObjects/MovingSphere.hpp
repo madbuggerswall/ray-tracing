@@ -66,8 +66,8 @@ class MovingSphere : public GeometricalObject {
     outputBox = AABB::surroundingBox(initBox, finBox);
     return true;
   }
-
-  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
+	
+  std::shared_ptr<Material> getMaterial() const override { return material; }
 
   Point3 centerAt(float time) const { return center0 + ((time - time0) / (time1 - time0)) * (center1 - center0); }
 };

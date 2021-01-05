@@ -161,6 +161,8 @@ class Color {
   Color() : red(0), green(0), blue(0) {}
   Color(float red, float green, float blue) : red(red), green(green), blue(blue) {}
 
+  inline double maxComponent() const { return std::fmax(red, std::fmax(green, blue)); }
+
   Color operator+(const Color& rhs) const { return Color(red + rhs.red, green + rhs.green, blue + rhs.blue); }
   Color operator-(const Color& rhs) const { return Color(red - rhs.red, green - rhs.green, blue - rhs.blue); }
   Color operator*(const Color& rhs) const { return Color(red * rhs.red, green * rhs.green, blue * rhs.blue); }
@@ -170,6 +172,7 @@ class Color {
     float fraction = 1.f / scalar;
     return Color(red * fraction, green * fraction, blue * fraction);
   }
+
   Color& operator+=(const Color& rhs) {
     red += rhs.red;
     green += rhs.green;
@@ -180,6 +183,12 @@ class Color {
     red *= rhs.red;
     green *= rhs.green;
     blue *= rhs.blue;
+    return *this;
+  }
+  Color& operator*=(float scalar) {
+    red *= scalar;
+    green *= scalar;
+    blue *= scalar;
     return *this;
   }
 };

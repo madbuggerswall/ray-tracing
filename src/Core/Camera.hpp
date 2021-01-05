@@ -20,10 +20,13 @@ class Camera {
   float time0;
   float time1;
 
+  float viewportHeight;
+
  public:
   Camera(Point3 lookFrom, Point3 lookAt, Vector3 viewUp, float vertFov, float aspectRatio, float aperture,
          float focusDist, float time0, float time1) {
-    const auto viewportHeight = 2.0 * std::tan(Math::degreesToRadians(vertFov) / 2.0);
+    viewportHeight = 2.0 * std::tan(Math::degreesToRadians(vertFov) / 2.0);
+
     const auto viewportWidth = viewportHeight * aspectRatio;
     const auto focalLength = 1.0;
 
@@ -51,6 +54,9 @@ class Camera {
     const Vector3 direction = lowerLeftCorner + sample.x * horizontal + sample.y * vertical - origin - offset;
     return Ray(origin + offset, direction, Random::range(time0, time1));
   }
+
+  Vector3 getW() const { return w; }
+  float getDist(const int imageHeight) const { return imageHeight / viewportHeight; }
 };
 
 #endif

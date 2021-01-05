@@ -56,7 +56,8 @@ class ConstantMedium : public GeometricalObject {
     return shape->computeBoundingBox(t0, t1, outputBox);
   }
 
-  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
+	  std::shared_ptr<Material> getMaterial() const override { return phaseFunction; }
+
 };
 
 #endif

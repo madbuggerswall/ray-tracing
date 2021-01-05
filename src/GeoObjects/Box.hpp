@@ -9,6 +9,7 @@ class Box : public GeometricalObject {
   Point3 min;
   Point3 max;
   Scene sides;
+  std::shared_ptr<Material> material;
 
  public:
   Box() {}
@@ -26,6 +27,8 @@ class Box : public GeometricalObject {
     sides.add(std::make_shared<RectangleXZ>(sideD));
     sides.add(std::make_shared<RectangleYZ>(sideE));
     sides.add(std::make_shared<RectangleYZ>(sideF));
+
+    this->material = material;
   }
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
@@ -37,7 +40,7 @@ class Box : public GeometricalObject {
     return true;
   }
 
-  virtual Point3 samplePoint() const override { return Point3(0,0,0); }
+  std::shared_ptr<Material> getMaterial() const override { return material; }
 };
 
 #endif

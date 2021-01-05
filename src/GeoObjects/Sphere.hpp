@@ -8,14 +8,14 @@ class Sphere : public GeometricalObject {
  private:
   Point3 center;
   float radius;
-  std::shared_ptr<Material> materialPtr;
+  std::shared_ptr<Material> material;
 
  public:
   Sphere() {}
-  Sphere(Point3 center, float radius, std::shared_ptr<Material> materialPtr) :
+  Sphere(Point3 center, float radius, std::shared_ptr<Material> material) :
       center(center),
       radius(radius),
-      materialPtr(materialPtr) {}
+      material(material) {}
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     Vector3 oc = ray.origin - center;
@@ -31,7 +31,7 @@ class Sphere : public GeometricalObject {
       interaction.point = ray.at(interaction.t);
       const Vector3 outwardNormal = (interaction.point - center) / radius;
       interaction.setFaceNormal(ray, outwardNormal);
-      interaction.materialPtr = materialPtr;
+      interaction.materialPtr = material;
       interaction.uv = getUV(outwardNormal);
       return true;
     }
@@ -42,7 +42,7 @@ class Sphere : public GeometricalObject {
       const Vector3 outwardNormal = (interaction.point - center) / radius;
       interaction.setFaceNormal(ray, outwardNormal);
       interaction.uv = getUV(outwardNormal);
-      interaction.materialPtr = materialPtr;
+      interaction.materialPtr = material;
       return true;
     }
     return false;
@@ -53,8 +53,8 @@ class Sphere : public GeometricalObject {
     outputBox = AABB(center - Vector3(radius, radius, radius), center + Vector3(radius, radius, radius));
     return true;
   }
-	
-	virtual Point3 samplePoint() const override { return Point3(0,0,0); }
+
+  std::shared_ptr<Material> getMaterial() const override { return material; }
 
   UV getUV(const Vector3& outwardNormal) const {
     const auto phi = std::atan2(outwardNormal.z, outwardNormal.x);
