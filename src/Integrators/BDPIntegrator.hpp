@@ -6,10 +6,7 @@
 
 // TODO: BPT
 class BidirectionalPathIntegrator : public Integrator {
-  std::vector<Path> camPaths;
-  std::vector<Path> lightPaths;
-
-  int minPathLength = 1;
+  int minPathLength = 3;
   float lightArea;
 
  public:
@@ -51,7 +48,7 @@ class BidirectionalPathIntegrator : public Integrator {
           Path lightPath = generateLightPath();
           PathContribution pathContribution = combinePaths(camPath, lightPath);
 
-          pixelColor += pathContribution.accumulatePathContribution(pathContribution.scalarContrib);
+          pixelColor += pathContribution.accumulatePathContribution(1.0);
         }
         image[j * imageWidth + i] = pixelColor;
       }
@@ -155,7 +152,7 @@ class BidirectionalPathIntegrator : public Integrator {
     PathContribution result;
 
     // maxEvents = the maximum number of vertices
-    for (int pathLength = minPathLength; pathLength <= bounceLimit; pathLength++) {
+    for (int pathLength = minPathLength; pathLength <= bounceLimit * 2; pathLength++) {
       for (int numEyeVertices = 0; numEyeVertices <= pathLength + 1; numEyeVertices++) {
         const int numLightVertices = (pathLength + 1) - numEyeVertices;
 

@@ -64,7 +64,7 @@ class PathContribution {
 
  public:
   double scalarContrib;
-  PathContribution() { contributions.reserve(16); }
+  PathContribution() : scalarContrib(0) { contributions.reserve(16); }
   Contribution& operator[](int index) { return contributions[index]; }
   Contribution operator[](int index) const { return contributions[index]; }
 
