@@ -3,6 +3,7 @@
 #include "../GeoObjects/MovingSphere.hpp"
 #include "../GeoObjects/Sphere.hpp"
 #include "../Integrators/BDPIntegrator.hpp"
+#include "../Integrators/PathIntegrator.hpp"
 #include "../Materials/Dielectric.hpp"
 #include "../Materials/Lambertian.hpp"
 #include "../Materials/Metal.hpp"

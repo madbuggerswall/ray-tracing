@@ -65,6 +65,8 @@ class Scene : public GeometricalObject {
     else
       return lights[Random::rangeInt(0, lights.size())];
   }
+
+  std::vector<std::shared_ptr<GeoObject>> getLights() const { return lights; }
 };
 
 #endif

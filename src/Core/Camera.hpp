@@ -55,7 +55,7 @@ class Camera {
     return Ray(origin + offset, direction, Random::range(time0, time1));
   }
 
-  Vector3 getW() const { return w; }
+  Vector3 getW() const { return -w; }
   float getDist(const int imageHeight) const { return imageHeight / viewportHeight; }
 };
 

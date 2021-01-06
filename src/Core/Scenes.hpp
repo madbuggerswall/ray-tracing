@@ -123,6 +123,7 @@ namespace Scenes {
     auto white = std::make_shared<Lambertian>(Color(.73, .73, .73));
     auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
 
+
     RectangleYZ rectangleA({0, 555, 0, 555}, 555, red);
     RectangleYZ rectangleB({0, 555, 0, 555}, 0, green);
     RectangleXZ rectangleC({0, 555, 0, 555}, 0, white);

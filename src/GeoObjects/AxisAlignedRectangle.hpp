@@ -34,7 +34,7 @@ class Rectangle : public GeometricalObject {
     return true;
   }
 
-	// Returns a pointer to the rectangle material
+  // Returns a pointer to the rectangle material
   std::shared_ptr<Material> getMaterial() const override { return material; }
 };
 
@@ -123,6 +123,8 @@ class LightRectangleXZ : public Rectangle {
   Point3 samplePoint() const override {
     return Point3(Random::range(corners[0], corners[1]), k, Random::range(corners[2], corners[3]));
   }
+
+  float getArea() const override { return std::abs(corners[0] - corners[1]) * std::abs(corners[2] - corners[3]); }
 };
 
 #endif

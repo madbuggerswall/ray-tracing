@@ -19,6 +19,7 @@ class Lambertian : public Material {
     attenuation = albedo->lookup(interaction.uv, interaction.point);
     return true;
   }
+  Color emit(const UV& uv, const Point3& point) const override { return albedo->lookup(uv, point); }
 
   float brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override { return 1.0 / Math::pi; }
   float pdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override {

@@ -11,7 +11,7 @@ class Vector3 {
  public:
   float x, y, z;  // Scalar components of the vector.
   Vector3() : x(0), y(0), z(0) {}
-  Vector3(float x, float y, float z) : x(x), y(y), z(z) { assert(!hasNaNs()); }
+  Vector3(float x, float y, float z) : x(x), y(y), z(z) { /*assert(!hasNaNs());*/ }
   // Copy constructor
   Vector3(const Vector3& other) : x(other.x), y(other.y), z(other.z) {}
 
