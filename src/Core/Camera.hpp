@@ -57,6 +57,9 @@ class Camera {
 
   Vector3 getW() const { return -w; }
   float getDist(const int imageHeight) const { return imageHeight / viewportHeight; }
+  Point3 getOrigin() const { return origin; }
+  Vector3 getU() const { return u; }
+  Vector3 getV() const { return v; }
 };
 
 #endif

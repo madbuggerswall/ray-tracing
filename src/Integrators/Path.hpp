@@ -14,7 +14,7 @@ class Vertex {
   Vector3 normal;
   SInteraction interaction;
   std::shared_ptr<Material> materialPtr;
-
+  Vertex() = default;
   Vertex(const Point3& point, const Vector3& normal) : point(point), normal(normal) {}
   Vertex(const Point3& point, const Vector3& normal, const std::shared_ptr<Material> materialPtr) :
       point(point),
@@ -31,7 +31,8 @@ class Path {
   std::vector<Vertex> vertices;
 
  public:
-  Path() { vertices.reserve(32); }
+  Path() = delete;
+  Path(uint bounceLimit) { vertices.reserve(bounceLimit * 2); }
   void add(const Vertex& vertex) { vertices.push_back(vertex); }
 
   Vertex& operator[](int index) { return vertices[index]; }
@@ -45,7 +46,7 @@ class Path {
   void append(const Path& path) { vertices.insert(vertices.end(), path.vertices.begin(), path.vertices.end()); }
   void reverse() { std::reverse(vertices.begin(), vertices.end()); }
   Path reverse() const {
-    Path reversed;
+    Path reversed(vertices.capacity());
     reversed.vertices = vertices;
     std::reverse(reversed.vertices.begin(), reversed.vertices.end());
     return reversed;
@@ -56,6 +57,7 @@ struct Contribution {
   Color color;
   int x, y;
 
+  Contribution() : color(), x(0), y(0) {}
   Contribution(const Color& color, const int x, const int y) : color(color), x(x), y(y) {}
 };
 
@@ -64,7 +66,9 @@ class PathContribution {
 
  public:
   double scalarContrib;
-  PathContribution() : scalarContrib(0) { contributions.reserve(16); }
+  
+	PathContribution() = delete;
+  PathContribution(uint bounceLimit) : scalarContrib(0) { contributions.reserve(bounceLimit * bounceLimit); }
   Contribution& operator[](int index) { return contributions[index]; }
   Contribution operator[](int index) const { return contributions[index]; }
 
@@ -80,6 +84,17 @@ class PathContribution {
       result += color;
     }
     return result;
+  }
+
+	void accumulatePathContribution(const double scale, Image& image) {
+		int imageWidth = image.getWidth();
+    if (scalarContrib == 0) return;
+    for (auto contribution : contributions) {
+      const int ix = int(contribution.x);
+      const int iy = int(contribution.y);
+      const Color color = contribution.color * scale;
+      image[iy * imageWidth + ix] += color;
+    }
   }
 };
 

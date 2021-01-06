@@ -10,13 +10,24 @@ class Stopwatch {
   TimePoint startPoint;
   TimePoint stopPoint;
 
+  uint samples;
+  std::chrono::milliseconds totalTime;
+
  public:
-  Stopwatch() {}
+  Stopwatch() : samples(0), totalTime(0) {}
   void start() { startPoint = std::chrono::high_resolution_clock::now(); }
   void stop() { stopPoint = std::chrono::high_resolution_clock::now(); }
   void printTime() const {
     const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(stopPoint - startPoint);
     std::cout << seconds.count() << "s" << std::endl;
   }
+
+  void collectSample() {
+    stop();
+    totalTime += std::chrono::duration_cast<std::chrono::milliseconds>(stopPoint - startPoint);
+    samples++;
+  }
+
+  std::chrono::milliseconds getAverageTime() { return totalTime / samples; }
 };
 #endif

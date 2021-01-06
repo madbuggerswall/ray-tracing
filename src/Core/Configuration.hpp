@@ -18,7 +18,7 @@ struct CameraConfiguration {
   size_t imageHeight = static_cast<size_t>(imageWidth / aspectRatio);
   Color background = Color(0, 0, 0);
 
-  int samplesPerPixel = 16;
+  int samplesPerPixel = 1;
   int bounceLimit = 8;
 
   void printInfo() {

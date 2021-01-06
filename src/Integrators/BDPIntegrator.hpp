@@ -1,6 +1,7 @@
 #ifndef BDP_PATH_INTEGRATOR_HPP
 #define BDP_PATH_INTEGRATOR_HPP
 
+#include "../Core/Stopwatch.hpp"
 #include "Integrator.hpp"
 #include "Path.hpp"
 
@@ -39,24 +40,25 @@ class BidirectionalPathIntegrator : public Integrator {
   }
 
   void render(Image& image) const override {
-    for (int j = imageHeight - 1; j >= 0; --j) {
-      std::cout << "\rScanlines remaining: " << j << "	" << std::flush;
-      for (int i = 0; i < imageWidth; ++i) {
-        Color pixelColor(0, 0, 0);
-        for (int s = 0; s < samplesPerPixel; ++s) {
-          Path camPath = generateCameraPath(i, j);
-          Path lightPath = generateLightPath();
-          PathContribution pathContribution = combinePaths(camPath, lightPath);
+    Path camPath(bounceLimit);
+    Path lightPath(bounceLimit);
+    PathContribution pathContribution(bounceLimit);
 
-          pixelColor += pathContribution.accumulatePathContribution(1.0);
+    for (int j = imageHeight - 1; j >= 0; --j) {
+      std::cout << "\rScanlines remaining: " << j << "  " << std::flush;
+      for (int i = 0; i < imageWidth; ++i) {
+        for (int s = 0; s < samplesPerPixel; ++s) {
+          camPath = generateCameraPath(i, j);
+          lightPath = generateLightPath();
+          pathContribution = combinePaths(camPath, lightPath);
+          pathContribution.accumulatePathContribution(1.0, image);
         }
-        image[j * imageWidth + i] = pixelColor;
       }
     }
   }
 
   Path generateCameraPath(ushort pixelX, ushort pixelY) const {
-    Path path;
+    Path path(bounceLimit);
     Ray ray = camera.getRay(sampler.getRandomSample(pixelX, pixelY));
     path.add(Vertex(ray.origin, camera.getW()));
     tracePath(ray, bounceLimit, path);
@@ -64,7 +66,7 @@ class BidirectionalPathIntegrator : public Integrator {
   }
 
   Path generateLightPath() const {
-    Path path;
+    Path path(bounceLimit);
     auto randomLight = scene.getRandomLight();
     auto lightMaterial = scene.getRandomLight()->getMaterial();
     Ray ray(randomLight->samplePoint(), Random::unitVector());
@@ -73,29 +75,43 @@ class BidirectionalPathIntegrator : public Integrator {
     return path;
   }
 
-  bool isConnectable(const Path& camPath, const Path& lightPath) const {
+  bool isConnectable(const Path& camPath, const Path& lightPath, double& px, double& py) const {
+    Vector3 direction;
     bool result;
     if (camPath.empty() && (lightPath.length() >= 2)) {
       // No direct hit to the film (pinhole)
       result = false;
     } else if ((camPath.length() >= 2) && lightPath.empty()) {
       // Direct hit to the light source
+      direction = (camPath[1].point - camPath[0].point).normalized();
       bool isLastVertLight = dynamic_cast<DiffuseLight*>(&*(camPath.last().materialPtr));
       result = isLastVertLight;
+
     } else if ((camPath.length() == 1) && (lightPath.length() >= 1)) {
       // light tracing
       SInteraction interaction;
       Ray ray(camPath.first().point, (lightPath.last().point - camPath.first().point).normalized());
       double tMax = (lightPath.last().point - camPath.first().point).magnitude() / ray.direction.magnitude();
+      direction = ray.direction;
       result = !scene.intersect(ray, 0.001, tMax - 0.001, interaction);
     } else {
       // shadow ray connection
       SInteraction interaction;
       Ray ray(camPath.last().point, (lightPath.last().point - camPath.last().point).normalized());
       double tMax = (lightPath.last().point - camPath.last().point).magnitude() / ray.direction.magnitude();
+      direction = (camPath[1].point - camPath[0].point).normalized();
+
       result = !scene.intersect(ray, 0.001, tMax - 0.001, interaction);
     }
-    return result;
+    // get the pixel location
+    Point3 origin = camera.getOrigin();
+    Vector3 w = camera.getW();
+    float dist = camera.getDist(imageHeight);
+    Point3 screenCenter = origin + (w * dist);
+    Vector3 screenPosition = origin + (direction * (dist / dot(direction, w))) - screenCenter;
+    px = dot(camera.getU(), screenPosition) + (imageWidth * 0.5);
+    py = dot(-camera.getV(), screenPosition) + (imageHeight * 0.5);
+    return result && ((px >= 0) && (px < imageWidth) && (py >= 0) && (py < imageHeight));
   }
 
   inline double geometryTerm(const Vertex& e0, const Vertex& e1) const {
@@ -149,7 +165,7 @@ class BidirectionalPathIntegrator : public Integrator {
   }
 
   PathContribution combinePaths(const Path& eyePath, const Path& lightPath) const {
-    PathContribution result;
+    PathContribution result(bounceLimit);
 
     // maxEvents = the maximum number of vertices
     for (int pathLength = minPathLength; pathLength <= bounceLimit * 2; pathLength++) {
@@ -166,10 +182,10 @@ class BidirectionalPathIntegrator : public Integrator {
 
         // check the path visibility
         double px = -1.0, py = -1.0;
-        if (!isConnectable(eyeSubpath, lightSubpath)) continue;
+        if (!isConnectable(eyeSubpath, lightSubpath, px, py)) continue;
 
         // construct a full path
-        Path sampledPath;
+        Path sampledPath(bounceLimit);
         for (int i = 0; i < numEyeVertices; i++) sampledPath.add(eyePath[i]);
         for (int i = 0; i < numLightVertices; i++) sampledPath.add(lightPath[numLightVertices - i - 1]);
 
