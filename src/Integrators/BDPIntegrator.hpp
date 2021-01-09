@@ -5,7 +5,7 @@
 #include "Integrator.hpp"
 #include "Path.hpp"
 
-// TODO: Use smallpssmlt parameters.
+// TODO: Scale the accumulate with b / scalarContrib.
 class BidirectionalPathIntegrator : public Integrator {
   int minPathLength = 3;
   float lightArea;
@@ -69,7 +69,7 @@ class BidirectionalPathIntegrator : public Integrator {
       std::cout << "\rScanlines remaining: " << j << "  " << std::flush;
       for (int i = 0; i < imageWidth; ++i) {
         for (int s = 0; s < samplesPerPixel; ++s) {
-          camPath = generateCameraPath();
+          camPath = generateCameraPath(i, j);
           lightPath = generateLightPath();
           pathContribution = combinePaths(camPath, lightPath);
           pathContribution.accumulatePathContribution(1.0, image);
@@ -81,6 +81,14 @@ class BidirectionalPathIntegrator : public Integrator {
   Path generateCameraPath() const {
     Path path(maxEvents);
     Ray ray = camera.getSample(imageHeight, imageWidth);
+    path.add(Vertex(ray.origin, camera.getW()));
+    tracePath(ray, bounceLimit, path);
+    return path;
+  }
+
+  Path generateCameraPath(ushort pixelX, ushort pixelY) const {
+    Path path(maxEvents);
+    Ray ray = camera.getRay(sampler.getRandomSample(pixelX, pixelY));
     path.add(Vertex(ray.origin, camera.getW()));
     tracePath(ray, bounceLimit, path);
     return path;
