@@ -21,7 +21,7 @@ class Image {
   }
 
   void writeToFile(std::string fileName, int samplesPerPixel);
-  int toInt(double x) { return int(pow(1 - exp(-x), 1 / 2.2) * 255 + .5); }
+  int toInt(float x) { return int(std::pow(1 - std::exp(-x), 1 / 2.2) * 255 + .5); }
 
   Color& operator[](int index) { return pixels[index]; }
   Color operator[](int index) const { return pixels[index]; }
@@ -45,10 +45,11 @@ void Image::writeToFile(std::string fileName, int samplesPerPixel) {
   for (int j = 0; j < height; ++j) {
     for (int i = 0; i < width; ++i) {
       Color color = pixels[j * width + i];
-
       //	Divide the color total by the number of samples.
       //	Gamma-correct for gamma=2.0.
-      const double scale = double(width * height) / double(samplesPerPixel);
+      // const auto scale = 1.0 / samplesPerPixel;
+      const auto scale = 1.0 / double(samplesPerPixel);
+      // Color printColor(std::sqrt(color.red * scale), std::sqrt(color.green * scale), std::sqrt(color.blue * scale));
       outputFile << static_cast<int>(toInt(color.red * scale)) << "	"
                  << static_cast<int>(toInt(color.green * scale)) << "	"
                  << static_cast<int>(toInt(color.blue * scale)) << std::endl;

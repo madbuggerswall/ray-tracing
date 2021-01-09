@@ -1,6 +1,7 @@
 #ifndef PATH_HPP
 #define PATH_HPP
 
+#include <algorithm>
 #include <vector>
 
 #include "../Core/Image.hpp"
@@ -33,6 +34,7 @@ class Path {
  public:
   Path() = delete;
   Path(uint bounceLimit) { vertices.reserve(bounceLimit * 2); }
+  Path(const std::vector<Vertex>& vertices) : vertices(vertices) {}
   void add(const Vertex& vertex) { vertices.push_back(vertex); }
 
   Vertex& operator[](int index) { return vertices[index]; }
@@ -40,22 +42,27 @@ class Path {
 
   Vertex last() const { return vertices.back(); }
   Vertex first() const { return vertices.front(); }
+  std::vector<Vertex> firstN(int vertexCount) const {
+    std::vector<Vertex> result;
+    std::copy_n(vertices.begin(), vertexCount, std::back_inserter(result));
+    return result;
+  }
+
   int length() const { return vertices.size(); }
   bool empty() const { return vertices.empty(); }
   void removeLast() { vertices.pop_back(); }
   void append(const Path& path) { vertices.insert(vertices.end(), path.vertices.begin(), path.vertices.end()); }
   void reverse() { std::reverse(vertices.begin(), vertices.end()); }
-  Path reverse() const {
-    Path reversed(vertices.capacity());
-    reversed.vertices = vertices;
-    std::reverse(reversed.vertices.begin(), reversed.vertices.end());
-    return reversed;
+  Path reversed() const {
+    std::vector<Vertex> reversed = vertices;
+    std::reverse(reversed.begin(), reversed.end());
+    return Path(reversed);
   }
 };
 
 struct Contribution {
   Color color;
-  int x, y;
+  double x, y;
 
   Contribution() : color(), x(0), y(0) {}
   Contribution(const Color& color, const int x, const int y) : color(color), x(x), y(y) {}
@@ -65,16 +72,16 @@ class PathContribution {
   std::vector<Contribution> contributions;
 
  public:
-  double scalarContrib;
-  
-	PathContribution() = delete;
-  PathContribution(uint bounceLimit) : scalarContrib(0) { contributions.reserve(bounceLimit * bounceLimit); }
+  float scalarContrib;
+
+  PathContribution() = delete;
+  PathContribution(uint maxEvents) : scalarContrib(0) { contributions.reserve(maxEvents * maxEvents); }
   Contribution& operator[](int index) { return contributions[index]; }
   Contribution operator[](int index) const { return contributions[index]; }
 
   void add(const Contribution& contrib) { contributions.push_back(contrib); }
 
-  Color accumulatePathContribution(const double scale) {
+  Color accumulatePathContribution(const float scale) {
     if (scalarContrib == 0) return Color(0, 0, 0);
     Color result;
     for (auto contribution : contributions) {
@@ -86,8 +93,8 @@ class PathContribution {
     return result;
   }
 
-	void accumulatePathContribution(const double scale, Image& image) {
-		int imageWidth = image.getWidth();
+  void accumulatePathContribution(const float scale, Image& image) {
+    int imageWidth = image.getWidth();
     if (scalarContrib == 0) return;
     for (auto contribution : contributions) {
       const int ix = int(contribution.x);
@@ -98,18 +105,4 @@ class PathContribution {
   }
 };
 
-struct KahanAdder {
-  double sum, carry, y;
-  KahanAdder(const double b = 0.0) {
-    sum = b;
-    carry = 0.0;
-    y = 0.0;
-  }
-  inline void add(const double b) {
-    y = b - carry;
-    const double t = sum + y;
-    carry = (t - sum) - y;
-    sum = t;
-  }
-};
 #endif

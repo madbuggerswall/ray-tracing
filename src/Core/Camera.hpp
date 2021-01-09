@@ -55,6 +55,13 @@ class Camera {
     return Ray(origin + offset, direction, Random::range(time0, time1));
   }
 
+  Ray getSample(ushort imageHeight, ushort imageWidth) const {
+    const Vector3 su = u * -(0.5 - Random::fraction()) * imageWidth;
+    const Vector3 sv = v * (0.5 - Random::fraction()) * imageHeight;
+    const Vector3 sw = -w * getDist(imageHeight);
+    return Ray(origin, (su + sv + sw).normalized());
+  }
+
   Vector3 getW() const { return -w; }
   float getDist(const int imageHeight) const { return imageHeight / viewportHeight; }
   Point3 getOrigin() const { return origin; }

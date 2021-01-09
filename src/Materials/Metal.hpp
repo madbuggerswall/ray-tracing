@@ -28,8 +28,8 @@ class Metal : public Material {
   }
 
   float brdf(const Vector3& wi, const Vector3& n, const Vector3& wo) const override {
-    const double won = dot(wo, n);
-    const double win = dot(wi, n);
+    const float won = dot(wo, n);
+    const float win = dot(wi, n);
     const Vector3 reflected = (-wi).reflect(n);
     return (glossiness + 2.0) / (2.0 * Math::pi) * pow(std::fmax(dot(reflected, wo), 0.0), glossiness) /
            std::fmax(std::abs(win), std::abs(won));

@@ -11,7 +11,9 @@ class Vector3 {
  public:
   float x, y, z;  // Scalar components of the vector.
   Vector3() : x(0), y(0), z(0) {}
-  Vector3(float x, float y, float z) : x(x), y(y), z(z) { /*assert(!hasNaNs());*/ }
+  Vector3(float x, float y, float z) : x(x), y(y), z(z) {
+    // assert(!hasNaNs());
+  }
   // Copy constructor
   Vector3(const Vector3& other) : x(other.x), y(other.y), z(other.z) {}
 
@@ -159,9 +161,42 @@ class Color {
   float blue;
 
   Color() : red(0), green(0), blue(0) {}
-  Color(float red, float green, float blue) : red(red), green(green), blue(blue) {}
+  Color(float red, float green, float blue) : red(red), green(green), blue(blue) { assert(!hasNaNs()); }
 
-  inline double maxComponent() const { return std::fmax(red, std::fmax(green, blue)); }
+  // Copy constructor
+  Color(const Color& other) : red(other.red), green(other.green), blue(other.blue) { assert(!hasNaNs()); }
+
+  // Move constructor
+  Color(Color&& other) :
+      red(std::exchange(other.red, 0)),
+      green(std::exchange(other.green, 0)),
+      blue(std::exchange(other.blue, 0)) {
+    assert(!hasNaNs());
+  }
+
+  // Copy assignment
+  Color& operator=(const Color& other) {
+    red = other.red;
+    green = other.green;
+    blue = other.blue;
+    assert(!hasNaNs());
+    return *this;
+  }
+
+  // Move assignment
+  Color& operator=(Color&& other) noexcept {
+    red = std::move(other.red);
+    green = std::move(other.green);
+    blue = std::move(other.blue);
+    assert(!hasNaNs());
+    return *this;
+  }
+
+  // For debugging
+  bool hasNaNs() { return std::isnan(red) || std::isnan(green) || std::isnan(blue); }
+  bool hasInfs() { return std::isinf(red) || std::isinf(green) || std::isinf(blue); }
+  
+	inline float maxComponent() const { return std::fmax(red, std::fmax(green, blue)); }
 
   Color operator+(const Color& rhs) const { return Color(red + rhs.red, green + rhs.green, blue + rhs.blue); }
   Color operator-(const Color& rhs) const { return Color(red - rhs.red, green - rhs.green, blue - rhs.blue); }

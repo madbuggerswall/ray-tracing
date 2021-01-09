@@ -5,15 +5,36 @@
 #include "Integrator.hpp"
 #include "Path.hpp"
 
-// TODO: BPT
+// TODO: Use smallpssmlt parameters.
 class BidirectionalPathIntegrator : public Integrator {
   int minPathLength = 3;
   float lightArea;
+
+  int maxEvents;
+
+  float normConstant;
 
  public:
   BidirectionalPathIntegrator(const CConfig& config, const Scene& scene, const Camera& camera) :
       Integrator(config, scene, camera) {
     lightArea = getTotalLightArea();
+    maxEvents = bounceLimit + 1;
+    normConstant = estimateNormalizationConstant(10000);
+  }
+
+  float estimateNormalizationConstant(uint sampleCount) {
+    std::cout << "Estimating normalization constant" << std::endl;
+    Stopwatch stopwatch;
+    stopwatch.start();
+    float b = 0.0;
+    for (int i = 0; i < sampleCount; i++) {
+      b += combinePaths(generateCameraPath(), generateLightPath()).scalarContrib;
+    }
+    b /= float(sampleCount);
+    stopwatch.stop();
+    std::cout << "Normalization constant estimated: " << b << std::endl;
+    stopwatch.printTime();
+    return b;
   }
 
   float getTotalLightArea() {
@@ -40,15 +61,15 @@ class BidirectionalPathIntegrator : public Integrator {
   }
 
   void render(Image& image) const override {
-    Path camPath(bounceLimit);
-    Path lightPath(bounceLimit);
-    PathContribution pathContribution(bounceLimit);
+    Path camPath(maxEvents);
+    Path lightPath(maxEvents);
+    PathContribution pathContribution(maxEvents);
 
     for (int j = imageHeight - 1; j >= 0; --j) {
       std::cout << "\rScanlines remaining: " << j << "  " << std::flush;
       for (int i = 0; i < imageWidth; ++i) {
         for (int s = 0; s < samplesPerPixel; ++s) {
-          camPath = generateCameraPath(i, j);
+          camPath = generateCameraPath();
           lightPath = generateLightPath();
           pathContribution = combinePaths(camPath, lightPath);
           pathContribution.accumulatePathContribution(1.0, image);
@@ -57,16 +78,16 @@ class BidirectionalPathIntegrator : public Integrator {
     }
   }
 
-  Path generateCameraPath(ushort pixelX, ushort pixelY) const {
-    Path path(bounceLimit);
-    Ray ray = camera.getRay(sampler.getRandomSample(pixelX, pixelY));
+  Path generateCameraPath() const {
+    Path path(maxEvents);
+    Ray ray = camera.getSample(imageHeight, imageWidth);
     path.add(Vertex(ray.origin, camera.getW()));
     tracePath(ray, bounceLimit, path);
     return path;
   }
 
   Path generateLightPath() const {
-    Path path(bounceLimit);
+    Path path(maxEvents);
     auto randomLight = scene.getRandomLight();
     auto lightMaterial = scene.getRandomLight()->getMaterial();
     Ray ray(randomLight->samplePoint(), Random::unitVector());
@@ -75,7 +96,7 @@ class BidirectionalPathIntegrator : public Integrator {
     return path;
   }
 
-  bool isConnectable(const Path& camPath, const Path& lightPath, double& px, double& py) const {
+  bool isConnectable(const Path& camPath, const Path& lightPath, float& px, float& py) const {
     Vector3 direction;
     bool result;
     if (camPath.empty() && (lightPath.length() >= 2)) {
@@ -91,14 +112,14 @@ class BidirectionalPathIntegrator : public Integrator {
       // light tracing
       SInteraction interaction;
       Ray ray(camPath.first().point, (lightPath.last().point - camPath.first().point).normalized());
-      double tMax = (lightPath.last().point - camPath.first().point).magnitude() / ray.direction.magnitude();
+      float tMax = (lightPath.last().point - camPath.first().point).magnitude() / ray.direction.magnitude();
       direction = ray.direction;
       result = !scene.intersect(ray, 0.001, tMax - 0.001, interaction);
     } else {
       // shadow ray connection
       SInteraction interaction;
       Ray ray(camPath.last().point, (lightPath.last().point - camPath.last().point).normalized());
-      double tMax = (lightPath.last().point - camPath.last().point).magnitude() / ray.direction.magnitude();
+      float tMax = (lightPath.last().point - camPath.last().point).magnitude() / ray.direction.magnitude();
       direction = (camPath[1].point - camPath[0].point).normalized();
 
       result = !scene.intersect(ray, 0.001, tMax - 0.001, interaction);
@@ -114,15 +135,15 @@ class BidirectionalPathIntegrator : public Integrator {
     return result && ((px >= 0) && (px < imageWidth) && (py >= 0) && (py < imageHeight));
   }
 
-  inline double geometryTerm(const Vertex& e0, const Vertex& e1) const {
+  inline float geometryTerm(const Vertex& e0, const Vertex& e1) const {
     const Vector3 distVec = e1.point - e0.point;
-    const double distSquared = distVec.magnitudeSquared();
+    const float distSquared = distVec.magnitudeSquared();
     return std::abs(dot(e0.normal, distVec) * dot(e1.normal, distVec)) / (distSquared * distSquared);
   }
 
-  inline double directionToArea(const Vertex& current, const Vertex& next) const {
+  inline float directionToArea(const Vertex& current, const Vertex& next) const {
     const Vector3 dv = next.point - current.point;
-    const double d2 = dv.magnitudeSquared();
+    const float d2 = dv.magnitudeSquared();
     return std::abs(dot(next.normal, dv)) / (d2 * sqrt(d2));
   }
 
@@ -130,12 +151,12 @@ class BidirectionalPathIntegrator : public Integrator {
     Color color = Color(1.0, 1.0, 1.0);
     for (int i = 0; i < path.length(); i++) {
       if (i == 0) {
-        double W = 1.0 / double(imageWidth * imageHeight);
+        float W = 1.0 / float(imageWidth * imageHeight);
         Vector3 d0 = path[1].point - path[0].point;
-        const double dist2 = d0.magnitudeSquared();
+        const float dist2 = d0.magnitudeSquared();
         d0 = d0 * (1.0 / sqrt(dist2));
-        const double c = dot(d0, camera.getW());
-        const double ds2 = (camera.getDist(imageHeight) / c) * (camera.getDist(imageHeight) / c);
+        const float c = dot(d0, camera.getW());
+        const float ds2 = (camera.getDist(imageHeight) / c) * (camera.getDist(imageHeight) / c);
         W /= (c / ds2);
         color *= (W * std::abs(dot(d0, path[1].normal) / dist2));
       } else if (i == (path.length() - 1)) {
@@ -143,7 +164,7 @@ class BidirectionalPathIntegrator : public Integrator {
         bool isVertLight = dynamic_cast<DiffuseLight*>(&*(path[i].materialPtr));
         if (isVertLight) {
           const Vector3 d0 = (path[i - 1].point - path[i].point).normalized();
-          const double L = path[i].materialPtr->brdf(d0, path[i].normal, d0);
+          const float L = path[i].materialPtr->brdf(d0, path[i].normal, d0);
           color *= path[i].materialPtr->emit(path[i].interaction.uv, path[i].interaction.point) * L;
         } else {
           color *= 0.0;
@@ -151,8 +172,9 @@ class BidirectionalPathIntegrator : public Integrator {
       } else {
         const Vector3 d0 = (path[i - 1].point - path[i].point).normalized();
         const Vector3 d1 = (path[i + 1].point - path[i].point).normalized();
-        double BRDF = 0.0;
-        if (path[i].materialPtr != nullptr) { BRDF = path[i].materialPtr->brdf(d0, path[i].normal, d1); }
+        float BRDF = 0.0;
+        bool isVertLight = dynamic_cast<DiffuseLight*>(&*(path[i].materialPtr));
+        if (!isVertLight) { BRDF = path[i].materialPtr->brdf(d0, path[i].normal, d1); }
         const UV uv = path[i].interaction.uv;
         const Point3 point = path[i].interaction.point;
         const Color materialColor = path[i].materialPtr->emit(uv, point);
@@ -165,10 +187,10 @@ class BidirectionalPathIntegrator : public Integrator {
   }
 
   PathContribution combinePaths(const Path& eyePath, const Path& lightPath) const {
-    PathContribution result(bounceLimit);
+    PathContribution result(maxEvents);
 
     // maxEvents = the maximum number of vertices
-    for (int pathLength = minPathLength; pathLength <= bounceLimit * 2; pathLength++) {
+    for (int pathLength = minPathLength; pathLength <= bounceLimit; pathLength++) {
       for (int numEyeVertices = 0; numEyeVertices <= pathLength + 1; numEyeVertices++) {
         const int numLightVertices = (pathLength + 1) - numEyeVertices;
 
@@ -177,26 +199,30 @@ class BidirectionalPathIntegrator : public Integrator {
         if (numLightVertices > lightPath.length()) continue;
 
         // extract subpaths
-        Path eyeSubpath = eyePath;
-        Path lightSubpath = lightPath;
+        Path eyeSubpath(eyePath.firstN(numEyeVertices));
+        Path lightSubpath(lightPath.firstN(numLightVertices));
 
         // check the path visibility
-        double px = -1.0, py = -1.0;
+        float px = -1.0, py = -1.0;
         if (!isConnectable(eyeSubpath, lightSubpath, px, py)) continue;
 
         // construct a full path
-        Path sampledPath(bounceLimit);
-        for (int i = 0; i < numEyeVertices; i++) sampledPath.add(eyePath[i]);
-        for (int i = 0; i < numLightVertices; i++) sampledPath.add(lightPath[numLightVertices - i - 1]);
+        Path sampledPath(pathLength);
+        sampledPath.append(eyeSubpath);
+        sampledPath.append(lightPath.reversed());
 
         // evaluate the path
         Color color = pathThroughput(sampledPath);
-        double pathPDF = pathProbablityDensity(sampledPath, pathLength, numEyeVertices, numLightVertices);
-        double weight = MISWeight(sampledPath, numEyeVertices, numLightVertices, pathLength);
+        float pathPDF = pathProbablityDensity(sampledPath, pathLength, numEyeVertices, numLightVertices);
+        float weight = MISWeight(sampledPath, numEyeVertices, numLightVertices, pathLength);
         if ((weight <= 0.0) || (pathPDF <= 0.0)) continue;
 
-        color *= (weight / pathPDF);
+        auto scalar = (weight / pathPDF);
+        if (std::isinf(scalar)) continue;
+        color *= scalar;
         if (color.maxComponent() <= 0.0) continue;
+        // if (color.hasNaNs()) continue;
+        // if (color.hasInfs()) continue;
 
         // store the pixel contribution
         result.add(Contribution(color, px, py));
@@ -208,10 +234,10 @@ class BidirectionalPathIntegrator : public Integrator {
     return result;
   }
 
-  double MISWeight(const Path& sampledPath, const int numEyeVertices, const int numLightVertices,
-                   const int pathLength) const {
-    const double p_i = pathProbablityDensity(sampledPath, pathLength, numEyeVertices, numLightVertices);
-    const double p_all = pathProbablityDensity(sampledPath, pathLength);
+  float MISWeight(const Path& sampledPath, const int numEyeVertices, const int numLightVertices,
+                  const int pathLength) const {
+    const float p_i = pathProbablityDensity(sampledPath, pathLength, numEyeVertices, numLightVertices);
+    const float p_all = pathProbablityDensity(sampledPath, pathLength);
     if ((p_i == 0.0) || (p_all == 0.0)) {
       return 0.0;
     } else {
@@ -223,15 +249,15 @@ class BidirectionalPathIntegrator : public Integrator {
     return std::abs(dot(wo, normal)) / Math::pi;
   }
 
-  double pathProbablityDensity(const Path& sampledPath, const int pathLength, const int specifiedNumEyeVertices = -1,
-                               const int specifiedNumLightVertices = -1) const {
-    KahanAdder sumPDFs(0.0);
+  float pathProbablityDensity(const Path& sampledPath, const int pathLength, const int specifiedNumEyeVertices = -1,
+                              const int specifiedNumLightVertices = -1) const {
+    float sumPDFs = 0;
     bool specified = (specifiedNumEyeVertices != -1) && (specifiedNumLightVertices != -1);
 
     // number of eye subpath vertices
     for (int numEyeVertices = 0; numEyeVertices <= pathLength + 1; numEyeVertices++) {
       // extended BPT
-      double pdfValue = 1.0;
+      float pdfValue = 1.0;
 
       // number of light subpath vertices
       int numLightVertices = (pathLength + 1) - numEyeVertices;
@@ -250,10 +276,10 @@ class BidirectionalPathIntegrator : public Integrator {
           // cancel out)
           pdfValue *= 1.0;
         } else if (i == 0) {
-          pdfValue *= 1.0 / double(imageWidth * imageHeight);
+          pdfValue *= 1.0 / float(imageWidth * imageHeight);
           Vector3 Direction0 = (sampledPath[1].point - sampledPath[0].point).normalized();
-          double cosTheta = dot(Direction0, camera.getW());
-          double DistanceToScreen2 = camera.getDist(imageHeight) / cosTheta;
+          float cosTheta = dot(Direction0, camera.getW());
+          float DistanceToScreen2 = camera.getDist(imageHeight) / cosTheta;
           DistanceToScreen2 = DistanceToScreen2 * DistanceToScreen2;
           pdfValue /= (cosTheta / DistanceToScreen2);
 
@@ -263,7 +289,8 @@ class BidirectionalPathIntegrator : public Integrator {
           Vector3 direction0 = (sampledPath[i - 1].point - sampledPath[i].point).normalized();
           Vector3 direction1 = (sampledPath[i + 1].point - sampledPath[i].point).normalized();
 
-          if (sampledPath[i].materialPtr != nullptr) {
+          bool isVertLight = dynamic_cast<DiffuseLight*>(&*(sampledPath[i].materialPtr));
+          if (!isVertLight) {
             pdfValue *= sampledPath[i].materialPtr->pdf(direction0, sampledPath[i].normal, direction1);
           }
 
@@ -286,7 +313,8 @@ class BidirectionalPathIntegrator : public Integrator {
             Vector3 dir0 = (sampledPath[pathLength - (i - 1)].point - sampledPath[pathLength - i].point).normalized();
             Vector3 dir1 = (sampledPath[pathLength - (i + 1)].point - sampledPath[pathLength - i].point).normalized();
 
-            if (sampledPath[pathLength - i].materialPtr != nullptr)
+            bool isVertLight = dynamic_cast<DiffuseLight*>(&*(sampledPath[pathLength - i].materialPtr));
+            if (!isVertLight)
               pdfValue *= sampledPath[pathLength - i].materialPtr->pdf(dir0, sampledPath[pathLength - i].normal, dir1);
 
             pdfValue *= directionToArea(sampledPath[pathLength - i], sampledPath[pathLength - (i + 1)]);
@@ -297,9 +325,9 @@ class BidirectionalPathIntegrator : public Integrator {
         return pdfValue;
 
       // sum the probability density (use Kahan summation algorithm to reduce numerical issues)
-      sumPDFs.add(pdfValue);
+      sumPDFs += pdfValue;
     }
-    return sumPDFs.sum;
+    return sumPDFs;
   }
 };
 
