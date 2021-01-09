@@ -160,7 +160,6 @@ class BidirectionalPathIntegrator : public Integrator {
         W /= (c / ds2);
         color *= (W * std::abs(dot(d0, path[1].normal) / dist2));
       } else if (i == (path.length() - 1)) {
-        // bool isVertLight = std::is_same_v<decltype(path[i].materialPtr), std::shared_ptr<DiffuseLight>>;
         bool isVertLight = dynamic_cast<DiffuseLight*>(&*(path[i].materialPtr));
         if (isVertLight) {
           const Vector3 d0 = (path[i - 1].point - path[i].point).normalized();
@@ -173,8 +172,7 @@ class BidirectionalPathIntegrator : public Integrator {
         const Vector3 d0 = (path[i - 1].point - path[i].point).normalized();
         const Vector3 d1 = (path[i + 1].point - path[i].point).normalized();
         float BRDF = 0.0;
-        bool isVertLight = dynamic_cast<DiffuseLight*>(&*(path[i].materialPtr));
-        if (!isVertLight) { BRDF = path[i].materialPtr->brdf(d0, path[i].normal, d1); }
+        if (path[i].materialPtr != nullptr) { BRDF = path[i].materialPtr->brdf(d0, path[i].normal, d1); }
         const UV uv = path[i].interaction.uv;
         const Point3 point = path[i].interaction.point;
         const Color materialColor = path[i].materialPtr->emit(uv, point);
@@ -289,8 +287,7 @@ class BidirectionalPathIntegrator : public Integrator {
           Vector3 direction0 = (sampledPath[i - 1].point - sampledPath[i].point).normalized();
           Vector3 direction1 = (sampledPath[i + 1].point - sampledPath[i].point).normalized();
 
-          bool isVertLight = dynamic_cast<DiffuseLight*>(&*(sampledPath[i].materialPtr));
-          if (!isVertLight) {
+          if (sampledPath[i].materialPtr != nullptr) {
             pdfValue *= sampledPath[i].materialPtr->pdf(direction0, sampledPath[i].normal, direction1);
           }
 
@@ -313,8 +310,7 @@ class BidirectionalPathIntegrator : public Integrator {
             Vector3 dir0 = (sampledPath[pathLength - (i - 1)].point - sampledPath[pathLength - i].point).normalized();
             Vector3 dir1 = (sampledPath[pathLength - (i + 1)].point - sampledPath[pathLength - i].point).normalized();
 
-            bool isVertLight = dynamic_cast<DiffuseLight*>(&*(sampledPath[pathLength - i].materialPtr));
-            if (!isVertLight)
+            if (sampledPath[pathLength - i].materialPtr != nullptr)
               pdfValue *= sampledPath[pathLength - i].materialPtr->pdf(dir0, sampledPath[pathLength - i].normal, dir1);
 
             pdfValue *= directionToArea(sampledPath[pathLength - i], sampledPath[pathLength - (i + 1)]);
