@@ -13,7 +13,7 @@ struct Contribution {
   // Copy constructor
   Contribution(const Contribution& other) : color(other.color), x(other.x), y(other.y) {}
   // Move constructor
-  Contribution(Contribution&& other) :
+  Contribution(Contribution&& other) noexcept :
       color(std::move(other.color)),
       x(std::exchange(other.x, 0)),
       y(std::exchange(other.y, 0)) {}
@@ -25,7 +25,7 @@ struct Contribution {
     return *this;
   }
   // Move assignment
-  Contribution& operator=(Contribution&& other) {
+  Contribution& operator=(Contribution&& other) noexcept {
     color = std::move(other.color);
     x = std::move(other.x);
     y = std::move(other.y);

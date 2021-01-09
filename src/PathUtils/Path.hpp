@@ -22,14 +22,14 @@ class Path {
   // Copy constructor
   Path(const Path& other) : vertices(other.vertices) {}
   // Move constructor
-  Path(Path&& other) : vertices(std::move(other.vertices)) {}
+  Path(Path&& other) noexcept : vertices(std::move(other.vertices)) {}
   // Copy assignement
   Path& operator=(const Path& other) {
     vertices = other.vertices;
     return *this;
   }
   // Move assignement
-  Path& operator=(Path&& other) {
+  Path& operator=(Path&& other) noexcept {
     vertices = std::move(other.vertices);
     return *this;
   }

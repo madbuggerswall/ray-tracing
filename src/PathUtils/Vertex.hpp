@@ -24,7 +24,7 @@ class Vertex {
       interaction(other.interaction),
       materialPtr(other.materialPtr) {}
   // Move constructor
-  Vertex(Vertex&& other) :
+  Vertex(Vertex&& other) noexcept :
       point(std::move(other.point)),
       normal(std::move(other.normal)),
       interaction(std::move(other.interaction)),
@@ -38,7 +38,7 @@ class Vertex {
     return *this;
   }
   // Move assignment
-  Vertex& operator=(Vertex&& other) {
+  Vertex& operator=(Vertex&& other) noexcept {
     point = std::move(other.point);
     normal = std::move(other.normal);
     interaction = std::move(other.interaction);

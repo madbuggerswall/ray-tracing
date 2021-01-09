@@ -19,7 +19,7 @@ class PathContribution {
       contributions(other.contributions),
       scalarContrib(other.scalarContrib) {}
   // Move constructor
-  PathContribution(PathContribution&& other) :
+  PathContribution(PathContribution&& other) noexcept :
       contributions(std::move(other.contributions)),
       scalarContrib(std::exchange(other.scalarContrib, 0)) {}
 
@@ -30,7 +30,7 @@ class PathContribution {
     return *this;
   }
   // Move assignment
-  PathContribution& operator=(PathContribution&& other) {
+  PathContribution& operator=(PathContribution&& other) noexcept {
     contributions = std::move(other.contributions);
     scalarContrib = std::exchange(other.scalarContrib, 0);
     return *this;

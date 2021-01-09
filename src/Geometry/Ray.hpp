@@ -27,13 +27,13 @@ class Ray {
       time(other.time) {}
 
   // Move constructor
-  Ray(Ray&& other) :
+  Ray(Ray&& other) noexcept :
       origin(std::move(other.origin)),
       direction(std::move(other.direction)),
       tMin(std::exchange(other.tMin, 0)),
       tMax(std::exchange(other.tMax, 0)),
       time(std::exchange(other.time, 0)) {}
- 
+
   // Copy assignment
   Ray& operator=(const Ray& other) {
     origin = other.origin;
@@ -45,7 +45,7 @@ class Ray {
   }
 
   // Move assignment
-  Ray& operator=(Ray&& other) {
+  Ray& operator=(Ray&& other) noexcept {
     direction = std::move(other.direction);
     origin = std::move(other.origin);
     tMin = other.tMin;

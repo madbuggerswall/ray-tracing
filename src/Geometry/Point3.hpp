@@ -16,7 +16,10 @@ class Point3 {
   Point3(const Point3& other) : x(other.x), y(other.y), z(other.z) {}
 
   // Move constructor
-  Point3(Point3&& other) : x(std::exchange(other.x, 0)), y(std::exchange(other.y, 0)), z(std::exchange(other.z, 0)) {}
+  Point3(Point3&& other) noexcept :
+      x(std::exchange(other.x, 0)),
+      y(std::exchange(other.y, 0)),
+      z(std::exchange(other.z, 0)) {}
 
   // Copy assignment
   Point3& operator=(const Point3& other) {
@@ -27,7 +30,7 @@ class Point3 {
   }
 
   // Move assignment
-  Point3& operator=(Point3&& other) {
+  Point3& operator=(Point3&& other) noexcept {
     x = std::move(other.x);
     y = std::move(other.y);
     z = std::move(other.z);

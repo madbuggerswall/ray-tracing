@@ -18,7 +18,10 @@ class Vector3 {
   Vector3(const Vector3& other) : x(other.x), y(other.y), z(other.z) {}
 
   // Move constructor
-  Vector3(Vector3&& other) : x(std::exchange(other.x, 0)), y(std::exchange(other.y, 0)), z(std::exchange(other.z, 0)) {}
+  Vector3(Vector3&& other) noexcept :
+      x(std::exchange(other.x, 0)),
+      y(std::exchange(other.y, 0)),
+      z(std::exchange(other.z, 0)) {}
 
   // Copy assignment
   Vector3& operator=(const Vector3& other) {
@@ -29,7 +32,7 @@ class Vector3 {
   }
 
   // Move assignment
-  Vector3& operator=(Vector3&& other) {
+  Vector3& operator=(Vector3&& other) noexcept {
     x = std::move(other.x);
     y = std::move(other.y);
     z = std::move(other.z);

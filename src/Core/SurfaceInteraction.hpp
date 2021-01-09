@@ -26,7 +26,7 @@ struct SurfaceInteraction {
       materialPtr(other.materialPtr) {}
 
   // Move constructor
-  SurfaceInteraction(SurfaceInteraction&& other) :
+  SurfaceInteraction(SurfaceInteraction&& other) noexcept :
       point(std::move(other.point)),
       normal(std::move(other.normal)),
       uv(std::move(other.uv)),
@@ -46,7 +46,7 @@ struct SurfaceInteraction {
   }
 
   // Move assignment
-  SurfaceInteraction& operator=(SurfaceInteraction&& other) {
+  SurfaceInteraction& operator=(SurfaceInteraction&& other) noexcept {
     point = std::move(other.point);
     normal = std::move(other.normal);
     uv = other.uv;
