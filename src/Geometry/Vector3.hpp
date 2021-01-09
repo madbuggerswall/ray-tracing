@@ -119,31 +119,28 @@ class Vector3 {
   int maxDimension() { return (x > y) ? ((x > z) ? 0 : 2) : ((y > z) ? 1 : 2); }
 
   // Friend functions are implicitly inline.
-  friend Vector3 operator*(float scalar, const Vector3& rhs) { return rhs * scalar; }
+  friend Vector3 operator*(float scalar, const Vector3& rhs);
   friend std::ostream& operator<<(std::ostream& out, const Vector3& vector) {
     return out << vector.x << ' ' << vector.y << ' ' << vector.z;
   }
-  friend float dot(const Vector3& lhs, const Vector3& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z; }
+  friend float dot(const Vector3& lhs, const Vector3& rhs);
   friend float absDot(const Vector3& lhs, const Vector3& rhs) { return std::abs(dot(lhs, rhs)); }
   friend Vector3 abs(const Vector3& vec) { return Vector3(std::abs(vec.x), std::abs(vec.y), std::abs(vec.z)); }
-  friend Vector3 cross(const Vector3& lhs, const Vector3& rhs) {
-    return Vector3(lhs.y * rhs.z - lhs.z * rhs.y, lhs.z * rhs.x - lhs.x * rhs.z, lhs.x * rhs.y - lhs.y * rhs.x);
-  }
+  friend Vector3 cross(const Vector3& lhs, const Vector3& rhs);
   friend Vector3 min(const Vector3& lhs, const Vector3& rhs) {
     return Vector3(std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z));
   }
   friend Vector3 max(const Vector3& lhs, const Vector3& rhs) {
     return Vector3(std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z));
   }
-  friend void createLocalCoordinateSystem(const Vector3& v1, Vector3* v2, Vector3* v3) {
-    // This function assumes v1 is normalized.
-    if (std::abs(v1.x) > std::abs(v1.y))
-      *v2 = Vector3(-v1.z, 0, v1.x).normalized();
-    else
-      *v2 = Vector3(0, v1.z, -v1.y).normalized();
-    *v3 = cross(v1, *v2);
-  }
 };
+
+// Friend function definitions.
+Vector3 operator*(float scalar, const Vector3& rhs) { return rhs * scalar; }
+float dot(const Vector3& lhs, const Vector3& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z; }
+Vector3 cross(const Vector3& lhs, const Vector3& rhs) {
+  return Vector3(lhs.y * rhs.z - lhs.z * rhs.y, lhs.z * rhs.x - lhs.x * rhs.z, lhs.x * rhs.y - lhs.y * rhs.x);
+}
 
 // Member functions defined in the class body are implicitly inline.
 
@@ -195,8 +192,8 @@ class Color {
   // For debugging
   bool hasNaNs() { return std::isnan(red) || std::isnan(green) || std::isnan(blue); }
   bool hasInfs() { return std::isinf(red) || std::isinf(green) || std::isinf(blue); }
-  
-	inline float maxComponent() const { return std::fmax(red, std::fmax(green, blue)); }
+
+  inline float maxComponent() const { return std::fmax(red, std::fmax(green, blue)); }
 
   Color operator+(const Color& rhs) const { return Color(red + rhs.red, green + rhs.green, blue + rhs.blue); }
   Color operator-(const Color& rhs) const { return Color(red - rhs.red, green - rhs.green, blue - rhs.blue); }
