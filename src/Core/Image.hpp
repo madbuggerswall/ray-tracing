@@ -48,7 +48,7 @@ void Image::writeToFile(std::string fileName, int samplesPerPixel) {
       //	Divide the color total by the number of samples.
       //	Gamma-correct for gamma=2.0.
       // const auto scale = 1.0 / samplesPerPixel;
-      const auto scale = 1.0 / double(samplesPerPixel);
+      const auto scale = 1.0 / float(samplesPerPixel);
       // Color printColor(std::sqrt(color.red * scale), std::sqrt(color.green * scale), std::sqrt(color.blue * scale));
       outputFile << static_cast<int>(toInt(color.red * scale)) << "	"
                  << static_cast<int>(toInt(color.green * scale)) << "	"

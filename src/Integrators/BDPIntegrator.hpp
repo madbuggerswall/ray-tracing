@@ -230,6 +230,7 @@ class BidirectionalPathIntegrator : public Integrator {
         if (std::isinf(scalar)) continue;
         color *= scalar;
         if (color.maxComponent() <= 0.0) continue;
+        if (color.hasInfs()) continue;
         // if (color.hasNaNs()) continue;
         // if (color.hasInfs()) continue;
 

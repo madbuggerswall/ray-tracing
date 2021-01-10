@@ -56,7 +56,12 @@ class RectangleXY : public Rectangle {
     return true;
   }
 
-  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
+  // Returns a random point on this light rectangle.
+  Point3 samplePoint() const override {
+    return Point3(Random::range(corners[0], corners[1]), Random::range(corners[2], corners[3]), k);
+  }
+
+  float getArea() const override { return std::abs(corners[0] - corners[1]) * std::abs(corners[2] - corners[3]); }
 };
 
 class RectangleXZ : public Rectangle {
@@ -64,48 +69,6 @@ class RectangleXZ : public Rectangle {
   RectangleXZ() : Rectangle() {}
   RectangleXZ(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
-
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
-    const float t = (k - ray.origin.y) / ray.direction.y;
-    if (t < tMin || t > tMax) return false;
-
-    const float x = ray.origin.x + t * ray.direction.x;
-    const float z = ray.origin.z + t * ray.direction.z;
-    if (x < corners[0] || x > corners[1] || z < corners[2] || z > corners[3]) return false;
-
-    setInteraction(ray, interaction, Vector3(0, 1, 0), x, z, t);
-    return true;
-  }
-
-  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
-};
-
-class RectangleYZ : public Rectangle {
- public:
-  RectangleYZ() : Rectangle() {}
-  RectangleYZ(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
-      Rectangle(corners, k, material) {}
-
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
-    const float t = (k - ray.origin.x) / ray.direction.x;
-    if (t < tMin || t > tMax) return false;
-
-    const float y = ray.origin.y + t * ray.direction.y;
-    const float z = ray.origin.z + t * ray.direction.z;
-    if (y < corners[0] || y > corners[1] || z < corners[2] || z > corners[3]) return false;
-
-    setInteraction(ray, interaction, Vector3(1, 0, 0), y, z, t);
-    return true;
-  }
-
-  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
-};
-
-class LightRectangleXZ : public Rectangle {
- public:
-  LightRectangleXZ() : Rectangle() {}
-  LightRectangleXZ(std::initializer_list<float> corners, float k, const Color& color) :
-      Rectangle(corners, k, std::make_shared<DiffuseLight>(color)) {}
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     const float t = (k - ray.origin.y) / ray.direction.y;
@@ -127,4 +90,29 @@ class LightRectangleXZ : public Rectangle {
   float getArea() const override { return std::abs(corners[0] - corners[1]) * std::abs(corners[2] - corners[3]); }
 };
 
+class RectangleYZ : public Rectangle {
+ public:
+  RectangleYZ() : Rectangle() {}
+  RectangleYZ(std::initializer_list<float> corners, float k, std::shared_ptr<Material> material) :
+      Rectangle(corners, k, material) {}
+
+  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+    const float t = (k - ray.origin.x) / ray.direction.x;
+    if (t < tMin || t > tMax) return false;
+
+    const float y = ray.origin.y + t * ray.direction.y;
+    const float z = ray.origin.z + t * ray.direction.z;
+    if (y < corners[0] || y > corners[1] || z < corners[2] || z > corners[3]) return false;
+
+    setInteraction(ray, interaction, Vector3(1, 0, 0), y, z, t);
+    return true;
+  }
+
+  // Returns a random point on this light rectangle.
+  Point3 samplePoint() const override {
+    return Point3(k, Random::range(corners[0], corners[1]), Random::range(corners[2], corners[3]));
+  }
+
+  float getArea() const override { return std::abs(corners[0] - corners[1]) * std::abs(corners[2] - corners[3]); }
+};
 #endif

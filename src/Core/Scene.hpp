@@ -20,11 +20,11 @@ class Scene : public GeometricalObject {
 
   std::vector<std::shared_ptr<GeoObject>>& getObjects() { return objects; }
 
-  void add(std::shared_ptr<LightRectangleXZ> object) {
+  void add(std::shared_ptr<GeoObject> object) {
     objects.push_back(object);
-    lights.push_back(object);
+    if (object->getMaterial() != nullptr && dynamic_cast<DiffuseLight*>(&*(object->getMaterial())))
+      lights.push_back(object);
   }
-  void add(std::shared_ptr<GeoObject> object) { objects.push_back(object); }
   void clear() { objects.clear(); }
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
