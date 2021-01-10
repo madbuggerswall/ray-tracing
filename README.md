@@ -1,4 +1,5 @@
 # ray-tracing
+Only scene 6 (Cornell Box) work properly.
 ## Build
 ```sh
 $ mkdir build
