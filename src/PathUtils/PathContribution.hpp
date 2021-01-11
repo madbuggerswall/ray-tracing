@@ -2,7 +2,7 @@
 #define PATH_CONTRIBUTION_HPP
 
 #include "../Core/Image.hpp"
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Vector3.hpp"
 #include "Contribution.hpp"
 
 class PathContribution {

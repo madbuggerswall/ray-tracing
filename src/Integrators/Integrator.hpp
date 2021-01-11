@@ -8,10 +8,10 @@
 #include "../Core/Sampler.hpp"
 #include "../Core/Scene.hpp"
 #include "../Core/SurfaceInteraction.hpp"
-#include "../Geometry/Point2.hpp"
-#include "../Geometry/Point3.hpp"
-#include "../Geometry/Ray.hpp"
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Point2.hpp"
+#include "../Math/Point3.hpp"
+#include "../Math/Ray.hpp"
+#include "../Math/Vector3.hpp"
 #include "../Materials/Material.hpp"
 
 class Integrator {

@@ -1,7 +1,7 @@
 #ifndef SAMPLER_HPP
 #define SAMPLER_HPP
 
-#include "../Geometry/Point2.hpp"
+#include "../Math/Point2.hpp"
 #include "Random.hpp"
 #include "Configuration.hpp"
 

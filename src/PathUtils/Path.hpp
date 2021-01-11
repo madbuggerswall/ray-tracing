@@ -6,8 +6,8 @@
 
 #include "../Core/Image.hpp"
 #include "../Core/SurfaceInteraction.hpp"
-#include "../Geometry/Point3.hpp"
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Point3.hpp"
+#include "../Math/Vector3.hpp"
 #include "Vertex.hpp"
 
 class Path {

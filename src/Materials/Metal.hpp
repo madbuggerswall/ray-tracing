@@ -3,8 +3,8 @@
 
 #include "../Core/Math.hpp"
 #include "../Core/Random.hpp"
-#include "../Geometry/Ray.hpp"
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Ray.hpp"
+#include "../Math/Vector3.hpp"
 #include "Material.hpp"
 
 class Metal : public Material {

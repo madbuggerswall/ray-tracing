@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Vector3.hpp"
 #include "Math.hpp"
 
 class Image {

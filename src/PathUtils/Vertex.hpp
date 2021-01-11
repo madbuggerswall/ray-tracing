@@ -2,7 +2,7 @@
 #define VERTEX_HPP
 
 #include "../Core/SurfaceInteraction.hpp"
-#include "../Geometry/Point3.hpp"
+#include "../Math/Point3.hpp"
 
 class Vertex {
  public:

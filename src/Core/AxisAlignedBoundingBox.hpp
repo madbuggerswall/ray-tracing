@@ -1,10 +1,10 @@
 #ifndef AXIS_ALIGNED_BOUNDING_BOX_HPP
 #define AXIS_ALIGNED_BOUNDING_BOX_HPP
 
-#include "../Geometry/Point3.hpp"
+#include "../Math/Point3.hpp"
 // #include "Geometry/Ray.hpp"
-#include "../Geometry/Ray.hpp"
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Ray.hpp"
+#include "../Math/Vector3.hpp"
 
 class AxisAlignedBoundingBox {
   using AABB = AxisAlignedBoundingBox;

@@ -1,8 +1,8 @@
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
 
-#include "../Geometry/Point3.hpp"
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Point3.hpp"
+#include "../Math/Vector3.hpp"
 
 struct CameraConfiguration {
   Point3 lookFrom;

@@ -1,7 +1,7 @@
 #ifndef CONTRIBUTION_HPP
 #define CONTRIBUTION_HPP
 
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Vector3.hpp"
 
 struct Contribution {
   Color color;

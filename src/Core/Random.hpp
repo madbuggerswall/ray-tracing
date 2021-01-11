@@ -3,8 +3,8 @@
 
 #include <random>
 
-#include "../Geometry/Point3.hpp"
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Point3.hpp"
+#include "../Math/Vector3.hpp"
 #include "Math.hpp"
 
 namespace Random {

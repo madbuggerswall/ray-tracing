@@ -4,7 +4,7 @@
 #include <string>
 
 #include "../Core/Math.hpp"
-#include "../Geometry/Point3.hpp"
+#include "../Math/Point3.hpp"
 
 class Texture {
  private:

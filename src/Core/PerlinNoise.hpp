@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "../Geometry/Vector3.hpp"
-#include "../Geometry/Point3.hpp"
+#include "../Math/Vector3.hpp"
+#include "../Math/Point3.hpp"
 #include "Random.hpp"
 
 class PerlinNoise {

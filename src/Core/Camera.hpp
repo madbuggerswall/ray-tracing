@@ -1,10 +1,10 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "../Geometry/Point2.hpp"
-#include "../Geometry/Point3.hpp"
-#include "../Geometry/Ray.hpp"
-#include "../Geometry/Vector3.hpp"
+#include "../Math/Point2.hpp"
+#include "../Math/Point3.hpp"
+#include "../Math/Ray.hpp"
+#include "../Math/Vector3.hpp"
 #include "Configuration.hpp"
 #include "Math.hpp"
 #include "Random.hpp"
