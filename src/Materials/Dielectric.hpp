@@ -1,7 +1,7 @@
 #ifndef DIELECTRIC_HPP
 #define DIELECTRIC_HPP
 
-#include "../Core/Random.hpp"
+#include "../Math/Random.hpp"
 #include "Material.hpp"
 
 class Dielectric : public Material {

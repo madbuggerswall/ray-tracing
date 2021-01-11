@@ -1,7 +1,7 @@
 #ifndef RAY_HPP
 #define RAY_HPP
 
-#include "../Core/Math.hpp"
+#include "Math.hpp"
 #include "Point3.hpp"
 #include "Vector3.hpp"
 

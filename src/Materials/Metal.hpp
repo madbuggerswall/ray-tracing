@@ -1,8 +1,8 @@
 #ifndef METAL_HPP
 #define METAL_HPP
 
-#include "../Core/Math.hpp"
-#include "../Core/Random.hpp"
+#include "../Math/Math.hpp"
+#include "../Math/Random.hpp"
 #include "../Math/Ray.hpp"
 #include "../Math/Vector3.hpp"
 #include "Material.hpp"
@@ -12,7 +12,7 @@ class Metal : public Material {
   Color albedo;
   float fuzz;
 
-	// Dummy variable
+  // Dummy variable
   float glossiness = 25.0;
 
  public:

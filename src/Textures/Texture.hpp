@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "../Core/Math.hpp"
+#include "../Math/Math.hpp"
 #include "../Math/Point3.hpp"
 
 class Texture {

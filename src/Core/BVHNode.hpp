@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "../GeoObjects/GeometricalObject.hpp"
-#include "Random.hpp"
+#include "../Math/Random.hpp"
 #include "Scene.hpp"
 
 inline bool boxCompare(const std::shared_ptr<GeoObject> a, const std::shared_ptr<GeoObject> b, int axis) {

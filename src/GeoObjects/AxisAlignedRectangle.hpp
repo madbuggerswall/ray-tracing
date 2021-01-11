@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../Core/Random.hpp"
+#include "../Math/Random.hpp"
 #include "../Materials/DiffuseLight.hpp"
 #include "GeometricalObject.hpp"
 

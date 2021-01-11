@@ -5,7 +5,7 @@
 
 #include "../Math/Vector3.hpp"
 #include "../Math/Point3.hpp"
-#include "Random.hpp"
+#include "../Math/Random.hpp"
 
 class PerlinNoise {
  private:

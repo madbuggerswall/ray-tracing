@@ -2,7 +2,7 @@
 #define ROTATE_HPP
 
 #include "../GeoObjects/GeometricalObject.hpp"
-#include "Math.hpp"
+#include "../Math/Math.hpp"
 
 class RotateY : public GeometricalObject {
  private:

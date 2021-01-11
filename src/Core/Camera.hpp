@@ -6,8 +6,8 @@
 #include "../Math/Ray.hpp"
 #include "../Math/Vector3.hpp"
 #include "Configuration.hpp"
-#include "Math.hpp"
-#include "Random.hpp"
+#include "../Math/Math.hpp"
+#include "../Math/Random.hpp"
 
 class Camera {
  private:

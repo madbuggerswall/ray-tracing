@@ -4,7 +4,7 @@
 #include "../Core/Camera.hpp"
 #include "../Core/Configuration.hpp"
 #include "../Core/Image.hpp"
-#include "../Core/Random.hpp"
+#include "../Math/Random.hpp"
 #include "../Core/Sampler.hpp"
 #include "../Core/Scene.hpp"
 #include "../Core/SurfaceInteraction.hpp"

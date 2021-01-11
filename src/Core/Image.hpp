@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "../Math/Vector3.hpp"
-#include "Math.hpp"
+#include "../Math/Math.hpp"
 
 class Image {
  private:

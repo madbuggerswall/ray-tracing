@@ -1,7 +1,7 @@
 #ifndef LAMBERTIAN_HPP
 #define LAMBERTIAN_HPP
 
-#include "../Core/Random.hpp"
+#include "../Math/Random.hpp"
 #include "../Textures/SolidColor.hpp"
 #include "Material.hpp"
 

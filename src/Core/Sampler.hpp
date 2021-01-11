@@ -2,7 +2,7 @@
 #define SAMPLER_HPP
 
 #include "../Math/Point2.hpp"
-#include "Random.hpp"
+#include "../Math/Random.hpp"
 #include "Configuration.hpp"
 
 class Sampler {
