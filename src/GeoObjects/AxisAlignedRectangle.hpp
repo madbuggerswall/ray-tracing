@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "../Math/Random.hpp"
 #include "../Materials/DiffuseLight.hpp"
+#include "../Math/Random.hpp"
 #include "GeometricalObject.hpp"
 
 class Rectangle : public GeometricalObject {
@@ -111,6 +111,12 @@ class RectangleYZ : public Rectangle {
   // Returns a random point on this light rectangle.
   Point3 samplePoint() const override {
     return Point3(k, Random::range(corners[0], corners[1]), Random::range(corners[2], corners[3]));
+  }
+
+  Point3 samplePoint(float random1, float random2) const override {
+    auto y = Random::mapInterval(random1, corners[0], corners[1]);
+    auto z = Random::mapInterval(random2, corners[2], corners[3]);
+    return Point3(k, y, z);
   }
 
   float getArea() const override { return std::abs(corners[0] - corners[1]) * std::abs(corners[2] - corners[3]); }

@@ -33,6 +33,7 @@ class PathContribution {
   PathContribution& operator=(PathContribution&& other) noexcept {
     contributions = std::move(other.contributions);
     scalarContrib = std::exchange(other.scalarContrib, 0);
+    // scalarContrib = other.scalarContrib;
     return *this;
   }
 

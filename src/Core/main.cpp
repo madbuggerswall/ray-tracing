@@ -3,6 +3,7 @@
 #include "../GeoObjects/MovingSphere.hpp"
 #include "../GeoObjects/Sphere.hpp"
 #include "../Integrators/BDPIntegrator.hpp"
+#include "../Integrators/MLTIntegrator.hpp"
 #include "../Integrators/PathIntegrator.hpp"
 #include "../Materials/Dielectric.hpp"
 #include "../Materials/Lambertian.hpp"
@@ -32,7 +33,7 @@ int main(int argc, char const* argv[]) {
   Image image(config.imageHeight, config.imageWidth);
 
   // Rendering
-  BDPTIntegrator integrator(config, scene, camera);
+  MLTIntegrator integrator(config, scene, camera);
   integrator.render(image);
 
   std::cout << std::endl << "Done." << std::endl;

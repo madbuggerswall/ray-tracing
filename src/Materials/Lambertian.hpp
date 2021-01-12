@@ -1,6 +1,7 @@
 #ifndef LAMBERTIAN_HPP
 #define LAMBERTIAN_HPP
 
+#include "../Math/ONB.hpp"
 #include "../Math/Random.hpp"
 #include "../Textures/SolidColor.hpp"
 #include "Material.hpp"
@@ -14,7 +15,17 @@ class Lambertian : public Material {
   Lambertian(std::shared_ptr<Texture> albedo) : albedo(albedo) {}
 
   bool scatter(const Ray& in, const SInteraction& interaction, Color& attenuation, Ray& scattered) const override {
-    const Vector3 scatterDirection = interaction.normal + Random::unitVector();
+    ONB orthonormalBasis(interaction.normal);
+    Vector3 scatterDirection = orthonormalBasis.local(Random::cosineDirection());
+    scattered = Ray(interaction.point, scatterDirection, in.getTime());
+    attenuation = albedo->lookup(interaction.uv, interaction.point);
+    return true;
+  }
+
+  bool scatter(const Ray& in, const SInteraction& interaction, Color& attenuation, Ray& scattered,
+               Vector3 direction) const override {
+    ONB orthonormalBasis(interaction.normal);
+    Vector3 scatterDirection = orthonormalBasis.local(direction);
     scattered = Ray(interaction.point, scatterDirection, in.getTime());
     attenuation = albedo->lookup(interaction.uv, interaction.point);
     return true;

@@ -13,8 +13,8 @@ namespace Random {
 
   inline float fraction() { return distribution(generator); }
   inline float range(float min, float max) { return min + (max - min) * fraction(); }
-	
-	// Returns an integer between [min, max).
+
+  // Returns an integer between [min, max).
   inline int rangeInt(int min, int max) { return std::floor(range(min, max)); }
 
   inline Color color() { return Color(fraction(), fraction(), fraction()); }
@@ -50,6 +50,17 @@ namespace Random {
     }
   }
 
+  float mapInterval(float value, float min, float max) { return min + (max - min) * value; }
+
+  // MLT
+  Vector3 vectorInUnitDisk(float random1, float random2) {
+    while (true) {
+      auto vector = Vector3(mapInterval(random1, -1, 1), mapInterval(random2, -1, 1), 0);
+      if (vector.magnitudeSquared() >= 1) continue;
+      return vector;
+    }
+  }
+
   Vector3 vectorInHemiSphere(const Vector3& normal) {
     Vector3 inUnitSphere = vectorInUnitSphere();
     if (dot(inUnitSphere, normal) > 0.0)
@@ -58,6 +69,7 @@ namespace Random {
       return -inUnitSphere;
   }
 
+  // Sample the vector from cosine distribution.
   inline Vector3 cosineDirection() {
     auto r1 = fraction();
     auto r2 = fraction();
@@ -66,6 +78,17 @@ namespace Random {
     auto x = std::cos(phi) * std::sqrt(r2);
     auto y = std::sin(phi) * std::sqrt(r2);
     auto z = std::sqrt(1 - r2);
+
+    return Vector3(x, y, z);
+  }
+
+  // Sample the vector from cosine distribution.
+  inline Vector3 cosineDirection(const float random1, const float random2) {
+    auto phi = 2 * Math::pi * random1;
+
+    auto x = std::cos(phi) * std::sqrt(random2);
+    auto y = std::sin(phi) * std::sqrt(random2);
+    auto z = std::sqrt(1 - random2);
 
     return Vector3(x, y, z);
   }

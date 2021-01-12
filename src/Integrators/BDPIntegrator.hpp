@@ -8,11 +8,11 @@
 
 // TODO: Scale the accumulate with b / scalarContrib.
 class BidirectionalPathIntegrator : public Integrator {
+ protected:
   int minPathLength = 3;
-  float lightArea;
-
   int maxEvents;
 
+  float lightArea;
   float normConstant;
 
  public:
@@ -99,7 +99,7 @@ class BidirectionalPathIntegrator : public Integrator {
     Path path(maxEvents);
     auto randomLight = scene.getRandomLight();
     auto lightMaterial = scene.getRandomLight()->getMaterial();
-    Ray ray(randomLight->samplePoint(), Random::unitVector());
+    Ray ray(randomLight->samplePoint(), Random::cosineDirection());
     path.add(Vertex(ray.origin, ray.direction, lightMaterial));
     tracePath(ray, bounceLimit, path);
     return path;

@@ -1,13 +1,13 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include "../Math/Math.hpp"
 #include "../Math/Point2.hpp"
 #include "../Math/Point3.hpp"
+#include "../Math/Random.hpp"
 #include "../Math/Ray.hpp"
 #include "../Math/Vector3.hpp"
 #include "Configuration.hpp"
-#include "../Math/Math.hpp"
-#include "../Math/Random.hpp"
 
 class Camera {
  private:
@@ -58,6 +58,14 @@ class Camera {
   Ray getSample(ushort imageHeight, ushort imageWidth) const {
     const Vector3 su = u * -(0.5 - Random::fraction()) * imageWidth;
     const Vector3 sv = v * (0.5 - Random::fraction()) * imageHeight;
+    const Vector3 sw = -w * getDist(imageHeight);
+    return Ray(origin, (su + sv + sw).normalized());
+  }
+
+  // MLT
+  Ray getSample(ushort imageHeight, ushort imageWidth, float random1, float random2) const {
+    const Vector3 su = u * -(0.5 - random1) * imageWidth;
+    const Vector3 sv = v * (0.5 - random2) * imageHeight;
     const Vector3 sw = -w * getDist(imageHeight);
     return Ray(origin, (su + sv + sw).normalized());
   }

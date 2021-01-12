@@ -28,6 +28,13 @@ class Sampler {
     return Point2(u, v);
   }
 
+  // MLT
+  Point2 getRandomSample(ushort pixelX, ushort pixelY, float random1, float random2) const {
+    const float u = (pixelX + random1) / (imageWidth - 1);
+    const float v = (pixelY + random2) / (imageHeight - 1);
+    return Point2(u, v);
+  }
+
   Point2 getUniformSample(ushort pixelX, ushort pixelY, ushort index) const {
     const ushort i = index % samplesPerEdge;
     const ushort j = index / samplesPerEdge;
