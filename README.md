@@ -12,12 +12,13 @@ $ make
 $ ./ray-tracing -s 6 -spp 8 -b 8 -o outputFile
 ```
 
-| Command  | Verbose  | Definiton |
-| :--- | :--- | :---  |
-| -s  | --scene | Scene selection |
-| -b  | --bounce | Max path length |
-| -spp  | --sample | Samples per pixel |
-| -o  | --output | Name of the output file |
+| Command  | Verbose  | Definiton | Options |
+| :--- | :--- | :---  | :--- |
+| -i  | --integrator  | Select integrator | naive, bdpt, mlt  |
+| -s  | --scene | Scene selection | 6 |
+| -b  | --bounce | Max path length | Integer >= 3 |
+| -spp  | --sample | Samples per pixel |  Integer >= 1|
+| -o  | --output | Name of the output file | string |
 
 
 
@@ -27,6 +28,7 @@ $ ./ray-tracing
 
 | Command  | Default Value |
 | :--- | :---  |
+| -i  | bdpt  |
 | -s  | 6 |
 | -b  | 8 |
 | -spp  | 1 |
