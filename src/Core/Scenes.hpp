@@ -260,7 +260,7 @@ namespace Scenes {
     return scene;
   }
 
-  Scene selectScene(int index, CConfig& config) {
+  Scene selectScene(int index, Config& config) {
     Scene scene;
     switch (index) {
       case 1:

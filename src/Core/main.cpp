@@ -19,22 +19,36 @@ int main(int argc, char const* argv[]) {
   Stopwatch stopwatch;
   stopwatch.start();
 
+	// Parse CLI arguments
   ArgumentParser argParser;
   argParser.parse(argc, argv);
 
   // Config
-  CConfig config;
+  Config config;
   Scene scene = Scenes::selectScene(argParser.sceneSelection, config);
 
   argParser.setConfig(config);
-  config.printInfo();
+  argParser.printInfo(config);
 
+  // Configure camera and image
   Camera camera(config, 0.0, 1.0);
   Image image(config.imageHeight, config.imageWidth);
 
+  // Select integrator
+  auto selectIntegrator = [config, scene, camera](IntegratorType type) -> std::shared_ptr<Integrator> {
+    if (type == IntegratorType::Naive)
+      return std::make_shared<PathIntegrator>(config, scene, camera);
+    else if (type == IntegratorType::Bidirectional)
+      return std::make_shared<BDPTIntegrator>(config, scene, camera);
+    else if (type == IntegratorType::Metropolis)
+      return std::make_shared<MLTIntegrator>(config, scene, camera);
+    else
+      return std::make_shared<BDPTIntegrator>(config, scene, camera);
+  };
+
   // Rendering
-  MLTIntegrator integrator(config, scene, camera);
-  integrator.render(image);
+  std::shared_ptr<Integrator> integrator = selectIntegrator(argParser.integratorType);
+  integrator->render(image);
 
   std::cout << std::endl << "Done." << std::endl;
   stopwatch.stop();

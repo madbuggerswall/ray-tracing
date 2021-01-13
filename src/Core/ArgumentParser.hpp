@@ -37,7 +37,8 @@ class ArgumentParser {
   IntegratorType integratorType = IntegratorType::Bidirectional;
 
   void parse(int argc, const char* argv[]);
-  void setConfig(CConfig& config);
+  void setConfig(Config& config);
+  void printInfo(const Config& config);
 };
 
 bool ArgumentParser::isNumerical(std::string string) {
@@ -48,11 +49,11 @@ bool ArgumentParser::isNumerical(std::string string) {
 }
 
 void ArgumentParser::checkIntegratorArgument(std::string token) {
-  if (token.compare("naive"))
+  if (token.compare("naive") == 0)
     integratorType = IntegratorType::Naive;
-  else if (token.compare("bdpt"))
+  else if (token.compare("bdpt") == 0)
     integratorType = IntegratorType::Bidirectional;
-  else if (token.compare("mlt"))
+  else if (token.compare("mlt") == 0)
     integratorType = IntegratorType::Metropolis;
 }
 
@@ -96,8 +97,28 @@ void ArgumentParser::parse(int argc, const char* argv[]) {
   }
 }
 
-void ArgumentParser::setConfig(CConfig& config) {
+void ArgumentParser::setConfig(Config& config) {
   if (bounceLimit != 0) config.bounceLimit = bounceLimit;
   if (samplesPerPixel != 0) config.samplesPerPixel = samplesPerPixel;
 }
+
+void ArgumentParser::printInfo(const Config& config) {
+  auto integratorName = [this]() {
+    if (integratorType == IntegratorType::Naive)
+      return "Naive Path Tracer";
+    else if (integratorType == IntegratorType::Bidirectional)
+      return "Bidirectional Path Tracer";
+    else if (integratorType == IntegratorType::Metropolis)
+      return "Metropolis Light Transport";
+    else
+      return "Unknown";
+  };
+
+  std::cout << "\nINFO" << std::endl;
+  std::cout << "Integrator:\t" << integratorName() << std::endl;
+  std::cout << "Samples per pixel:\t" << config.samplesPerPixel << std::endl;
+  std::cout << "Bounce limit:\t\t" << config.bounceLimit << std::endl;
+  std::cout << "Dimension (h,w):\t" << config.imageHeight << "," << config.imageWidth << "\n\n";
+}
+
 #endif

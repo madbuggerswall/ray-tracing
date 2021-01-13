@@ -5,8 +5,8 @@
 #include <iostream>
 #include <vector>
 
-#include "../Math/Vector3.hpp"
 #include "../Math/Math.hpp"
+#include "../Math/Vector3.hpp"
 
 class Image {
  private:

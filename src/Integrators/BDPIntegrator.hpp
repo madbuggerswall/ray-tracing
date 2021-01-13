@@ -19,10 +19,9 @@ class BidirectionalPathIntegrator : public Integrator {
   double normConstant;
 
  public:
-  BidirectionalPathIntegrator(const CConfig& config, const Scene& scene, const Camera& camera) :
+  BidirectionalPathIntegrator(const Config& config, const Scene& scene, const Camera& camera) :
       Integrator(config, scene, camera) {
     lightArea = getTotalLightArea();
-
     maxEvents = bounceLimit + 1;
     normConstant = estimateNormalizationConstant(10000);
   }
@@ -175,7 +174,7 @@ class BidirectionalPathIntegrator : public Integrator {
           // Incident direction to the last vertex (if it is on a light)
           const Vector3 incoming = (path[i - 1].point - path[i].point).normalized();
           const double L = path[i].materialPtr->brdf(incoming, path[i].normal, incoming);
-          color *= path[i].materialPtr->emit(path[i].interaction.uv, path[i].interaction.point) * L;
+          color *= path[i].materialPtr->getColor(path[i].interaction.uv, path[i].interaction.point) * L;
         } else {
           color *= 0.0;
         }
@@ -186,7 +185,7 @@ class BidirectionalPathIntegrator : public Integrator {
         if (path[i].materialPtr != nullptr) { BRDF = path[i].materialPtr->brdf(incoming, path[i].normal, reflected); }
         const UV uv = path[i].interaction.uv;
         const Point3 point = path[i].interaction.point;
-        const Color materialColor = path[i].materialPtr->emit(uv, point);
+        const Color materialColor = path[i].materialPtr->getColor(uv, point);
         const double geometryTermVal = geometryTerm(path[i], path[i + 1]);
         color *= materialColor * BRDF * geometryTermVal;
       }
@@ -245,7 +244,7 @@ class BidirectionalPathIntegrator : public Integrator {
   }
 
   double calculateMISWeight(const Path& sampledPath, const int numEyeVertices, const int numLightVertices,
-                           const int pathLength) const {
+                            const int pathLength) const {
     const double sampledPathPDF = pathProbablityDensity(sampledPath, pathLength, numEyeVertices, numLightVertices);
     const double pathPDF = pathProbablityDensity(sampledPath, pathLength);
     if ((sampledPathPDF == 0.0) || (pathPDF == 0.0)) {
@@ -260,7 +259,7 @@ class BidirectionalPathIntegrator : public Integrator {
   }
 
   double pathProbablityDensity(const Path& sampledPath, const int pathLength, const int specifiedNumEyeVertices = -1,
-                              const int specifiedNumLightVertices = -1) const {
+                               const int specifiedNumLightVertices = -1) const {
     KahanAdder sumPDFs(0.0);
     bool specified = (specifiedNumEyeVertices != -1) && (specifiedNumLightVertices != -1);
 

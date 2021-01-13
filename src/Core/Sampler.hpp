@@ -20,7 +20,7 @@ class Sampler {
       samplesPerPixel(samplesPerPixel),
       samplesPerEdge(std::sqrt(samplesPerPixel)) {}
 
-  Sampler(const CConfig& config) : Sampler(config.imageHeight, config.imageWidth, config.samplesPerPixel) {}
+  Sampler(const Config& config) : Sampler(config.imageHeight, config.imageWidth, config.samplesPerPixel) {}
 
   Point2 getRandomSample(ushort pixelX, ushort pixelY) const {
     const double u = (pixelX + Random::fraction()) / (imageWidth - 1);

@@ -5,7 +5,7 @@
 
 class PathIntegrator : public Integrator {
  public:
-  PathIntegrator(const CConfig config, const Scene& scene, const Camera& camera) : Integrator(config, scene, camera) {}
+  PathIntegrator(const Config config, const Scene& scene, const Camera& camera) : Integrator(config, scene, camera) {}
 
   Color tracePath(const Ray& ray, int bounceLimit) const override {
     SInteraction interaction;
@@ -29,14 +29,14 @@ class PathIntegrator : public Integrator {
   void render(Image& image) const override {
     Ray ray;
     for (int j = imageHeight - 1; j >= 0; --j) {
-      std::cout << "\rScanlines remaining: " << j << "	" << std::flush;
+      std::cout << "\rScanlines remaining: " << j << " " << std::flush;
       for (int i = 0; i < imageWidth; ++i) {
         Color pixelColor(0, 0, 0);
         for (int s = 0; s < samplesPerPixel; ++s) {
           ray = camera.getRay(sampler.getRandomSample(i, j));
           pixelColor += tracePath(ray, bounceLimit);
         }
-        image[j * imageWidth + i] = pixelColor;
+        image[(imageHeight - 1 - j) * imageWidth + i] = pixelColor;
       }
     }
   }

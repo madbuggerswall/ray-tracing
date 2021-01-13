@@ -13,7 +13,7 @@ class MLTIntegrator : public BDPTIntegrator {
   const int numStates = numStatesSubpath * 2;
 
  public:
-  MLTIntegrator(const CConfig& config, const Scene& scene, const Camera& camera) :
+  MLTIntegrator(const Config& config, const Scene& scene, const Camera& camera) :
       BDPTIntegrator(config, scene, camera) {}
 
   void tracePath(const Ray& ray, int bounceLimit, Path& path) const {

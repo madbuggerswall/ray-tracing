@@ -29,7 +29,7 @@ class Integrator {
   ushort bounceLimit;
 
   Integrator() = delete;
-  Integrator(const CConfig& config, const Scene& scene, const Camera& camera) :
+  Integrator(const Config& config, const Scene& scene, const Camera& camera) :
       imageHeight(config.imageHeight),
       imageWidth(config.imageWidth),
       samplesPerPixel(config.samplesPerPixel),

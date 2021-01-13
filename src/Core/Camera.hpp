@@ -44,7 +44,7 @@ class Camera {
     this->time1 = time1;
   }
 
-  Camera(CameraConfiguration config, double time0, double time1) :
+  Camera(const Config& config, double time0, double time1) :
       Camera(config.lookFrom, config.lookAt, config.viewUp, config.verticalFOV, config.aspectRatio, config.aperture,
              config.focusDist, time0, time1) {}
 

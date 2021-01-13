@@ -19,8 +19,9 @@ class DiffuseLight : public Material {
   }
 
   virtual Color emit(const UV& uv, const Point3& point) const override { return emission->lookup(uv, point); }
-  
-	// Lambertian BRDF
+  virtual Color getColor(const UV& uv, const Point3& point) const override { return emission->lookup(uv, point); }
+
+  // Lambertian BRDF
   double brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override { return 1.0 / Math::pi; }
 
   // Lambertian BRDF
