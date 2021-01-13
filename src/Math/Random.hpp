@@ -9,23 +9,23 @@
 
 namespace Random {
   std::default_random_engine generator;
-  std::uniform_real_distribution<float> distribution(0.0, 1.0);
+  std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
-  inline float fraction() { return distribution(generator); }
-  inline float range(float min, float max) { return min + (max - min) * fraction(); }
+  inline double fraction() { return distribution(generator); }
+  inline double range(double min, double max) { return min + (max - min) * fraction(); }
 
   // Returns an integer between [min, max).
   inline int rangeInt(int min, int max) { return std::floor(range(min, max)); }
 
   inline Color color() { return Color(fraction(), fraction(), fraction()); }
-  inline Color colorRange(float min, float max) { return Color(range(min, max), range(min, max), range(min, max)); }
+  inline Color colorRange(double min, double max) { return Color(range(min, max), range(min, max), range(min, max)); }
 
   inline Vector3 vector() { return Vector3(fraction(), fraction(), fraction()); }
-  inline Vector3 vectorRange(float min, float max) {
+  inline Vector3 vectorRange(double min, double max) {
     return Vector3(range(min, max), range(min, max), range(min, max));
   }
 
-  inline Point3 pointRange(float min, float max) { return Point3(range(min, max), range(min, max), range(min, max)); }
+  inline Point3 pointRange(double min, double max) { return Point3(range(min, max), range(min, max), range(min, max)); }
 
   Vector3 unitVector() {
     auto angle = range(0, 2 * Math::pi);
@@ -50,10 +50,10 @@ namespace Random {
     }
   }
 
-  float mapInterval(float value, float min, float max) { return min + (max - min) * value; }
+  double mapInterval(double value, double min, double max) { return min + (max - min) * value; }
 
   // MLT
-  Vector3 vectorInUnitDisk(float random1, float random2) {
+  Vector3 vectorInUnitDisk(double random1, double random2) {
     while (true) {
       auto vector = Vector3(mapInterval(random1, -1, 1), mapInterval(random2, -1, 1), 0);
       if (vector.magnitudeSquared() >= 1) continue;
@@ -83,7 +83,7 @@ namespace Random {
   }
 
   // Sample the vector from cosine distribution.
-  inline Vector3 cosineDirection(const float random1, const float random2) {
+  inline Vector3 cosineDirection(const double random1, const double random2) {
     auto phi = 2 * Math::pi * random1;
 
     auto x = std::cos(phi) * std::sqrt(random2);

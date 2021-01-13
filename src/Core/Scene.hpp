@@ -27,7 +27,7 @@ class Scene : public GeometricalObject {
   }
   void clear() { objects.clear(); }
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+  virtual bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     SInteraction record;
     bool hitAnything = false;
     auto closestSoFar = tMax;
@@ -41,7 +41,7 @@ class Scene : public GeometricalObject {
     return hitAnything;
   }
 
-  virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
+  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
     if (objects.empty()) return false;
 
     bool firstBox = true;

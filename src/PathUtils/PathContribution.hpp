@@ -9,7 +9,7 @@ class PathContribution {
   std::vector<Contribution> contributions;
 
  public:
-  float scalarContrib;
+  double scalarContrib;
 
   PathContribution() = delete;
   PathContribution(uint maxEvents) : scalarContrib(0) { contributions.reserve(maxEvents * maxEvents); }
@@ -42,7 +42,7 @@ class PathContribution {
 
   void add(const Contribution& contrib) { contributions.push_back(contrib); }
 
-  void accumulatePathContribution(const float scale, Image& image) {
+  void accumulatePathContribution(const double scale, Image& image) {
     int imageWidth = image.getWidth();
     if (scalarContrib == 0) return;
     for (auto contribution : contributions) {

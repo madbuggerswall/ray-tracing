@@ -12,8 +12,8 @@ class Material {
     return false;
   }
   virtual Color emit(const UV& uv, const Point3& point) const { return Color(0, 0, 0); }
-  virtual float brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const = 0;
-  virtual float pdf(const Vector3& wi, const Vector3& n, const Vector3& wo) const = 0;
+  virtual double brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const = 0;
+  virtual double pdf(const Vector3& wi, const Vector3& n, const Vector3& wo) const = 0;
 };
 
 #endif

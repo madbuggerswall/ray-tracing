@@ -28,9 +28,9 @@ class BVHNode : public GeometricalObject {
 
  public:
   BVHNode() {}
-  BVHNode(Scene& scene, float time0, float time1) :
+  BVHNode(Scene& scene, double time0, double time1) :
       BVHNode(scene.getObjects(), 0, scene.getObjects().size(), time0, time1) {}
-  BVHNode(std::vector<std::shared_ptr<GeoObject>>& objects, size_t start, size_t end, float time0, float time1) {
+  BVHNode(std::vector<std::shared_ptr<GeoObject>>& objects, size_t start, size_t end, double time0, double time1) {
     int axis = Random::rangeInt(0, 2);
     auto comparator = (axis == 0) ? boxCompareX : (axis == 1) ? boxCompareY : boxCompareZ;
     const ushort objectSpan = end - start;
@@ -60,14 +60,14 @@ class BVHNode : public GeometricalObject {
     box = AABB::surroundingBox(boxLeft, boxRight);
   }
 
-  bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+  bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     if (!box.intersect(ray, tMin, tMax)) return false;
     const bool hitLeft = left->intersect(ray, tMin, tMax, interaction);
     const bool hitRight = right->intersect(ray, tMin, hitLeft ? interaction.t : tMax, interaction);
     return hitLeft || hitRight;
   }
 
-  bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
+  bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
     outputBox = box;
     return true;
   }

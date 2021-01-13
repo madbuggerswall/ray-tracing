@@ -8,9 +8,9 @@
 
 class Point3 {
  public:
-  float x, y, z;
+  double x, y, z;
   Point3() : x(0), y(0), z(0) {}
-  Point3(float x, float y, float z) : x(x), y(y), z(z) {}
+  Point3(double x, double y, double z) : x(x), y(y), z(z) {}
 
   // Copy constructor
   Point3(const Point3& other) : x(other.x), y(other.y), z(other.z) {}
@@ -40,12 +40,12 @@ class Point3 {
   bool HasNaNs() const { return std::isnan(x) || std::isnan(y) || std::isnan(z); }
 
   // Member access operators
-  float operator[](int i) const {
+  double operator[](int i) const {
     if (i == 0) return x;
     if (i == 1) return y;
     return z;
   }
-  float& operator[](int i) {
+  double& operator[](int i) {
     if (i == 0) return x;
     if (i == 1) return y;
     return z;
@@ -70,14 +70,14 @@ class Point3 {
     z += rhs.z;
     return *this;
   }
-  Point3& operator*=(float scalar) {
+  Point3& operator*=(double scalar) {
     x *= scalar;
     y *= scalar;
     z *= scalar;
     return *this;
   }
-  Point3& operator/=(float scalar) {
-    float fraction = 1.f / scalar;
+  Point3& operator/=(double scalar) {
+    double fraction = 1.f / scalar;
     x *= fraction;
     y *= fraction;
     z *= fraction;
@@ -89,9 +89,9 @@ class Point3 {
   Point3 operator+(const Vector3& rhs) const { return Point3(x + rhs.x, y + rhs.y, z + rhs.z); }
   Point3 operator-(const Vector3& rhs) const { return Point3(x - rhs.x, y - rhs.y, z - rhs.z); }
   Point3 operator+(const Point3& rhs) const { return Point3(x + rhs.x, y + rhs.y, z + rhs.z); }
-  Point3 operator*(float scalar) const { return Point3(scalar * x, scalar * y, scalar * z); }
-  Point3 operator/(float scalar) const {
-    float fraction = 1.f / scalar;
+  Point3 operator*(double scalar) const { return Point3(scalar * x, scalar * y, scalar * z); }
+  Point3 operator/(double scalar) const {
+    double fraction = 1.f / scalar;
     return Point3(fraction * x, fraction * y, fraction * z);
   }
   Vector3 operator-(const Point3& rhs) const { return Vector3(x - rhs.x, y - rhs.y, z - rhs.z); }
@@ -104,11 +104,11 @@ class Point3 {
     os << "[" << p.x << ", " << p.y << ", " << p.z << "]";
     return os;
   }
-  friend Point3 operator*(float scalar, const Point3& rhs);
+  friend Point3 operator*(double scalar, const Point3& rhs);
 
-  friend float distance(const Point3& p1, const Point3& p2) { return (p1 - p2).magnitude(); }
-  friend float distanceSquared(const Point3& p1, const Point3& p2) { return (p1 - p2).magnitudeSquared(); }
-  friend Point3 lerp(float t, const Point3& p1, const Point3& p2) { return (1 - t) * p1 + t * p2; }
+  friend double distance(const Point3& p1, const Point3& p2) { return (p1 - p2).magnitude(); }
+  friend double distanceSquared(const Point3& p1, const Point3& p2) { return (p1 - p2).magnitudeSquared(); }
+  friend Point3 lerp(double t, const Point3& p1, const Point3& p2) { return (1 - t) * p1 + t * p2; }
   friend Point3 min(const Point3& p1, const Point3& p2) {
     return Point3(std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::min(p1.z, p2.z));
   }
@@ -121,6 +121,6 @@ class Point3 {
   friend Point3 permute(const Point3& p, int x, int y, int z) { return Point3(p[x], p[y], p[z]); }
 };
 
-Point3 operator*(float scalar, const Point3& rhs) { return Point3(scalar * rhs.x, scalar * rhs.y, scalar * rhs.z); }
+Point3 operator*(double scalar, const Point3& rhs) { return Point3(scalar * rhs.x, scalar * rhs.y, scalar * rhs.z); }
 
 #endif

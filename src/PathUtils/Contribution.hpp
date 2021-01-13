@@ -5,7 +5,7 @@
 
 struct Contribution {
   Color color;
-  float x, y;
+  double x, y;
 
   Contribution() : color(), x(0), y(0) {}
   Contribution(const Color& color, const int x, const int y) : color(color), x(x), y(y) {}

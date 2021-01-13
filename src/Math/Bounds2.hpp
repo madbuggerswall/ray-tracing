@@ -9,8 +9,8 @@ class Bounds2 {
   Point2 minPoint, maxPoint;
 
   Bounds2() {
-    float minLimit = std::numeric_limits<float>::lowest();
-    float maxLimit = std::numeric_limits<float>::max();
+    double minLimit = std::numeric_limits<double>::lowest();
+    double maxLimit = std::numeric_limits<double>::max();
     minPoint = Point2(maxLimit, maxLimit);
     maxPoint = Point2(minLimit, minLimit);
   }

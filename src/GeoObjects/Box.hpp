@@ -31,11 +31,11 @@ class Box : public GeometricalObject {
     this->material = material;
   }
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+  virtual bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     return sides.intersect(ray, tMin, tMax, interaction);
   }
 
-  virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
+  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
     outputBox = AABB(min, max);
     return true;
   }

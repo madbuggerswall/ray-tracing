@@ -9,9 +9,9 @@
 
 class Point2 {
  public:
-  float x, y;
+  double x, y;
   Point2() : x(0), y(0) {}
-  Point2(float x, float y) : x(x), y(y) {}
+  Point2(double x, double y) : x(x), y(y) {}
 
   // Copy constructor
   Point2(const Point2& other) : x(other.x), y(other.y) {}
@@ -39,11 +39,11 @@ class Point2 {
   bool HasNaNs() const { return std::isnan(x) || std::isnan(y); }
 
   // Member access operators
-  float operator[](int i) const {
+  double operator[](int i) const {
     if (i == 0) return x;
     return y;
   }
-  float& operator[](int i) {
+  double& operator[](int i) {
     if (i == 0) return x;
     return y;
   }
@@ -64,13 +64,13 @@ class Point2 {
     y += rhs.y;
     return *this;
   }
-  Point2& operator*=(float scalar) {
+  Point2& operator*=(double scalar) {
     x *= scalar;
     y *= scalar;
     return *this;
   }
-  Point2& operator/=(float scalar) {
-    float fraction = 1.f / scalar;
+  Point2& operator/=(double scalar) {
+    double fraction = 1.f / scalar;
     x *= fraction;
     y *= fraction;
     return *this;
@@ -81,9 +81,9 @@ class Point2 {
   Point2 operator+(const Vector2& rhs) const { return Point2(x + rhs.x, y + rhs.y); }
   Point2 operator-(const Vector2& rhs) const { return Point2(x - rhs.x, y - rhs.y); }
   Point2 operator+(const Point2& rhs) const { return Point2(x + rhs.x, y + rhs.y); }
-  Point2 operator*(float scalar) const { return Point2(scalar * x, scalar * y); }
-  Point2 operator/(float scalar) const {
-    float fraction = 1.f / scalar;
+  Point2 operator*(double scalar) const { return Point2(scalar * x, scalar * y); }
+  Point2 operator/(double scalar) const {
+    double fraction = 1.f / scalar;
     return Point2(fraction * x, fraction * y);
   }
   Vector2 operator-(const Point2& rhs) const { return Vector2(x - rhs.x, y - rhs.y); }
@@ -96,10 +96,10 @@ class Point2 {
     os << "[" << p.x << ", " << p.y << "]";
     return os;
   }
-  friend Point2 operator*(float scalar, const Point2& rhs);
-  friend float distance(const Point2& p1, const Point2& p2) { return (p1 - p2).magnitude(); }
-  friend float distanceSquared(const Point2& p1, const Point2& p2) { return (p1 - p2).magnitudeSquared(); }
-  friend Point2 lerp(float t, const Point2& p1, const Point2& p2) { return (1 - t) * p1 + t * p2; }
+  friend Point2 operator*(double scalar, const Point2& rhs);
+  friend double distance(const Point2& p1, const Point2& p2) { return (p1 - p2).magnitude(); }
+  friend double distanceSquared(const Point2& p1, const Point2& p2) { return (p1 - p2).magnitudeSquared(); }
+  friend Point2 lerp(double t, const Point2& p1, const Point2& p2) { return (1 - t) * p1 + t * p2; }
   friend Point2 min(const Point2& p1, const Point2& p2) { return Point2(std::min(p1.x, p2.x), std::min(p1.y, p2.y)); }
   friend Point2 max(const Point2& p1, const Point2& p2) { return Point2(std::max(p1.x, p2.x), std::max(p1.y, p2.y)); }
   friend Point2 floor(const Point2& p) { return Point2(std::floor(p.x), std::floor(p.y)); }
@@ -107,6 +107,6 @@ class Point2 {
   friend Point2 abs(const Point2& p) { return Point2(std::abs(p.x), std::abs(p.y)); }
 };
 
-Point2 operator*(float scalar, const Point2& rhs) { return Point2(scalar * rhs.x, scalar * rhs.y); }
+Point2 operator*(double scalar, const Point2& rhs) { return Point2(scalar * rhs.x, scalar * rhs.y); }
 
 #endif

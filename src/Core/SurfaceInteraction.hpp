@@ -10,7 +10,7 @@ struct SurfaceInteraction {
   Point3 point;
   Vector3 normal;
   UV uv;
-  float t;
+  double t;
   bool frontFace;
   std::shared_ptr<Material> materialPtr;
 

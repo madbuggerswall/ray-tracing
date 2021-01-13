@@ -16,15 +16,15 @@ class Camera {
   Vector3 horizontal;
   Vector3 vertical;
   Vector3 u, v, w;
-  float lensRadius;
-  float time0;
-  float time1;
+  double lensRadius;
+  double time0;
+  double time1;
 
-  float viewportHeight;
+  double viewportHeight;
 
  public:
-  Camera(Point3 lookFrom, Point3 lookAt, Vector3 viewUp, float vertFov, float aspectRatio, float aperture,
-         float focusDist, float time0, float time1) {
+  Camera(Point3 lookFrom, Point3 lookAt, Vector3 viewUp, double vertFov, double aspectRatio, double aperture,
+         double focusDist, double time0, double time1) {
     viewportHeight = 2.0 * std::tan(Math::degreesToRadians(vertFov) / 2.0);
 
     const auto viewportWidth = viewportHeight * aspectRatio;
@@ -44,7 +44,7 @@ class Camera {
     this->time1 = time1;
   }
 
-  Camera(CameraConfiguration config, float time0, float time1) :
+  Camera(CameraConfiguration config, double time0, double time1) :
       Camera(config.lookFrom, config.lookAt, config.viewUp, config.verticalFOV, config.aspectRatio, config.aperture,
              config.focusDist, time0, time1) {}
 
@@ -63,7 +63,7 @@ class Camera {
   }
 
   // MLT
-  Ray getSample(ushort imageHeight, ushort imageWidth, float random1, float random2) const {
+  Ray getSample(ushort imageHeight, ushort imageWidth, double random1, double random2) const {
     const Vector3 su = u * -(0.5 - random1) * imageWidth;
     const Vector3 sv = v * (0.5 - random2) * imageHeight;
     const Vector3 sw = -w * getDist(imageHeight);
@@ -71,7 +71,7 @@ class Camera {
   }
 
   Vector3 getW() const { return -w; }
-  float getDist(const int imageHeight) const { return imageHeight / viewportHeight; }
+  double getDist(const int imageHeight) const { return imageHeight / viewportHeight; }
   Point3 getOrigin() const { return origin; }
   Vector3 getU() const { return u; }
   Vector3 getV() const { return v; }

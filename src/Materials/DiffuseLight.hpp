@@ -21,10 +21,10 @@ class DiffuseLight : public Material {
   virtual Color emit(const UV& uv, const Point3& point) const override { return emission->lookup(uv, point); }
   
 	// Lambertian BRDF
-  float brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override { return 1.0 / Math::pi; }
+  double brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override { return 1.0 / Math::pi; }
 
   // Lambertian BRDF
-  float pdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override {
+  double pdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override {
     return std::abs(dot(wo, normal)) / Math::pi;
   }
 };

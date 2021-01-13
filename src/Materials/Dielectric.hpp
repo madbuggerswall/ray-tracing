@@ -6,16 +6,16 @@
 
 class Dielectric : public Material {
  private:
-  float refractiveIndex;
-  float schlickApprox(float cosine, float refractiveRatio) const;
+  double refractiveIndex;
+  double schlickApprox(double cosine, double refractiveRatio) const;
 
  public:
-  Dielectric(float refractiveIndex) : refractiveIndex(refractiveIndex) {}
+  Dielectric(double refractiveIndex) : refractiveIndex(refractiveIndex) {}
 
   bool scatter(const Ray& incoming, const SInteraction& iaction, Color& attenuation, Ray& scattered) const override {
     attenuation = Color(1.0, 1.0, 1.0);
 
-    float refractiveRatio;
+    double refractiveRatio;
     if (iaction.frontFace)
       refractiveRatio = 1.0 / refractiveIndex;
     else
@@ -23,15 +23,15 @@ class Dielectric : public Material {
 
     const Vector3 direction = incoming.direction.normalized();
 
-    const float cosTheta = std::fmin(dot(-direction, iaction.normal), 1.0);
-    const float sinTheta = std::sqrt(1.0 - cosTheta * cosTheta);
+    const double cosTheta = std::fmin(dot(-direction, iaction.normal), 1.0);
+    const double sinTheta = std::sqrt(1.0 - cosTheta * cosTheta);
     if (refractiveRatio * sinTheta > 1.0) {
       const Vector3 reflected = direction.reflect(iaction.normal);
       scattered = Ray(iaction.point, reflected);
       return true;
     }
 
-    const float reflectProb = schlickApprox(cosTheta, refractiveRatio);
+    const double reflectProb = schlickApprox(cosTheta, refractiveRatio);
     if (Random::fraction() < reflectProb) {
       const Vector3 reflected = direction.reflect(iaction.normal);
       scattered = Ray(iaction.point, reflected);
@@ -44,11 +44,11 @@ class Dielectric : public Material {
   }
 
 	// Dummy BRDF and PDF. TODO
-  virtual float brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override { return 1.0; }
-  virtual float pdf(const Vector3& wi, const Vector3& n, const Vector3& wo) const override { return 1.0; }
+  virtual double brdf(const Vector3& wi, const Vector3& normal, const Vector3& wo) const override { return 1.0; }
+  virtual double pdf(const Vector3& wi, const Vector3& n, const Vector3& wo) const override { return 1.0; }
 };
 
-float Dielectric::schlickApprox(float cosine, float refractiveRatio) const {
+double Dielectric::schlickApprox(double cosine, double refractiveRatio) const {
   // r0: reflection coefficient for light incoming parallel to the normal.
   auto r0 = (1 - refractiveRatio) / (1 + refractiveRatio);
   r0 *= r0;

@@ -7,7 +7,7 @@
 class ImageTexture : public Texture {
  private:
   const static int bytesPerPixel = 3;
-  const float colorScale = 1.0 / 255.0;
+  const double colorScale = 1.0 / 255.0;
   int width;
   int height;
   int bytesPerScanline;
@@ -40,8 +40,8 @@ class ImageTexture : public Texture {
     };
 
     // Clamp input texture coordinates to [0,1] x [1,0]
-    const float u = Math::clamp(uv.u, 0.0, 1.0);
-    const float v = 1.0 - Math::clamp(uv.v, 0.0, 1.0);
+    const double u = Math::clamp(uv.u, 0.0, 1.0);
+    const double v = 1.0 - Math::clamp(uv.v, 0.0, 1.0);
 
     auto i = static_cast<int>(u * width);
     auto j = static_cast<int>(v * height);

@@ -33,7 +33,7 @@ class PerlinNoise {
   }
 
   // c[2][2][2]: Corners of a cube.
-  inline float trilinearInterpolation(Vector3 c[2][2][2], float u, float v, float w) const {
+  inline double trilinearInterpolation(Vector3 c[2][2][2], double u, double v, double w) const {
     auto uu = u * u * (3 - 2 * u);
     auto vv = v * v * (3 - 2 * v);
     auto ww = w * w * (3 - 2 * w);
@@ -60,7 +60,7 @@ class PerlinNoise {
     permZ = generatePerm();
   }
 
-  float noise(const Point3& point) const {
+  double noise(const Point3& point) const {
     auto u = point.x - std::floor(point.x);
     auto v = point.y - std::floor(point.y);
     auto w = point.z - std::floor(point.z);
@@ -78,7 +78,7 @@ class PerlinNoise {
     return trilinearInterpolation(c, u, v, w);
   }
 
-  float turbulence(const Point3& point, int depth = 7) const {
+  double turbulence(const Point3& point, int depth = 7) const {
     auto accum = 0.0;
     auto factorPoint = point;
     auto weight = 1.0;

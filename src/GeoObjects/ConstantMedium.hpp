@@ -10,19 +10,19 @@ class ConstantMedium : public GeometricalObject {
  private:
   std::shared_ptr<GeometricalObject> shape;
   std::shared_ptr<Material> phaseFunction;
-  float negInvDensity;
+  double negInvDensity;
 
  public:
-  ConstantMedium(std::shared_ptr<GeoObject> shape, float density, std::shared_ptr<Texture> albedo) :
+  ConstantMedium(std::shared_ptr<GeoObject> shape, double density, std::shared_ptr<Texture> albedo) :
       shape(shape),
       negInvDensity(-1 / density),
       phaseFunction(std::make_shared<Isotropic>(albedo)) {}
-  ConstantMedium(std::shared_ptr<GeoObject> shape, float density, Color color) :
+  ConstantMedium(std::shared_ptr<GeoObject> shape, double density, Color color) :
       shape(shape),
       negInvDensity(-1 / density),
       phaseFunction(std::make_shared<Isotropic>(color)) {}
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+  virtual bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     SInteraction interactionA, interactionB;
 
     if (!shape->intersect(ray, -Math::infinity, Math::infinity, interactionA)) return false;
@@ -52,7 +52,7 @@ class ConstantMedium : public GeometricalObject {
     return true;
   }
 
-  virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
+  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
     return shape->computeBoundingBox(t0, t1, outputBox);
   }
 

@@ -9,8 +9,8 @@ class Bounds3 {
   Point3 minPoint, maxPoint;
 
   Bounds3() {
-    float minLimit = std::numeric_limits<float>::lowest();
-    float maxLimit = std::numeric_limits<float>::max();
+    double minLimit = std::numeric_limits<double>::lowest();
+    double maxLimit = std::numeric_limits<double>::max();
     minPoint = Point3(maxLimit, maxLimit, maxLimit);
     maxPoint = Point3(minLimit, minLimit, minLimit);
   }
@@ -49,11 +49,11 @@ class Bounds3 {
   }
   Vector3 getDiagonal() const { return maxPoint - minPoint; }
 
-  float getSurfaceArea() const {
+  double getSurfaceArea() const {
     Vector3 diagonal = getDiagonal();
     return 2 * (diagonal.x * diagonal.y + diagonal.x * diagonal.z + diagonal.y * diagonal.z);
   }
-  float getVolume() const {
+  double getVolume() const {
     Vector3 diagonal = getDiagonal();
     return diagonal.x * diagonal.y * diagonal.z;
   }
@@ -75,13 +75,13 @@ class Bounds3 {
     return o;
   }
 
-  bool intersectP(const Ray& ray, float* hitt0 = nullptr, float* hitt1 = nullptr) const {
-    float t0 = 0, t1 = ray.tMax;
+  bool intersectP(const Ray& ray, double* hitt0 = nullptr, double* hitt1 = nullptr) const {
+    double t0 = 0, t1 = ray.tMax;
     for (int i = 0; i < 3; ++i) {
       // Update interval for ith bounding box slab.
-      float invRayDir = 1 / ray.direction[i];
-      float tNear = (minPoint[i] - ray.origin[i]) * invRayDir;
-      float tFar = (maxPoint[i] - ray.origin[i]) * invRayDir;
+      double invRayDir = 1 / ray.direction[i];
+      double tNear = (minPoint[i] - ray.origin[i]) * invRayDir;
+      double tFar = (maxPoint[i] - ray.origin[i]) * invRayDir;
       // Update parametric interval from slab intersection values.
       if (tNear > tFar) std::swap(tNear, tFar);
       // [EXCLUDED] Update tFar to ensure robust ray–bounds intersection. Gamma calls excluded.
@@ -97,10 +97,10 @@ class Bounds3 {
   bool intersectP(const Ray& ray, const Vector3& invDir, const int dirIsNeg[3]) const {
     const Bounds3& bounds = *this;
     // <<Check for ray intersection against  and  slabs>>
-    float tMin = (bounds[dirIsNeg[0]].x - ray.origin.x) * invDir.x;
-    float tMax = (bounds[1 - dirIsNeg[0]].x - ray.origin.x) * invDir.x;
-    float tyMin = (bounds[dirIsNeg[1]].y - ray.origin.y) * invDir.y;
-    float tyMax = (bounds[1 - dirIsNeg[1]].y - ray.origin.y) * invDir.y;
+    double tMin = (bounds[dirIsNeg[0]].x - ray.origin.x) * invDir.x;
+    double tMax = (bounds[1 - dirIsNeg[0]].x - ray.origin.x) * invDir.x;
+    double tyMin = (bounds[dirIsNeg[1]].y - ray.origin.y) * invDir.y;
+    double tyMax = (bounds[1 - dirIsNeg[1]].y - ray.origin.y) * invDir.y;
     // [EXCLUDED] Update tMax and tyMax to ensure robust bounds intersection. Excluded gamma calls.
 
     if (tMin > tyMax || tyMin > tMax) return false;
@@ -108,8 +108,8 @@ class Bounds3 {
     if (tyMax < tMax) tMax = tyMax;
 
     // <<Check for ray intersection against  slab>>
-    float tzMin = (bounds[dirIsNeg[2]].z - ray.origin.z) * invDir.z;
-    float tzMax = (bounds[1 - dirIsNeg[2]].z - ray.origin.z) * invDir.z;
+    double tzMin = (bounds[dirIsNeg[2]].z - ray.origin.z) * invDir.z;
+    double tzMax = (bounds[1 - dirIsNeg[2]].z - ray.origin.z) * invDir.z;
     //  [EXCLUDED] Update tzMax to ensure robust bounds intersection. Excluded gamma calls.
 
     if (tMin > tzMax || tzMin > tMax) return false;

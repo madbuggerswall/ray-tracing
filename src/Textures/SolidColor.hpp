@@ -10,7 +10,7 @@ class SolidColor : public Texture {
  public:
   SolidColor() {}
   SolidColor(Color color) : color(color) {}
-  SolidColor(float red, float green, float blue) : SolidColor(Color(red, green, blue)) {}
+  SolidColor(double red, double green, double blue) : SolidColor(Color(red, green, blue)) {}
 
   virtual Color lookup(const UV& coordinates, const Point3& point) const override { return color; }
 };

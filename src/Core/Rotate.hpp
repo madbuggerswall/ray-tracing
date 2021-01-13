@@ -7,13 +7,13 @@
 class RotateY : public GeometricalObject {
  private:
   std::shared_ptr<GeometricalObject> object;
-  float sinTheta;
-  float cosTheta;
+  double sinTheta;
+  double cosTheta;
   bool hasBox;
   AABB boundingBox;
 
  public:
-  RotateY(std::shared_ptr<GeoObject> object, float angle) : object(object) {
+  RotateY(std::shared_ptr<GeoObject> object, double angle) : object(object) {
     const auto radians = Math::degreesToRadians(angle);
     sinTheta = std::sin(radians);
     cosTheta = std::cos(radians);
@@ -44,7 +44,7 @@ class RotateY : public GeometricalObject {
     boundingBox = AABB(min, max);
   }
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+  virtual bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     auto origin = ray.origin;
     auto direction = ray.direction;
 
@@ -73,7 +73,7 @@ class RotateY : public GeometricalObject {
     return true;
   }
 
-  virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
+  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
     outputBox = boundingBox;
     return hasBox;
   }

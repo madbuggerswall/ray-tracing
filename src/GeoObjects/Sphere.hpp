@@ -7,17 +7,17 @@
 class Sphere : public GeometricalObject {
  private:
   Point3 center;
-  float radius;
+  double radius;
   std::shared_ptr<Material> material;
 
  public:
   Sphere() {}
-  Sphere(Point3 center, float radius, std::shared_ptr<Material> material) :
+  Sphere(Point3 center, double radius, std::shared_ptr<Material> material) :
       center(center),
       radius(radius),
       material(material) {}
 
-  virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
+  virtual bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     Vector3 oc = ray.origin - center;
     const auto a = ray.direction.magnitudeSquared();
     const auto halfB = dot(oc, ray.direction);
@@ -48,7 +48,7 @@ class Sphere : public GeometricalObject {
     return false;
   }
 
-  virtual bool computeBoundingBox(float t0, float t1, AABB& outputBox) const override {
+  virtual bool computeBoundingBox(double t0, double t1, AABB& outputBox) const override {
     // std::cout << "Bounding Box computed for:" << (this) << std::endl;
     outputBox = AABB(center - Vector3(radius, radius, radius), center + Vector3(radius, radius, radius));
     return true;
@@ -59,8 +59,8 @@ class Sphere : public GeometricalObject {
   UV getUV(const Vector3& outwardNormal) const {
     const auto phi = std::atan2(outwardNormal.z, outwardNormal.x);
     const auto theta = std::asin(outwardNormal.y);
-    const float u = 1 - (phi + Math::pi) / (2 * Math::pi);
-    const float v = (theta + Math::pi / 2) / Math::pi;
+    const double u = 1 - (phi + Math::pi) / (2 * Math::pi);
+    const double v = (theta + Math::pi / 2) / Math::pi;
     return UV(u, v);
   }
 };

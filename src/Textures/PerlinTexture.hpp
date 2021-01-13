@@ -7,11 +7,11 @@
 class PerlinTexture : public Texture {
  private:
   PerlinNoise perlinNoise;
-  float scale;
+  double scale;
 
  public:
   PerlinTexture() {}
-  PerlinTexture(float scale) : scale(scale) {}
+  PerlinTexture(double scale) : scale(scale) {}
   virtual Color lookup(const UV& uv, const Point3& point) const override {
     // return Color(1, 1, 1) * 0.5 * (1.0 + perlinNoise.noise(scale * point));
     // return Color(1, 1, 1)  * perlinNoise.turbulence(scale * point);

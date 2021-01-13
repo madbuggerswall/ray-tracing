@@ -9,10 +9,10 @@ struct CameraConfiguration {
   Point3 lookAt;
   Vector3 viewUp = Vector3(0, 1, 0);
 
-  float verticalFOV = 40.0;
-  float aspectRatio = 16.0 / 9.0;
-  float aperture = 0.0;
-  float focusDist = 10.0;
+  double verticalFOV = 40.0;
+  double aspectRatio = 16.0 / 9.0;
+  double aperture = 0.0;
+  double focusDist = 10.0;
 
   size_t imageWidth = 400;
   size_t imageHeight = static_cast<size_t>(imageWidth / aspectRatio);
