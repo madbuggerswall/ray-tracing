@@ -42,18 +42,6 @@ class PathContribution {
 
   void add(const Contribution& contrib) { contributions.push_back(contrib); }
 
-  Color accumulatePathContribution(const float scale) {
-    if (scalarContrib == 0) return Color(0, 0, 0);
-    Color result;
-    for (auto contribution : contributions) {
-      // const int ix = int(contributions[i].x);
-      // const int iy = int(contributions[i].y);
-      const Color color = contribution.color * scale;
-      result += color;
-    }
-    return result;
-  }
-
   void accumulatePathContribution(const float scale, Image& image) {
     int imageWidth = image.getWidth();
     if (scalarContrib == 0) return;

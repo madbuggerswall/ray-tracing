@@ -33,7 +33,7 @@ int main(int argc, char const* argv[]) {
   Image image(config.imageHeight, config.imageWidth);
 
   // Rendering
-  MLTIntegrator integrator(config, scene, camera);
+  BDPTIntegrator integrator(config, scene, camera);
   integrator.render(image);
 
   std::cout << std::endl << "Done." << std::endl;

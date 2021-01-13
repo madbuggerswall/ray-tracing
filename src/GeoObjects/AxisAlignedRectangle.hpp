@@ -46,7 +46,7 @@ class RectangleXY : public Rectangle {
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     const float t = (k - ray.origin.z) / ray.direction.z;
-    if (t < tMin || t > tMax) return false;
+    if (!(t > tMin) || !(t < tMax)) return false;
 
     const float x = ray.origin.x + t * ray.direction.x;
     const float y = ray.origin.y + t * ray.direction.y;
@@ -72,7 +72,7 @@ class RectangleXZ : public Rectangle {
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     const float t = (k - ray.origin.y) / ray.direction.y;
-    if (t < tMin || t > tMax) return false;
+    if (!(t > tMin) || !(t < tMax)) return false;
 
     const float x = ray.origin.x + t * ray.direction.x;
     const float z = ray.origin.z + t * ray.direction.z;
@@ -98,7 +98,7 @@ class RectangleYZ : public Rectangle {
 
   virtual bool intersect(const Ray& ray, float tMin, float tMax, SInteraction& interaction) const override {
     const float t = (k - ray.origin.x) / ray.direction.x;
-    if (t < tMin || t > tMax) return false;
+    if (!(t > tMin) || !(t < tMax)) return false;
 
     const float y = ray.origin.y + t * ray.direction.y;
     const float z = ray.origin.z + t * ray.direction.z;

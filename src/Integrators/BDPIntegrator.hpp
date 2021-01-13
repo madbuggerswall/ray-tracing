@@ -9,7 +9,10 @@
 // TODO: Scale the accumulate with b / scalarContrib.
 class BidirectionalPathIntegrator : public Integrator {
  protected:
+  //  Avoid direct light
   int minPathLength = 3;
+
+  // bounces + 1 sampled point from camera or light.
   int maxEvents;
 
   float lightArea;
@@ -19,6 +22,7 @@ class BidirectionalPathIntegrator : public Integrator {
   BidirectionalPathIntegrator(const CConfig& config, const Scene& scene, const Camera& camera) :
       Integrator(config, scene, camera) {
     lightArea = getTotalLightArea();
+
     maxEvents = bounceLimit + 1;
     normConstant = estimateNormalizationConstant(10000);
   }
@@ -62,18 +66,11 @@ class BidirectionalPathIntegrator : public Integrator {
   }
 
   void render(Image& image) const override {
-    Path camPath(maxEvents);
-    Path lightPath(maxEvents);
-    PathContribution pathContribution(maxEvents);
-
     for (int j = imageHeight - 1; j >= 0; --j) {
       std::cout << "\rScanlines remaining: " << j << "  " << std::flush;
       for (int i = 0; i < imageWidth; ++i) {
         for (int s = 0; s < samplesPerPixel; ++s) {
-          camPath = generateCameraPath(i, j);
-          lightPath = generateLightPath();
-          pathContribution = combinePaths(camPath, lightPath);
-          pathContribution.accumulatePathContribution(1.0, image);
+          combinePaths(generateCameraPath(i, j), generateLightPath()).accumulatePathContribution(1.0, image);
         }
       }
     }
@@ -108,6 +105,10 @@ class BidirectionalPathIntegrator : public Integrator {
   bool isConnectable(const Path& camPath, const Path& lightPath, float& px, float& py) const {
     Vector3 direction;
     bool result;
+
+    // Dummy
+    SInteraction interaction;
+
     if (camPath.empty() && (lightPath.length() >= 2)) {
       // No direct hit to the film (pinhole)
       result = false;
@@ -119,20 +120,19 @@ class BidirectionalPathIntegrator : public Integrator {
 
     } else if ((camPath.length() == 1) && (lightPath.length() >= 1)) {
       // light tracing
-      SInteraction interaction;
       Ray ray(camPath.first().point, (lightPath.last().point - camPath.first().point).normalized());
       float tMax = (lightPath.last().point - camPath.first().point).magnitude() / ray.direction.magnitude();
       direction = ray.direction;
-      result = !scene.intersect(ray, 0.001, tMax - 0.001, interaction);
+      result = !scene.intersect(ray, 0.001, tMax, interaction);
     } else {
       // shadow ray connection
-      SInteraction interaction;
       Ray ray(camPath.last().point, (lightPath.last().point - camPath.last().point).normalized());
       float tMax = (lightPath.last().point - camPath.last().point).magnitude() / ray.direction.magnitude();
       direction = (camPath[1].point - camPath[0].point).normalized();
 
-      result = !scene.intersect(ray, 0.001, tMax - 0.001, interaction);
+      result = !scene.intersect(ray, 0.001, tMax, interaction);
     }
+    if (!result) return result;
     // get the pixel location
     Point3 origin = camera.getOrigin();
     Vector3 w = camera.getW();
@@ -197,10 +197,10 @@ class BidirectionalPathIntegrator : public Integrator {
 
   PathContribution combinePaths(const Path& eyePath, const Path& lightPath) const {
     PathContribution result(maxEvents);
-
+    int maxPathLength = std::fmin(eyePath.length() + lightPath.length(), maxEvents);
     // maxEvents = the maximum number of vertices
-    for (int pathLength = minPathLength; pathLength <= bounceLimit; pathLength++) {
-      for (int numEyeVertices = 0; numEyeVertices <= pathLength + 1; numEyeVertices++) {
+    for (int pathLength = minPathLength; pathLength < maxPathLength; pathLength++) {
+      for (int numEyeVertices = 1; numEyeVertices <= pathLength + 1; numEyeVertices++) {
         const int numLightVertices = (pathLength + 1) - numEyeVertices;
 
         if (numEyeVertices == 0) continue;  // no direct hit to the film (pinhole)
@@ -261,7 +261,7 @@ class BidirectionalPathIntegrator : public Integrator {
 
   float pathProbablityDensity(const Path& sampledPath, const int pathLength, const int specifiedNumEyeVertices = -1,
                               const int specifiedNumLightVertices = -1) const {
-    float sumPDFs = 0;
+    KahanAdder sumPDFs(0.0);
     bool specified = (specifiedNumEyeVertices != -1) && (specifiedNumLightVertices != -1);
 
     // number of eye subpath vertices
@@ -335,9 +335,9 @@ class BidirectionalPathIntegrator : public Integrator {
         return pdfValue;
 
       // sum the probability density (use Kahan summation algorithm to reduce numerical issues)
-      sumPDFs += pdfValue;
+      sumPDFs.add(pdfValue);
     }
-    return sumPDFs;
+    return sumPDFs.sum;
   }
 };
 

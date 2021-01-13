@@ -23,8 +23,6 @@ class Translate : public GeometricalObject {
     outputBox = AABB(outputBox.getMin() + offset, outputBox.getMax() + offset);
     return true;
   }
-
-  virtual Point3 samplePoint() const override { return Point3(0, 0, 0); }
 };
 
 #endif
