@@ -9,7 +9,7 @@ $ make
 
 ## Run
 ```sh
-$ ./ray-tracing -s 6 -spp 8 -b 8 -o outputFile
+$ ./ray-tracing -i mlt -s 6 -spp 8 -b 8 -o outputFile
 ```
 
 | Command  | Verbose  | Definiton | Options |
