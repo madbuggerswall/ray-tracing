@@ -68,11 +68,9 @@ class MLTIntegrator : public BDPTIntegrator {
 
     primarySampleSpace.offset = numStatesSubpath;
 
-    auto origin = randomLight->samplePoint(primarySampleSpace[primarySampleSpace.offset],
-                                           primarySampleSpace[primarySampleSpace.offset]);
-    auto direction = Random::cosineDirection(primarySampleSpace[primarySampleSpace.offset],
-                                             primarySampleSpace[primarySampleSpace.offset]);
-    Ray ray(origin, direction);
+    Ray ray = randomLight->sampleDirection(
+        primarySampleSpace[primarySampleSpace.offset], primarySampleSpace[primarySampleSpace.offset],
+        primarySampleSpace[primarySampleSpace.offset], primarySampleSpace[primarySampleSpace.offset]);
     path.add(Vertex(ray.origin, ray.direction, lightMaterial));
     tracePath(ray, bounceLimit, path);
     return path;

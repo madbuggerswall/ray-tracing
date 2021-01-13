@@ -96,7 +96,7 @@ class BidirectionalPathIntegrator : public Integrator {
     Path path(maxEvents);
     auto randomLight = scene.getRandomLight();
     auto lightMaterial = scene.getRandomLight()->getMaterial();
-    Ray ray(randomLight->samplePoint(), Random::cosineDirection());
+    Ray ray = randomLight->sampleDirection();
     path.add(Vertex(ray.origin, ray.direction, lightMaterial));
     tracePath(ray, bounceLimit, path);
     return path;
@@ -123,14 +123,14 @@ class BidirectionalPathIntegrator : public Integrator {
       Ray ray(camPath.first().point, (lightPath.last().point - camPath.first().point).normalized());
       double tMax = (lightPath.last().point - camPath.first().point).magnitude() / ray.direction.magnitude();
       direction = ray.direction;
-      result = !scene.intersect(ray, 0.001, tMax, interaction);
+      result = !scene.intersect(ray, 0, tMax, interaction);
     } else {
       // shadow ray connection
       Ray ray(camPath.last().point, (lightPath.last().point - camPath.last().point).normalized());
       double tMax = (lightPath.last().point - camPath.last().point).magnitude() / ray.direction.magnitude();
       direction = (camPath[1].point - camPath[0].point).normalized();
 
-      result = !scene.intersect(ray, 0.001, tMax, interaction);
+      result = !scene.intersect(ray, 0, tMax, interaction);
     }
     if (!result) return result;
     // get the pixel location

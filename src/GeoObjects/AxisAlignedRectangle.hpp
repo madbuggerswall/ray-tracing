@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../Materials/DiffuseLight.hpp"
+#include "../Math/ONB.hpp"
 #include "../Math/Random.hpp"
 #include "GeometricalObject.hpp"
 
@@ -39,10 +40,16 @@ class Rectangle : public GeometricalObject {
 };
 
 class RectangleXY : public Rectangle {
+  Vector3 normal = Vector3(0, 0, 1);
+
  public:
   RectangleXY() : Rectangle() {}
   RectangleXY(std::initializer_list<double> corners, double k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
+  RectangleXY(std::initializer_list<double> corners, double k, std::shared_ptr<Material> material, int side) :
+      Rectangle(corners, k, material) {
+    normal *= side;
+  }
 
   virtual bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     const double t = (k - ray.origin.z) / ray.direction.z;
@@ -61,14 +68,27 @@ class RectangleXY : public Rectangle {
     return Point3(Random::range(corners[0], corners[1]), Random::range(corners[2], corners[3]), k);
   }
 
+  Ray sampleDirection() const override {
+    Point3 origin = samplePoint();
+    ONB orthonormalBasis(normal);
+    Vector3 direction = orthonormalBasis.local(Random::cosineDirection());
+    return Ray(origin, direction);
+  }
+
   double getArea() const override { return std::abs(corners[0] - corners[1]) * std::abs(corners[2] - corners[3]); }
 };
 
 class RectangleXZ : public Rectangle {
+  Vector3 normal = Vector3(0, 1, 0);
+
  public:
   RectangleXZ() : Rectangle() {}
   RectangleXZ(std::initializer_list<double> corners, double k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
+  RectangleXZ(std::initializer_list<double> corners, double k, std::shared_ptr<Material> material, int side) :
+      Rectangle(corners, k, material) {
+    normal *= side;
+  }
 
   virtual bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     const double t = (k - ray.origin.y) / ray.direction.y;
@@ -87,14 +107,40 @@ class RectangleXZ : public Rectangle {
     return Point3(Random::range(corners[0], corners[1]), k, Random::range(corners[2], corners[3]));
   }
 
+  Point3 samplePoint(double random1, double random2) const override {
+    auto x = Random::mapInterval(random1, corners[0], corners[1]);
+    auto z = Random::mapInterval(random2, corners[2], corners[3]);
+    return Point3(x, k, z);
+  }
+
+  Ray sampleDirection() const override {
+    Point3 origin = samplePoint();
+    ONB orthonormalBasis(normal);
+    Vector3 direction = orthonormalBasis.local(Random::cosineDirection());
+    return Ray(origin, direction);
+  }
+
+  Ray sampleDirection(double random1, double random2, double random3, double random4) const override {
+    Point3 origin = samplePoint(random1, random2);
+    ONB orthonormalBasis(normal);
+    Vector3 direction = orthonormalBasis.local(Random::cosineDirection(random3, random4));
+    return Ray(origin, direction);
+  }
+
   double getArea() const override { return std::abs(corners[0] - corners[1]) * std::abs(corners[2] - corners[3]); }
 };
 
 class RectangleYZ : public Rectangle {
+  Vector3 normal = Vector3(1, 0, 0);
+
  public:
   RectangleYZ() : Rectangle() {}
   RectangleYZ(std::initializer_list<double> corners, double k, std::shared_ptr<Material> material) :
       Rectangle(corners, k, material) {}
+  RectangleYZ(std::initializer_list<double> corners, double k, std::shared_ptr<Material> material, int side) :
+      Rectangle(corners, k, material) {
+    normal *= side;
+  }
 
   virtual bool intersect(const Ray& ray, double tMin, double tMax, SInteraction& interaction) const override {
     const double t = (k - ray.origin.x) / ray.direction.x;
@@ -117,6 +163,20 @@ class RectangleYZ : public Rectangle {
     auto y = Random::mapInterval(random1, corners[0], corners[1]);
     auto z = Random::mapInterval(random2, corners[2], corners[3]);
     return Point3(k, y, z);
+  }
+
+  Ray sampleDirection() const override {
+    Point3 origin = samplePoint();
+    ONB orthonormalBasis(normal);
+    Vector3 direction = orthonormalBasis.local(Random::cosineDirection());
+    return Ray(origin, direction);
+  }
+
+  Ray sampleDirection(double random1, double random2, double random3, double random4) const override {
+    Point3 origin = samplePoint(random1, random2);
+    ONB orthonormalBasis(normal);
+    Vector3 direction = orthonormalBasis.local(Random::cosineDirection(random3, random4));
+    return Ray(origin, direction);
   }
 
   double getArea() const override { return std::abs(corners[0] - corners[1]) * std::abs(corners[2] - corners[3]); }

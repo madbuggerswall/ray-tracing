@@ -109,8 +109,8 @@ namespace Scenes {
     scene.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlinTexture)));
     scene.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlinTexture)));
 
-    auto diffuseLight = std::make_shared<DiffuseLight>(Color(4, 4, 4));
-    RectangleXY rectangleXY({3, 5, 1, 3}, -2, diffuseLight);
+    auto diffuseLight = std::make_shared<DiffuseLight>(Color(15, 15, 15));
+    RectangleXY rectangleXY({3, 5, 1, 3}, -2, diffuseLight, -1);
     scene.add(std::make_shared<RectangleXY>(rectangleXY));
 
     return scene;
@@ -126,7 +126,7 @@ namespace Scenes {
 
     RectangleYZ rectangleA({0, 555, 0, 555}, 555, red);
     RectangleYZ rectangleB({0, 555, 0, 555}, 0, green);
-    RectangleXZ rectangleC({213, 343, 227, 332}, 554, light);
+    RectangleXZ rectangleC({213, 343, 227, 332}, 554, light, 1);
     RectangleXZ rectangleD({0, 555, 0, 555}, 0, white);
     RectangleXZ rectangleE({0, 555, 0, 555}, 555, white);
     RectangleXY rectangleF({0, 555, 0, 555}, 555, white);
@@ -161,7 +161,7 @@ namespace Scenes {
 
     RectangleYZ sideA({0, 555, 0, 555}, 555, green);
     RectangleYZ sideB({0, 555, 0, 555}, 0, red);
-    RectangleXZ sideC({113, 443, 127, 432}, 554, light);
+    RectangleXZ sideC({113, 443, 127, 432}, 554, light, 1);
     RectangleXZ sideD({0, 555, 0, 555}, 555, white);
     RectangleXZ sideE({0, 555, 0, 555}, 0, white);
     RectangleXY sideF({0, 555, 0, 555}, 555, white);
@@ -213,7 +213,7 @@ namespace Scenes {
 
     // Light
     auto lightMat = std::make_shared<DiffuseLight>(Color(7, 7, 7));
-    RectangleXZ light({123, 423, 147, 412}, 554, lightMat);
+    RectangleXZ light({123, 423, 147, 412}, 554, lightMat, 1);
     scene.add(std::make_shared<RectangleXZ>(light));
 
     // Moving sphere
