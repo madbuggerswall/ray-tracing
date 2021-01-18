@@ -56,6 +56,9 @@ class BidirectionalPathIntegrator : public Integrator {
 
     // set path data
     path.add(Vertex(interaction));
+		
+    bool hitLight = dynamic_cast<DiffuseLight*>(&*(interaction.materialPtr));
+    if (hitLight) return;
 
     Ray scattered;
     Color attenuation;

@@ -109,6 +109,7 @@ namespace Scenes {
     scene.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlinTexture)));
     scene.add(std::make_shared<Sphere>(Point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlinTexture)));
 
+    // Original light color is (4,4,4)
     auto diffuseLight = std::make_shared<DiffuseLight>(Color(15, 15, 15));
     RectangleXY rectangleXY({3, 5, 1, 3}, -2, diffuseLight, -1);
     scene.add(std::make_shared<RectangleXY>(rectangleXY));
@@ -148,6 +149,50 @@ namespace Scenes {
     boxB = std::make_shared<RotateY>(boxB, -18);
     boxB = std::make_shared<Translate>(boxB, Vector3(130, 0, 65));
     scene.add(boxB);
+    return scene;
+  }
+
+  Scene cornellBoxIndirect() {
+    Scene scene;
+
+    auto red = std::make_shared<Lambertian>(Color(.65, .05, .05));
+    auto gray = std::make_shared<Lambertian>(Color(.73, .73, .73));
+    auto green = std::make_shared<Lambertian>(Color(.12, .45, .15));
+    auto white = std::make_shared<Lambertian>(Color(.98, .98, .98));
+    auto light = std::make_shared<DiffuseLight>(Color(24, 24, 24));
+
+    RectangleYZ rectangleA({0, 555, 0, 555}, 555, red);
+    RectangleYZ rectangleB({0, 555, 0, 555}, 0, green);
+    RectangleXZ rectangleC({213, 343, 227, 332}, 554, light, 1);
+    RectangleXZ rectangleD({0, 555, 0, 555}, 0, gray);
+    RectangleXZ rectangleE({0, 555, 0, 555}, 555, gray);
+    RectangleXY rectangleF({0, 555, 0, 555}, 555, gray);
+
+    // Walls
+    scene.add(std::make_shared<RectangleYZ>(rectangleA));
+    scene.add(std::make_shared<RectangleYZ>(rectangleB));
+    scene.add(std::make_shared<RectangleXZ>(rectangleC));
+    scene.add(std::make_shared<RectangleXZ>(rectangleD));
+    scene.add(std::make_shared<RectangleXZ>(rectangleE));
+    scene.add(std::make_shared<RectangleXY>(rectangleF));
+
+    std::shared_ptr<GeoObject> boxA = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), gray);
+    boxA = std::make_shared<RotateY>(boxA, 15);
+    boxA = std::make_shared<Translate>(boxA, Vector3(265, 0, 295));
+    scene.add(boxA);
+
+    std::shared_ptr<GeoObject> boxB = std::make_shared<Box>(Point3(0, 0, 0), Point3(165, 165, 165), gray);
+    boxB = std::make_shared<RotateY>(boxB, -18);
+    boxB = std::make_shared<Translate>(boxB, Vector3(130, 0, 65));
+    scene.add(boxB);
+
+    auto width = 160;
+    auto height = 40;
+    auto depth = 160;
+
+    std::shared_ptr<GeoObject> boxC = std::make_shared<Box>(Point3(0, 0, 0), Point3(width, height, depth), white);
+    boxC = std::make_shared<Translate>(boxC, Vector3(200, 460, 200));
+    scene.add(boxC);
     return scene;
   }
 
@@ -319,6 +364,17 @@ namespace Scenes {
         break;
 
       case 7:
+        scene = Scenes::cornellBoxIndirect();
+        config.lookFrom = Point3(278, 278, -800);
+        config.lookAt = Point3(278, 278, 0);
+        config.verticalFOV = 40.0;
+        config.aspectRatio = 1.0;
+        config.imageWidth = 600;
+        config.imageHeight = static_cast<int>(config.imageWidth / config.aspectRatio);
+        config.background = Color(0, 0, 0);
+        break;
+
+      case 8:
         scene = Scenes::cornellSmoke();
         config.aspectRatio = 1.0;
         config.imageWidth = 600;
@@ -327,7 +383,7 @@ namespace Scenes {
         config.lookAt = Point3(278, 278, 0);
         config.verticalFOV = 40.0;
 
-      case 8:
+      case 9:
         scene = Scenes::finalScene();
         config.aspectRatio = 1.0;
         config.imageWidth = 800;
