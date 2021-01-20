@@ -100,6 +100,13 @@ void ArgumentParser::parse(int argc, const char* argv[]) {
 void ArgumentParser::setConfig(Config& config) {
   if (bounceLimit != 0) config.bounceLimit = bounceLimit;
   if (samplesPerPixel != 0) config.samplesPerPixel = samplesPerPixel;
+
+  if (integratorType == IntegratorType::Naive)
+    config.integratorName = "Naive Path Tracer";
+  else if (integratorType == IntegratorType::Bidirectional)
+    config.integratorName = "Bidirectional Path Tracer";
+  else if (integratorType == IntegratorType::Metropolis)
+    config.integratorName = "Metropolis Light Transport";
 }
 
 void ArgumentParser::printInfo(const Config& config) {
