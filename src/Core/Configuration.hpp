@@ -22,6 +22,7 @@ struct Configuration {
   Color background = Color(0, 0, 0);
 
 	// Renderer
+	std::string integratorName;
   int samplesPerPixel = 1;
   int bounceLimit = 8;
 };

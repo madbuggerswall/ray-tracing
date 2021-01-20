@@ -197,32 +197,32 @@ class BidirectionalPathIntegrator : public Integrator {
     return color;
   }
 
-  PathContribution combinePaths(const Path& eyePath, const Path& lightPath) const {
+  PathContribution combinePaths(const Path& cameraPath, const Path& lightPath) const {
     PathContribution result(maxEvents);
-    int maxPathLength = std::fmin(eyePath.length() + lightPath.length(), maxEvents);
+    int maxPathLength = std::fmin(cameraPath.length() + lightPath.length(), maxEvents);
     // maxEvents = the maximum number of vertices
     for (int pathLength = minPathLength; pathLength < maxPathLength; pathLength++) {
       for (int numEyeVertices = 1; numEyeVertices <= pathLength + 1; numEyeVertices++) {
         const int numLightVertices = (pathLength + 1) - numEyeVertices;
 
         if (numEyeVertices == 0) continue;  // no direct hit to the film (pinhole)
-        if (numEyeVertices > eyePath.length()) continue;
+        if (numEyeVertices > cameraPath.length()) continue;
         if (numLightVertices > lightPath.length()) continue;
 
-        // extract subpaths
-        Path eyeSubpath(eyePath.firstN(numEyeVertices));
+        // Extract subpaths.
+        Path eyeSubpath(cameraPath.firstN(numEyeVertices));
         Path lightSubpath(lightPath.firstN(numLightVertices));
 
-        // check the path visibility
+        // Check the path visibility.
         double px = -1.0, py = -1.0;
         if (!isConnectable(eyeSubpath, lightSubpath, px, py)) continue;
 
-        // construct a full path
+        // Construct a full path.
         Path sampledPath(pathLength);
         sampledPath.append(eyeSubpath);
         sampledPath.append(lightPath.reversed());
 
-        // evaluate the path
+        // Evaluate the path
         Color color = pathThroughput(sampledPath);
         double pathPDF = pathProbablityDensity(sampledPath, pathLength, numEyeVertices, numLightVertices);
         double weight = calculateMISWeight(sampledPath, numEyeVertices, numLightVertices, pathLength);

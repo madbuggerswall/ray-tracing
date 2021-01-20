@@ -19,7 +19,7 @@ int main(int argc, char const* argv[]) {
   Stopwatch stopwatch;
   stopwatch.start();
 
-	// Parse CLI arguments
+  // Parse CLI arguments
   ArgumentParser argParser;
   argParser.parse(argc, argv);
 
@@ -46,13 +46,18 @@ int main(int argc, char const* argv[]) {
       return std::make_shared<BDPTIntegrator>(config, scene, camera);
   };
 
+	// For image tag. [CLEANUP]
+  image.imageInfo.bounceLimit = config.bounceLimit;
+  image.imageInfo.samplesPerPixel = config.samplesPerPixel;
+	image.imageInfo.integratorName = config.integratorName;
+
   // Rendering
   std::shared_ptr<Integrator> integrator = selectIntegrator(argParser.integratorType);
   integrator->render(image);
 
   std::cout << std::endl << "Done." << std::endl;
   stopwatch.stop();
-  stopwatch.printTime();
+  image.imageInfo.renderTime = stopwatch.printTime();
 
   // Write image to a file
   std::cout << std::endl << "Writing image to file." << std::endl;

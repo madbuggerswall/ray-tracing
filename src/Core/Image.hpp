@@ -8,6 +8,24 @@
 #include "../Math/Math.hpp"
 #include "../Math/Vector3.hpp"
 
+struct ImageInfo {
+  size_t height;
+  size_t width;
+  size_t samplesPerPixel;
+  size_t bounceLimit;
+  size_t renderTime;
+  std::string integratorName;
+
+  friend std::ostream& operator<<(std::ostream& out, const ImageInfo& imageInfo) {
+    return out << "# Image height: " << imageInfo.height << std::endl
+               << "# Image width: " << imageInfo.width << std::endl
+               << "# Samples per pixel: " << imageInfo.samplesPerPixel << std::endl
+               << "# Ray bounce limit: " << imageInfo.bounceLimit << std::endl
+               << "# Render time: " << imageInfo.renderTime << std::endl
+               << "# Integrator: " << imageInfo.integratorName << std::endl;
+  }
+};
+
 class Image {
  private:
   std::vector<Color> pixels;
@@ -15,9 +33,12 @@ class Image {
   size_t width;
 
  public:
+  ImageInfo imageInfo;
   Image() = delete;
   Image(const size_t height, const size_t width) : height(height), width(width) {
     pixels = std::vector<Color>(height * width);
+    imageInfo.height = height;
+    imageInfo.width = width;
   }
 
   void writeToFile(std::string fileName, int samplesPerPixel);
@@ -37,8 +58,8 @@ void Image::writeToFile(std::string fileName, int samplesPerPixel) {
     fileName = "output.ppm";
 
   std::ofstream outputFile(fileName);
-
   outputFile << "P3" << std::endl;
+  outputFile << imageInfo << std::endl;
   outputFile << width << "	" << height << std::endl;
   outputFile << "255" << std::endl;
 
@@ -51,8 +72,8 @@ void Image::writeToFile(std::string fileName, int samplesPerPixel) {
       const auto scale = 1.0 / double(samplesPerPixel);
       // Color printColor(std::sqrt(color.red * scale), std::sqrt(color.green * scale), std::sqrt(color.blue * scale));
       outputFile << static_cast<int>(toInt(color.red * scale)) << "	"
-                 << static_cast<int>(toInt(color.green * scale)) << "	"
-                 << static_cast<int>(toInt(color.blue * scale)) << std::endl;
+                 << static_cast<int>(toInt(color.green * scale)) << "	" << static_cast<int>(toInt(color.blue * scale))
+                 << std::endl;
     }
   }
 }
